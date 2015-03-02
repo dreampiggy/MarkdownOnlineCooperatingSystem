@@ -20,7 +20,7 @@ exports.UserMessage=function(nm,id,psw)
     }
 }
 
-exports.ProjectMessagefunction(nm,id)
+exports.ProjectMessage=function(nm,id)
 {
     var name=nm;
     var ID=id;
