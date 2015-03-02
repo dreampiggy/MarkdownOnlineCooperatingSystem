@@ -1,0 +1,102 @@
+*
+{
+	outline:none;
+}
+
+body
+{
+	text-align:center;
+
+	margin:0px;
+	padding:0px;
+
+    background-attachment: fixed;
+    background-color: #FFFFFF;
+}
+
+a
+{
+	text-decoration: none;
+}
+
+font
+{
+	font-family: Arial;
+}
+
+.Clickable
+{
+    cursor: pointer;
+}
+
+.PageColumn
+{
+    width: 100%;
+    
+    text-align: center;
+}
+
+.MiddleArea
+{
+    margin: auto;
+    
+    width: 1024px;
+}
+
+#header
+{
+    height: 48px;
+    
+    background-color: #D8D8D8;
+    
+    border-bottom: 1px solid #848484;
+    border-collapse: collapse;
+}
+
+table#headerTable
+{
+    padding-top: 4px;
+}
+
+table#headerTable td#SystemBrand
+{
+    width: 512px;
+    height: 32px;
+    
+    text-align: left;
+    color: #2E2E2E;
+    
+    font-size: 22px;
+}
+
+table#headerTable td#usrAvator
+{
+    width: 32px;
+    height: 32px;
+    
+    background-image: url("/public/resource/user.png");
+    background-size: 32px, 32px;
+    background-repeat: no-repeat;
+}
+
+table#headerTable td#usrName
+{
+    width: 224px;
+    height: 32px;
+    
+    text-align: left;
+    color: #2E2E2E;
+    
+    font-size: 20px;
+}
+
+table#headerTable td.UserCtrlButton
+{
+    width: 112px;
+    height: 32px;
+    
+    text-align: right;
+    color: #4183C4;
+    
+    font-size: 16px;
+}

@@ -1,0 +1,343 @@
+<!--
+编辑器页面
+by Jason Yang 2015/2/7
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Editor</title>
+        <style>
+            #projectHeader
+            {
+                border-bottom: 1px solid #DDDDDD;
+            }
+            
+            #projectHeaderMiddle
+            {
+                height: 80px;
+            }
+            
+            table#projectHeaderTable
+            {
+                padding-top: 20px;
+            }
+            
+            table#projectHeaderTable td.ProjectHeaderColumn
+            {   
+                min-width: 2px;
+                
+                text-align: left;
+                
+                font-size: 24px;
+                color: #848484;
+            }
+            
+            table#projectHeaderTable td#projectIcon
+            {
+                width: 32px;
+                height: 32px;
+                
+                background-image: url("/public/resource/project.png");
+                background-size: 32px, 32px;
+                background-repeat: no-repeat;
+            }
+            
+            #toolBoxMiddle
+            {
+                height: 64px;
+                
+                box-shadow: 0 0 1px #DDDDDD;
+                border-top: 1px solid #DDDDDD;
+                border-left: 1px solid #DDDDDD;
+                border-right: 1px solid #DDDDDD;
+                border-bottom: 2px solid #4183C4;
+                
+                border-radius: 4px;
+                
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+            
+            table#toolBoxTable
+            {
+                padding-top: 12px;
+            }
+            
+            table#toolBoxTable td.Tool
+            {
+                width: 32px;
+                height: 32px;
+                
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            
+            .ToolIcon
+            {
+                width: 32px;
+                height: 32px;
+                
+                background-size: 32px, 32px;
+                background-repeat: no-repeat;
+            }
+            
+            #menu
+            {
+                width: 128px;
+                min-height: 32px;
+                
+                margin-right: 8px;
+                
+                float: left;
+            }
+            
+            #editorBody
+            {
+                width: 872px;
+                
+                float: right;
+            }
+            
+            #editPannel
+            {
+                width: 432px;
+                min-height: 32px;
+                
+                margin-right: 8px;
+                
+                border-right: 1px solid #DDDDDD;
+                
+                float: left;
+            }
+            
+            #liveView
+            {
+                width: 430px;
+                min-height: 32px;
+                
+                float: right;
+            }
+            
+            .MenuTitle
+            {
+                width:128px;
+                height: 32px;
+                
+                text-align: left;
+                font-size: 20px;
+                
+                color: #2E2E2E;
+                
+                border-right: 1px solid #DDDDDD;
+            }
+            
+            .Category
+            {
+                width:128px;
+                height: 32px;
+                
+                text-align: left;
+                font-size: 20px;
+                color: #4183C4;
+                
+                border-bottom: 1px solid #DDDDDD;
+                border-top: 1px solid #DDDDDD;
+            }
+            
+            .MenuButton
+            {
+                width:128px;
+                height: 32px;
+                
+                text-align: left;
+                font-size: 18px;
+                color: #2E2E2E;
+                
+                border-right: 1px solid #DDDDDD;
+            }
+            
+            .line
+            {
+                width: 432px;
+                height: 32px;
+                
+                font-size: 18px;
+                color: #000000;
+            }
+            
+            #line0
+            {
+                width: 432px;
+            }
+            
+            .lineNumber
+            {
+                width: 32px;
+                height: 32px;
+                
+                float: left;
+            }
+            
+            .lineText
+            {
+                width: 400px;
+                height: 32px;
+                
+                float: right;
+                
+                text-align: left;
+            }
+        </style>
+        <link href="Global.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div id="header" class="PageColumn">
+            <div class="MiddleArea">
+                <table id="headerTable">
+                    <tr>
+                        <td id="systemBrand"  class="Clickable">
+                            <font>Marktogether</font>
+                        </td>
+                        <td id="usrAvator"  class="Clickable">
+                        </td>
+                        <td id="usrName"  class="Clickable">
+                            <font>TestUser</font>
+                        </td>
+                        <td id="notifacations"  class="UserCtrlButton Clickable">
+                            <font>Notifications</font>
+                        </td>
+                        <td id="exit"  class="UserCtrlButton Clickable">
+                            <font>Exit</font>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="projectHeader" class="PageColumn">
+            <div id="projectHeaderMiddle" class="MiddleArea">
+                <table id="projectHeaderTable">
+                    <tr>
+                        <td id="projectIcon" class="ProjectHeaderColumn ClickAble">
+                        </td>
+                        <td id="projectName" class="ProjectHeaderColumn ClickAble">
+                            <font>TestProject</font>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div id="toolBoxMiddle" class="MiddleArea">
+                <table id="toolBoxTable">
+                    <tr>
+                        <td class="Tool">
+                            <div class="ToolIcon ClickAble">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="editor" class="PageColumn">
+            <div class="MiddleArea">
+                <div id="menu">
+                    <div class="MenuTitle">
+                        <font>>>>>Menu</font>
+                    </div>
+                    <div class="Category">
+                        <font>>>Project</font>
+                    </div>
+                    <div id="save" class="MenuButton ClickAble">
+                        <font>Save</font>
+                    </div>
+                    <div id="abandon" class="MenuButton ClickAble">
+                        <font>Abandon</font>
+                    </div>
+                    <div id="revert" class="MenuButton ClickAble">
+                        <font>Revert</font>
+                    </div>
+                    <div id="redo" class="MenuButton ClickAble">
+                        <font>Redo</font>
+                    </div>
+                </div>
+                <div id="editorBody">
+                    <div id="editPannel">
+                        <div id="line0">
+                        </div>
+                    </div>
+                    <div id="liveView">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="jquery-1.11.1.js">
+</script>
+<script src="Global.js">
+</script>
+<script>
+    //本页面JavaScript
+    $("#projectName").click(function(){
+        //连接至本project的页面
+    });
+            
+    $("#save").click(function(){
+        //保存
+    });
+    
+    $("#abandon").click(function(){
+        //放弃修改
+    });
+    
+    $("#revert").click(function(){
+        //撤销修改
+    });
+    
+    $("#redo").click(function(){
+        //撤销修改
+    });
+    
+    function Line(num)
+    {
+        this.container=null;
+        this.numberDiv=null;
+        this.textDiv=null;
+        
+        this.number=num;
+        
+        this.display=function(parent)
+        {
+            this.container=document.createElement("div");
+            $(this.container).addClass("line");
+            this.numberDiv=document.createElement("div");
+            $(this.numberDiv).addClass("lineNumber");
+            this.numberDiv.innerHTML="<font>"+this.number+"</font>";
+            this.textDiv=document.createElement("div");
+            $(this.textDiv).addClass("lineText");
+            $(parent).append(this.container);
+            $(this.container).append(this.numberDiv);
+            $(this.container).append(this.textDiv);
+        }
+        
+        this.startEditing=function()
+        {
+        }
+    }
+    //代码行的对象构造器
+    
+    function Editor()
+    {
+        this.lines=new Array();
+        this.lines[0]=document.getElementById("line0");
+        
+        this.addLine=function()
+        {
+            this.lines[this.lineNumbers]=new Line(this.lines.length);
+            this.lines[this.lineNumbers].display(document.getElementById("editPannel"));
+        }
+    }
+
+    //页面运行的JavaScript
+    var thisEditor=new Editor();
+    thisEditor.addLine();
+</script>

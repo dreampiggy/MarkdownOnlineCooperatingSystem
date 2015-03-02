@@ -1,5 +1,4 @@
 var markdown = require("markdown").markdown;
-var fs = require('fs');
 var formidable = require("formidable");
 
 function resolve (request,response) {

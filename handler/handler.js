@@ -1,5 +1,5 @@
-var resolver = require("../resolver/resolver");
 var fs = require('fs');
+var resolver = require("../app/controller/resolver");
 
 function mdresolve (request,response) {
 	console.log("markdown resolver start!");
@@ -14,7 +14,14 @@ function upload(request,response){
 }
 
 function home(request,response){
-	fileContent = fs.readFileSync("./resource/html/index.html", 'utf8');
+	fileContent = fs.readFileSync("./public/html/index.html", 'utf8');
+	response.writeHead(200,{"Content-Type":"text/html"});
+	response.write(fileContent);
+	response.end();
+}
+
+function test(request,response){
+	fileContent = fs.readFileSync("./public/html/test.html", 'utf8');
 	response.writeHead(200,{"Content-Type":"text/html"});
 	response.write(fileContent);
 	response.end();
@@ -41,6 +48,7 @@ function project(){
 exports.mdresolve = mdresolve;
 exports.upload = upload;
 exports.home = home;
+exports.test = test;
 exports.editor = editor;
 exports.about = about;
 exports.project = project;
