@@ -1,0 +1,129 @@
+            #formColumn
+            {   
+                margin-top: 64px;
+                
+                border: 1px solid #D8D8D8;
+            }
+            
+            #menuBar
+            {
+                height: 32px;
+            }
+            
+            table#menuTable
+            {
+                border-collapse: collapse;
+            }
+            
+            table#menuTable td
+            {
+                height: 32px;
+                width: 256px;
+                
+                margin: 0px;
+                padding: 0px;
+                
+                background-color: #D8D8D8;
+                
+                border-collapse: collapse;
+                
+                border-bottom: 2px solid #4183C4;
+                
+                text-align: center;
+                font-size: 20px;
+                color: #848484;
+            }
+            
+            table#menuTable td.ClickAble:hover
+            {
+                background-color: #FFFFFF;
+            }
+            
+            table#menuTable td#active
+            {
+                background-color: #FFFFFF;
+                
+                border-bottom: 2px solid #FFFFFF;
+                border-left: 1px solid #D8D8D8;
+                border-right: 1px solid #D8D8D8;
+                
+                color: #4183C4;
+            }
+            
+            table#menuTable td.Unuseable
+            {
+                color: #E6E6E6;
+            }
+            
+            .InputColumn
+            {
+                height: 48px;
+                width: 1024px;
+                
+                margin-top: 64px;
+                margin-bottom: 64px;
+            }
+            
+            .InputBar
+            {
+                height: 48px;
+                width: 768px;
+                
+                float: left;
+            }
+            
+            .InputLabel
+            {
+                height: 38px;
+                width: 256px;
+                padding-top: 10px;
+                
+                float: right;
+                
+                background-color: #4183C4;
+                
+                color: #FFFFFF;
+                font-size: 20px;
+            }
+            
+            .Input
+            {
+                height: 100%;
+                width: 100%;
+                
+                border: medium none;
+                
+                background-color: #D8D8D8;
+                
+                color: #4183C4;
+                font-size: 20px;
+                font-family: Arial;
+                text-align: center;
+            }
+            
+            .Button
+            {
+                height: 38px;
+                width: 512px;
+                
+                padding-top: 10px;
+                
+                margin: auto;
+                margin-top: 64px;
+                
+                background-color: #D8D8D8;
+                color: #E6E6E6;
+                font-size: 20px;
+            }
+            
+            .SubmitActive
+            {
+                background-color: #D8D8D8;
+                color: #4183C4;
+            }
+            
+            .SubmitActive:hover
+            {
+                background-color: #4183C4;
+                color: #FFFFFF;
+            }

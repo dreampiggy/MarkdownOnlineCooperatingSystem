@@ -8,55 +8,26 @@ by Jason Yang 2015/2/13
         <title>Personal</title>
         <style>
         </style>
-        <link href="Global.css" rel="stylesheet" type="text/css">
+        <link href="../css/Global.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <div id="header" class="PageColumn">
             <div class="MiddleArea">
-                <table>
+                <table id="headerTable">
                     <tr>
-                        <td>
-                            <div id="systemCtrl">
-                                <div class="HeaderColumn">
-                                    <div id="SystemBrand">
-                                        <font>Marktogether</font>
-                                    </div>
-                                </div>
-                            </div>
+                        <td id="systemBrand"  class="Clickable">
+                            <font>Marktogether</font>
                         </td>
-                        <td>
-                            <div id="usrCtrl">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <div class="HeaderColumn">
-                                                <div id="usrName">
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                             <div  class="HeaderColumn">
-                                                <div id="usrAvator">
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div id="notifacations" class="HeaderColumn">
-                                                <div class="UserCtrlButton">
-                                                    <font>Notifications</font>
-                                                </div>
-                                            </div>    
-                                        </td>
-                                        <td>
-                                            <div id="exit" class="HeaderColumn">
-                                                <div class="UserCtrlButton">
-                                                    <font>Exit</font>
-                                                </div>
-                                            </div>    
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                        <td id="usrAvator"  class="Clickable">
+                        </td>
+                        <td id="usrName"  class="Clickable">
+                            <font>TestUser</font>
+                        </td>
+                        <td id="notifacations"  class="UserCtrlButton Clickable">
+                            <font>Notifications</font>
+                        </td>
+                        <td id="exit"  class="UserCtrlButton Clickable">
+                            <font>Exit</font>
                         </td>
                     </tr>
                 </table>
@@ -64,9 +35,9 @@ by Jason Yang 2015/2/13
         </div>
     </body>
 </html>
-<script src="jquery-1.11.1.js">
+<script src="../js/jquery-1.11.1.js">
 </script>
-<script src="Global.js">
+<script src="../js/Global.js">
 </script>
 <script>
     //本页面JavaScript

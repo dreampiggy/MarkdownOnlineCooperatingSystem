@@ -47,9 +47,9 @@ font
 {
     height: 48px;
     
-    background-color: #D8D8D8;
+    background-color: #0B0B3B;
     
-    border-bottom: 1px solid #848484;
+    border-bottom: 1px solid #000000;
     border-collapse: collapse;
 }
 
@@ -64,7 +64,7 @@ table#headerTable td#SystemBrand
     height: 32px;
     
     text-align: left;
-    color: #2E2E2E;
+    color: #FFFFFF;
     
     font-size: 22px;
 }
@@ -74,7 +74,7 @@ table#headerTable td#usrAvator
     width: 32px;
     height: 32px;
     
-    background-image: url("/public/resource/user.png");
+    background-image: url("");
     background-size: 32px, 32px;
     background-repeat: no-repeat;
 }
@@ -85,7 +85,7 @@ table#headerTable td#usrName
     height: 32px;
     
     text-align: left;
-    color: #2E2E2E;
+    color: #FFFFFF;
     
     font-size: 20px;
 }
@@ -96,7 +96,8 @@ table#headerTable td.UserCtrlButton
     height: 32px;
     
     text-align: right;
-    color: #4183C4;
+    font-weight: bold;
+    color: #D8D8D8;
     
     font-size: 16px;
 }

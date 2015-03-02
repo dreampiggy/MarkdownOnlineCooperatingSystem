@@ -1,0 +1,131 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Error</title>
+        <style>
+            *
+            {
+                outline:none;
+            }
+
+            body
+            {
+                text-align:center;
+
+                margin:0px;
+                padding:0px;
+
+                background-attachment: fixed;
+                background-color: #FFFFFF;
+            }
+
+            a
+            {
+                text-decoration: none;
+            }
+
+            font
+            {
+                font-family: Arial;
+            }
+
+            .Clickable
+            {
+                cursor: pointer;
+            }
+
+            .PageColumn
+            {
+                width: 100%;
+
+                text-align: center;
+            }
+
+            .MiddleArea
+            {
+                margin: auto;
+
+                width: 1024px;
+            }
+            
+            #errorTitle
+            {
+                height: 38px;
+                width: 100%;
+                
+                padding-top: 10px;
+                
+                margin-top: 64px;
+                
+                background-color: #4183C4;
+                color: #FFFFFF;
+                font-size: 20px;
+            }
+            
+            #errorReport
+            {
+                min-height: 38px;
+                width: 100%;
+                
+                padding-top: 10px;
+                padding-bottom: 10px;
+                
+                background-color: #D8D8D8;
+                color: #2E2E2E;
+                font-size: 20px;
+                
+                display: none;
+            }
+            
+            .Button
+            {
+                min-height: 38px;
+                width: 512px;
+                
+                padding-top: 10px;
+                
+                margin: auto;
+                margin-top: 64px;
+                
+                background-color: #D8D8D8;
+                color: #4183C4;
+                font-size: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="PageColumn">
+            <div class="MiddleArea">
+                <div id="errorTitle">
+                    <font>
+                        We Got An Error Here!
+                    </font>
+                </div>
+                <div id="errorReport">
+                    <font>
+                        404<br>Page Not Found.
+                    </font>
+                </div>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea">
+                <div id="Return" class="ClickAble Button">
+                    <font>
+                        Return
+                    </font>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="jquery-1.11.1.js">
+</script>
+<script>
+    //本页面JavaScript
+    $("#errorTitle").click(function(){
+        $("#errorReport").slideDown("slow")
+    });
+    
+    //页面运行的JavaScript
+</script>

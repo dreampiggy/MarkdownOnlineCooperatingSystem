@@ -37,7 +37,7 @@ by Jason Yang 2015/2/7
                 width: 32px;
                 height: 32px;
                 
-                background-image: url("/public/resource/project.png");
+                background-image: url("project.png");
                 background-size: 32px, 32px;
                 background-repeat: no-repeat;
             }
@@ -188,7 +188,7 @@ by Jason Yang 2015/2/7
                 text-align: left;
             }
         </style>
-        <link href="Global.css" rel="stylesheet" type="text/css">
+        <link href="../css/Global.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <div id="header" class="PageColumn">
@@ -271,14 +271,22 @@ by Jason Yang 2015/2/7
         </div>
     </body>
 </html>
-<script src="jquery-1.11.1.js">
+<script src="../js/jquery-1.11.1.js">
 </script>
-<script src="Global.js">
+<script src="../js/Global.js">
 </script>
 <script>
     //本页面JavaScript
+    function gotoProjectHome()
+    {
+        //链接直项目主页
+    }
+    
     $("#projectName").click(function(){
-        //连接至本project的页面
+        gotoProjectHome();
+    });
+    $("#projectIcon").click(function(){
+        gotoProjectHome();
     });
             
     $("#save").click(function(){
