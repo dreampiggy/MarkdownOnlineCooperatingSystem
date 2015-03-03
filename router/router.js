@@ -16,6 +16,9 @@ function route(app){
 		else if(pathname == "/markdown"){
 			handler.mdresolve(request,response);
 		}
+		else if(pathname == "/sync"){
+			handler.sync(request,response);
+		}
 		else if(pathname == "/upload"){
 			handler.upload(request,response);
 		}
@@ -29,7 +32,6 @@ function route(app){
 			handler.project(request,response);
 		}
 		else if(pathname.match(/\/public\/.*/gim) != null){
-			console.log(pathname);
 			returnFile(pathname,request,response);
 		}
 		else{
@@ -48,7 +50,6 @@ function returnFile(pathname,request,response){
 			response.end("404 not found");
 		}
 		else{
-			console.log(path);
 			var stream = fs.createReadStream(path);
 			response.setHeader('Content-Length',stat.size);
 			stream.pipe(response);
