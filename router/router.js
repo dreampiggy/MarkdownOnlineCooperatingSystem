@@ -16,6 +16,9 @@ function route(app){
 		else if(pathname == "/markdown"){
 			handler.mdresolve(request,response);
 		}
+		else if(pathname == "/sync"){
+			handler.sync(request,response);
+		}
 		else if(pathname == "/upload"){
 			handler.upload(request,response);
 		}

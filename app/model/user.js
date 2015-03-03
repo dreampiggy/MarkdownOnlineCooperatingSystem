@@ -1,11 +1,12 @@
-var Client = require('mysql').Client;
-var client = new Client();
-client.host = 'localhost';  
-client.port = 3306;  
-client.user = 'lizhuoli';   
-client.password = '941126';   
-client.database='markdown';  
-
+var mysql      = require('mysql');
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : '941126',
+  database : 'markdown'
+});
+connection.connect();
+console.log('Start!');
 
 function register(argument){
 	// body...
@@ -14,3 +15,8 @@ function register(argument){
 function login (argument) {
 	
 }
+
+function getUserID(username){
+	;
+}
+exports.getUserID = getUserID;

@@ -1,11 +1,21 @@
 var fs = require('fs');
-var resolver = require("../app/controller/resolver");
+//var resolver = require("../app/controller/resolver");
+var account = require('../app/controller/account');
+var manager = require('../app/controller/manager');
+var connect = require('../app/controller/connect');
 
 function mdresolve (request,response) {
 	console.log("markdown resolver start!");
 	resolver.resolve(request,response);
 	console.log("markdown resolver end!");
 }
+
+function sync(request,response){
+	console.log("start sync");
+	connect.sync(request,response);
+	console.log("stop sync");
+}
+
 
 function upload(request,response){
 	console.log("upload resolver start!");
@@ -21,7 +31,7 @@ function home(request,response){
 }
 
 function test(request,response){
-	fileContent = fs.readFileSync("./public/html/test.html", 'utf8');
+	fileContent = fs.readFileSync("./public/html/demo.html", 'utf8');
 	response.writeHead(200,{"Content-Type":"text/html"});
 	response.write(fileContent);
 	response.end();
@@ -46,6 +56,7 @@ function project(){
 }
 
 exports.mdresolve = mdresolve;
+exports.sync = sync;
 exports.upload = upload;
 exports.home = home;
 exports.test = test;
