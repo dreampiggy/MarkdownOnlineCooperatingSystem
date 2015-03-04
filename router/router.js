@@ -22,6 +22,12 @@ function route(app){
 		else if(pathname == "/upload"){
 			handler.upload(request,response);
 		}
+		else if(pathname == "/download"){
+			handler.download(request,response);
+		}
+		else if(pathname == "/remove"){
+			handler.remove(request,response);
+		}
 		else if(pathname == "/editor"){
 			handler.editor(request,response);
 		}

@@ -35,3 +35,39 @@ exports.ProjectMessage=function(nm,id)
         return ID;
     }
 }
+
+
+// Here save some garbage code -.-~~~
+
+    // var judgeResult1;
+    // var judgeResult2;
+    // checkUserList(docID,userID,response,function judgeUserID (result) {
+    //  if(!result){
+    //      judgeResult1  = false;
+    //  }
+    //  else{
+    //      console.log('result1');
+    //      judgeResult1 = true;
+    //      if(judgeResult1 == true && judgeResult2 == true){
+    //          updateDoc(docID,markdownText,userID,response);
+    //      }
+    //      else if(typeof judgeResult1 != 'undefined' && typeof judgeResult2 != 'undefined'){
+    //          sendError(404,response);
+    //      }
+    //  }
+    // });
+    // checkDocID(docID,response,function judgeDocID (result) {
+    //  if(!result){
+    //      judgeResult2 = false;
+    //  }
+    //  else{
+    //      console.log('result2');
+    //      judgeResult2 = true;
+    //      if(judgeResult1 == true && judgeResult2 == true){
+    //          updateDoc(docID,markdownText,userID,response);
+    //      }
+    //      else if(typeof judgeResult1 != 'undefined' && typeof judgeResult2 != 'undefined'){
+    //          sendError(404,response);
+    //      }
+    //  }
+    // });

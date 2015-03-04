@@ -6,7 +6,6 @@ var connection = mysql.createConnection({
   database : 'markdown'
 });
 connection.connect();
-console.log('Start!');
 
 function register(argument){
 	// body...
@@ -19,4 +18,26 @@ function login (argument) {
 function getUserID(username){
 	;
 }
+
+function checkUserID(userID,callback){
+	connection.query('SELECT userID FROM user WHERE userID = ?',[userID],function(err,result) {
+		if(err){
+			return;
+		}
+		else{
+			if(result[0] == null){
+				callback(false);
+			}
+			else if(result[0]['userID'] != null){
+				callback(true);
+			}
+			else{
+				callback(false);
+			}
+		}
+	});
+}
+
+
 exports.getUserID = getUserID;
+exports.checkUserID = checkUserID;

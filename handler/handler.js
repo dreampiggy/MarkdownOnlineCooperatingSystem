@@ -11,16 +11,27 @@ function mdresolve (request,response) {
 }
 
 function sync(request,response){
-	console.log("start sync");
+	console.log("sync start!");
 	connect.sync(request,response);
-	console.log("stop sync");
+	console.log("sync end!");
 }
-
 
 function upload(request,response){
 	console.log("upload resolver start!");
-	resolver.upload(request,response);
+	connect.upload(request,response);
 	console.log("upload resolver end!");
+}
+
+function download(request,response){
+	console.log("download resolver start!");
+	connect.download(request,response);
+	console.log("download resolver end!");
+}
+
+function remove(request,response){
+	console.log("remove resolver start!");
+	connect.remove(request,response);
+	console.log("remove resolver end!");
 }
 
 function home(request,response){
@@ -58,6 +69,8 @@ function project(){
 exports.mdresolve = mdresolve;
 exports.sync = sync;
 exports.upload = upload;
+exports.download = download;
+exports.remove = remove;
 exports.home = home;
 exports.test = test;
 exports.editor = editor;

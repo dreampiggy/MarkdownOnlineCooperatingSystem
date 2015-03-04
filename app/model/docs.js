@@ -7,25 +7,72 @@ var connection = mysql.createConnection({
   database : 'markdown'
 });
 connection.connect();
+console.log('Database Start!');
 
-function syncDoc (docID,markdownText,userID,response) {
-	checkUserID(docID,markdownText,userID,response,checkDoc);
-}
-
-function addDoc(docID,markdownText,author,response){
-	var currentTime = new Date();
-	connection.query('INSERT INTO docs (docID,content,author,datetime,userList) VALUES (?,?,?,?,?)',[docID,markdownText,author,currentTime,'{' + author+ '}'],function(err,result){
-		if(err){
-			console.log('addDoc Error!');
-			return;
-		}
-		if(result.affectedRows != null){
-			response.statusCode = 200;
-			response.end();
+function prepareEdit (docID,markdownText,userID,response) {
+	checkUserList(docID,userID,response,function judgeUserID (result) {
+		if(!result){
+			sendError(404,response);
 		}
 		else{
-			response.statusCode = 500;
-			response.end();
+			updateDoc(docID,markdownText,userID,response);
+		}
+	});
+}
+
+function prepareNew(userID,response){
+	addDoc(userID,response);
+}
+
+function prepareDelete(docID,userID,response){
+	checkUserList(docID,userID,response,function judgeUserID(result){
+		if(result){
+			deleteDoc(docID,response);
+		}
+		else{
+			sendError(404,response);
+		}
+	});
+}
+
+function prepareGet(docID,userID,response){
+	checkUserList(docID,userID,response,function judgeUserID (result) {
+		if(!result){
+			sendError(404,response);
+		}
+		else{
+			getDoc(docID,response);
+		}
+	});
+}
+
+function addDoc(author,response){
+	var currentTime = new Date();
+	connection.query('INSERT INTO docs (author,datetime,userList) VALUES (?,?,?)',[author,currentTime,'{' + author+ '}'],function(err,result){
+		if(err){
+			sendError(500,response);
+			return;
+		}
+		else if(result.affectedRows != 0){
+			sendSuccess('add',response);
+		}
+		else{
+			sendError(404,response);
+		}
+	});
+}
+
+function deleteDoc(docID,response){
+	connection.query('DELETE FROM docs WHERE docID = ?',[docID],function(err,result){
+		if(err){
+			sendError(500,response);
+			return;
+		}
+		else if(result.affectedRows != null){
+			sendSuccess('delete',response);
+		}
+		else{
+			sendError(404,response);
 		}
 	});
 }
@@ -34,48 +81,119 @@ function updateDoc(docID,markdownText,userID,response){
 	var currentTime = new Date();
 	connection.query('UPDATE docs SET content = ?,datetime = ? WHERE docID = ?',[markdownText,currentTime,docID],function(err,result){
 		if(err){
-			console.log('updateDoc Error!');
+			sendError(500,response);
+			return;
 		}
-		if(result.affectedRows != null){
-			response.statusCode = 200;
-			response.end();
+		else if(result.affectedRows != null){
+			sendSuccess('update',response);
 		}
 		else{
-			response.statusCode = 500;
-			response.end();
+			sendError(404,response);
 		}
 	});
 }
 
-function checkUserID(docID,markdownText,userID,response,callback){
-	connection.query('SELECT userList FROM docs WHERE docID = ?',[docID],function(err,result) {
+function getDoc(docID,response){
+	connection.query('SELECT docID,content,author,datetime,userList FROM docs WHERE docID = ?',[docID],function(err,result){
 		if(err){
-			console.log(err);
+			sendError(500,response);
+			return;
 		}
-		var check = '/\^.*\\{' + userID + '\}.*\$/';
-		if(result[0]['userList'].match(eval(check)) == null){
-			console.log('fuckyou!');
+		else if(result[0] == null){
+			sendError(404,response);
+			return;
 		}
 		else{
-			callback(docID,markdownText,userID,response);
+			response.write(result[0]['content']);
+			sendSuccess('get',response);
+		}
+	});
+}
+
+function checkUserList(docID,userID,response,callback){
+	connection.query('SELECT userList FROM docs WHERE docID = ?',[docID],function(err,result) {
+		if(err){
+			callback(false);
+			return;
+		}
+		else if(result[0] == null){
+			callback(false);
+			return;
+		}
+		else{
+			var check = '/\^.*\\{' + userID + '\}.*\$/';
+			if(result[0]['userList'].match(eval(check)) != null){
+				callback(true);
+			}
+			else{
+				callback(false);
+			}
 		}
 	})
 }
 
-function checkDoc(docID,markdownText,userID,response){
+function checkDocID(docID,response,callback){
 	connection.query('SELECT docID FROM docs WHERE docID = ?',[docID],function(err,result){
 		if(err){
-			console.log('checkDoc Error!');
+			callback(false);
 			return;
 		}
-		if(result[0]['docID'] != null){
-			updateDoc(docID,markdownText,userID,response);
+		else if(result[0] == null){
+			callback(false);
+			return;
 		}
 		else{
-			addDoc(docID,markdownText,userID,response);
+			if(result[0]['docID'] != null){
+				callback(true);
+			}
+			else{
+				callback(false);
+			}
 		}
 	});
 }
 
 
-exports.syncDoc = syncDoc;
+function sendError(error,response){
+	switch(error){
+		case 404:
+			response.statusCode = 404;
+			response.end();
+			break;
+		case 500:
+			response.statusCode = 500;
+			response.end();
+			break;
+		default:
+			response.end();
+	}
+}
+
+function sendSuccess(success,response){
+	switch(success){
+		case 'add':
+			response.statusCode = 200;
+			response.end();
+			break;
+		case 'delete':
+			response.statusCode = 200;
+			response.end();
+			break;
+		case 'update':
+			response.statusCode = 200;
+			response.end();
+			break;
+		case 'get':
+			response.statusCode = 200;
+			response.end();
+			break;
+		default:
+			response.end();
+	}
+}
+
+
+exports.prepareEdit = prepareEdit;
+exports.prepareNew = prepareNew;
+exports.prepareDelete = prepareDelete;
+exports.prepareGet = prepareGet;
