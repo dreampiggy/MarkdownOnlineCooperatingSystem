@@ -1,0 +1,178 @@
+<!--
+文档主页
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Document</title>
+        <style>
+            #documentStatistics
+            {
+                min-height: 64px;
+                
+                box-shadow: 0 0 1px #DDDDDD;
+                border-top: 1px solid #DDDDDD;
+                border-left: 1px solid #DDDDDD;
+                border-right: 1px solid #DDDDDD;
+                border-bottom: 2px solid #4183C4;
+                
+                border-radius: 4px;
+                
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+            
+            table#documentStatisticsTable
+            {
+                border-collapse: collapse;
+            }
+            
+            table#documentStatisticsTable td#statements
+            {
+                width: 768px;
+                min-height: 64px;
+                
+                border-right: 2px solid #4183C4;
+            }
+            
+            #statementsArea
+            {
+                width: 640px;
+                min-height: 32px;
+                
+                margin: auto;
+                margin-top: 16px;
+                margin-bottom: 16px;
+                
+                font-size: 20px;
+                color: #000000;
+            }
+            
+            table#documentStatisticsTable td.StatisticsArea
+            {
+                width: 128px;
+                min-height: 64px;
+            }
+            
+            .Edit
+            {
+                background-color: #4183C4;
+                color: #FFFFFF;
+            }
+            
+            .Delete
+            {
+                background-color: #FF0000;
+                color: #FFFFFF;
+            }
+        </style>
+        <link href="../css/Global.css" rel="stylesheet" type="text/css">
+        <link href="../css/List.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div id="header" class="PageColumn">
+            <div class="MiddleArea">
+                <table id="headerTable">
+                    <tr>
+                        <td id="systemBrand"  class="Clickable">
+                            <font>Marktogether</font>
+                        </td>
+                        <td id="usrAvator"  class="Clickable">
+                        </td>
+                        <td id="usrName"  class="Clickable">
+                            <font>TestUser</font>
+                        </td>
+                        <td id="notifacations"  class="UserCtrlButton Clickable">
+                            <font>Notifications</font>
+                        </td>
+                        <td id="exit"  class="UserCtrlButton Clickable">
+                            <font>Exit</font>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="projectHeader" class="PageColumn">
+            <div id="projectHeaderMiddle" class="MiddleArea">
+                <table id="projectHeaderTable">
+                    <tr>
+                        <td id="projectIcon" class="ProjectHeaderColumn ClickAble">
+                        </td>
+                        <td id="projectName" class="ProjectHeaderColumn ClickAble">
+                            <font>TestProject</font>
+                        </td>
+                        <td id="projectName" class="ProjectHeaderColumn ClickAble">
+                            <font>/TestFile</font>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div  class="PageColumn">
+            <div id="documentStatistics" class="MiddleArea">
+                <table id="documentStatisticsTable">
+                    <tr>
+                        <td id="statements">
+                            <div id="statementsArea">
+                                <font>TestStatement</font>
+                            </div>
+                        </td>
+                        <td class="StatisticsArea">
+                            <div class="StatisticElementValue">
+                                <font>
+                                    0
+                                </font>
+                            </div>
+                            <div class="StatisticElementTitle">
+                                <font>
+                                    Contributors
+                                </font>
+                            </div>
+                        </td>
+                        <td class="StatisticsArea">
+                            <div class="StatisticElementValue">
+                                <font>
+                                    0
+                                </font>
+                            </div>
+                            <div class="StatisticElementTitle">
+                                <font>
+                                    Commits
+                                </font>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea">
+                <div id="submit" class="LargeButton Edit ClickAble">
+                    <font>
+                        Edit This
+                    </font>
+                </div>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea">
+                <div id="submit" class="LargeButton Delete ClickAble">
+                    <font>
+                        Delete This
+                    </font>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="../js/jquery-1.11.1.js">
+</script>
+<script src="../js/Global.js">
+</script>
+<script src="../js/List.js">
+</script>
+<script>
+    //本页面JavaScript
+    
+    //页面运行的JavaScript
+</script>

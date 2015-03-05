@@ -1,14 +1,64 @@
 <!--
 用户个人主页
-by Jason Yang 2015/2/13
 -->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Personal</title>
         <style>
+            #basicInformation
+            {
+                height: 256px;
+                
+                padding-top: 8px;
+                padding-bottom: 8px;
+                
+                border-bottom: 2px solid #D8D8D8;
+            }
+            
+            table#basicInformationTable td#avatar
+            {
+                background-repeat: no-repeat;
+                background-size: 256px 256px;
+                
+                height: 256px;
+                width: 256px;
+                
+                border-collapse: collapse;
+            }
+            
+            table#basicInformationTable td#information
+            {
+                height: 256px;
+                
+                padding-left: 64px;
+                
+                border-collapse: collapse;
+            }
+            
+            #userName
+            {
+                height: 64px;
+                
+                text-align: left;
+                font-size: 32px;
+            }
+            
+            #userID
+            {
+                height: 48px;
+                
+                text-align: left;
+                font-size: 24px;
+            }
+            
+            #statistics
+            {
+                height: 64px;
+            }
         </style>
         <link href="../css/Global.css" rel="stylesheet" type="text/css">
+        <link href="../css/List.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <div id="header" class="PageColumn">
@@ -33,16 +83,103 @@ by Jason Yang 2015/2/13
                 </table>
             </div>
         </div>
+        <div class="PageColumn">
+            <div class="MiddleArea" id="basicInformation">
+                <table id="basicInformationTable">
+                    <tr>
+                        <td id="avatar">
+                        </td>
+                        <td id="information">
+                            <div id="userName">
+                                <font>
+                                    TestName
+                                </font>
+                            </div>
+                            <div id="userID">
+                                <font>
+                                    TestID
+                                </font>
+                            </div>
+                            <div id="statistics">
+                                <table id="statisticsTable">
+                                    <tr>
+                                        <td class="StatisticElement">
+                                            <div class="StatisticElementValue">
+                                                <font>
+                                                    0
+                                                </font>
+                                            </div>
+                                            <div class="StatisticElementTitle">
+                                                <font>
+                                                    Leading Projects
+                                                </font>
+                                            </div>
+                                        </td>
+                                        <td class="StatisticElement">
+                                            <div class="StatisticElementValue">
+                                                <font>
+                                                    0
+                                                </font>
+                                            </div>
+                                            <div class="StatisticElementTitle">
+                                                <font>
+                                                    Following Projects
+                                                </font>
+                                            </div>
+                                        </td>
+                                        <td class="StatisticElement">
+                                            <div class="StatisticElementValue">
+                                                <font>
+                                                    0
+                                                </font>
+                                            </div>
+                                            <div class="StatisticElementTitle">
+                                                <font>
+                                                    Leading Organizations
+                                                </font>
+                                            </div>
+                                        </td>
+                                        <td class="StatisticElement">
+                                            <div class="StatisticElementValue">
+                                                <font>
+                                                    0
+                                                </font>
+                                            </div>
+                                            <div class="StatisticElementTitle">
+                                                <font>
+                                                    Following Organizations
+                                                </font>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea List" id="projects">
+                <div class="ListTitle">
+                    <font>
+                        Projects
+                    </font>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
 <script src="../js/jquery-1.11.1.js">
 </script>
 <script src="../js/Global.js">
 </script>
+<script src="../js/List.js">
+</script>
 <script>
     //本页面JavaScript
     
     //页面运行的JavaScript
-    var thisPage=new PageMainMessage("TestUser");
-    thisPage.displayUsrNameOnHeader();
+    var testProject=new listColumn("Test","Test");
+    testProject.display(document.getElementById("projects"));
 </script>

@@ -1,0 +1,199 @@
+<!--
+项目主页
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Project</title>
+        <style>
+            #projectStatement
+            {
+                min-height: 28px;
+                
+                padding-top: 4px;
+                padding-bottom: 4px;
+                
+                background-color: #D8D8D8;
+            }
+            
+            #projectStatemenText
+            {
+                min-height: 20px;
+                
+                text-align: left;
+                font-size: 18px;
+                color: #000000;
+            }
+            
+            #projectStatistics
+            {
+                height: 80px;
+                
+                margin-top: 16px;
+                
+                border-bottom: 1px solid #DDDDDD;
+            }
+            
+            table#projectStatisticsTable td
+            {
+                border-collapse: collapse;
+                
+                width: 256px;
+                height: 64px;
+                
+                text-align: center;
+            }
+            
+            .Delete
+            {
+                background-color: #FF0000;
+                color: #FFFFFF;
+            }
+        </style>
+        <link href="../css/Global.css" rel="stylesheet" type="text/css">
+        <link href="../css/List.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div id="header" class="PageColumn">
+            <div class="MiddleArea">
+                <table id="headerTable">
+                    <tr>
+                        <td id="systemBrand"  class="Clickable">
+                            <font>Marktogether</font>
+                        </td>
+                        <td id="usrAvator"  class="Clickable">
+                        </td>
+                        <td id="usrName"  class="Clickable">
+                            <font>TestUser</font>
+                        </td>
+                        <td id="notifacations"  class="UserCtrlButton Clickable">
+                            <font>Notifications</font>
+                        </td>
+                        <td id="exit"  class="UserCtrlButton Clickable">
+                            <font>Exit</font>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="projectHeader" class="PageColumn">
+            <div id="projectHeaderMiddle" class="MiddleArea">
+                <table id="projectHeaderTable">
+                    <tr>
+                        <td id="projectIcon" class="ProjectHeaderColumn ClickAble">
+                        </td>
+                        <td id="projectName" class="ProjectHeaderColumn ClickAble">
+                            <font>TestProject</font>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="projectStatement" class="PageColumn">
+            <div id="projectStatemenText" class="MiddleArea">
+                <font>
+                    TestStatement
+                </font>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div id="projectStatistics" class="MiddleArea">
+                <table id="projectStatisticsTable">
+                    <tr>
+                        <td>
+                            <div class="StatisticElementValue">
+                                <font>
+                                    0
+                                </font>
+                            </div>
+                            <div class="StatisticElementTitle">
+                                <font>
+                                    Documents
+                                </font>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="StatisticElementValue">
+                                <font>
+                                    0
+                                </font>
+                            </div>
+                            <div class="StatisticElementTitle">
+                                <font>
+                                    Contributors
+                                </font>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="StatisticElementValue">
+                                <font>
+                                    0
+                                </font>
+                            </div>
+                            <div class="StatisticElementTitle">
+                                <font>
+                                    Commits
+                                </font>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="StatisticElementValue">
+                                <font>
+                                    0
+                                </font>
+                            </div>
+                            <div class="StatisticElementTitle">
+                                <font>
+                                    Contributors
+                                </font>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea List" id="documents">
+                <div class="ListTitle">
+                    <font>
+                        Documents
+                    </font>
+                </div>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea List" id="contributors">
+                <div class="ListTitle">
+                    <font>
+                        Contributors
+                    </font>
+                </div>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea">
+                <div id="submit" class="LargeButton Delete ClickAble">
+                    <font>
+                        Delete This
+                    </font>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="../js/jquery-1.11.1.js">
+</script>
+<script src="../js/Global.js">
+</script>
+<script src="../js/List.js">
+</script>
+<script>
+    //本页面JavaScript
+    
+    //页面运行的JavaScript
+    var testDocument=new listColumn("Test","Test");
+    testDocument.display(document.getElementById("documents"));
+    
+    var testContributor=new listColumn("Test","Test");
+    testContributor.display(document.getElementById("contributors"));
+</script>

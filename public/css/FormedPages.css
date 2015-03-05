@@ -100,20 +100,11 @@
                 font-family: Arial;
                 text-align: center;
             }
-            
-            .Button
+
+            .Submit
             {
-                height: 38px;
-                width: 512px;
-                
-                padding-top: 10px;
-                
-                margin: auto;
-                margin-top: 64px;
-                
                 background-color: #D8D8D8;
                 color: #E6E6E6;
-                font-size: 20px;
             }
             
             .SubmitActive

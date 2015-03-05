@@ -1,0 +1,48 @@
+            .List
+            {
+                min-height: 80px;
+                
+                border: 1px solid #D8D8D8;
+                
+                margin-top: 64px;
+            }
+            
+            .ListTitle
+            {
+                height: 32px;
+                
+                background-color: #D8D8D8;
+                
+                font-size: 20px;
+                color: #6E6E6E;
+            }
+            
+            .ListColumn
+            {
+                width: 768px;
+                min-height: 32px;
+                
+                margin: auto;
+                margin-top: 16px;
+                margin-bottom: 16px;
+                
+                border-bottom: 1px solid #4183C4;
+            }
+            
+            .CoulumnTitle
+            {
+                height: 32px;
+                
+                text-align: left;
+                font-size: 24px;
+                color: #4183C4;
+            }
+            
+            .ColumnDiscription
+            {
+                min-height: 32px;
+                
+                text-align: left;
+                font-size: 18px;
+                color: #424242;
+            }

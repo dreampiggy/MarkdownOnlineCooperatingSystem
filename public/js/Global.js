@@ -22,3 +22,19 @@ $("#notifacations").click(function(){
 $("#exit").click(function(){
     //退出登录
 });
+
+function gotoProjectHome()
+{
+    //链接至项目主页
+}
+    
+$("#projectName").click(function(){
+    gotoProjectHome();
+});
+$("#projectIcon").click(function(){
+    gotoProjectHome();
+});
+
+$("#documName").click(function(){
+    //至文档主页
+});

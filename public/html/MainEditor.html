@@ -1,47 +1,11 @@
 <!--
 编辑器页面
-by Jason Yang 2015/2/7
 -->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Editor</title>
         <style>
-            #projectHeader
-            {
-                border-bottom: 1px solid #DDDDDD;
-            }
-            
-            #projectHeaderMiddle
-            {
-                height: 80px;
-            }
-            
-            table#projectHeaderTable
-            {
-                padding-top: 20px;
-            }
-            
-            table#projectHeaderTable td.ProjectHeaderColumn
-            {   
-                min-width: 2px;
-                
-                text-align: left;
-                
-                font-size: 24px;
-                color: #848484;
-            }
-            
-            table#projectHeaderTable td#projectIcon
-            {
-                width: 32px;
-                height: 32px;
-                
-                background-image: url("project.png");
-                background-size: 32px, 32px;
-                background-repeat: no-repeat;
-            }
-            
             #toolBoxMiddle
             {
                 height: 64px;
@@ -222,6 +186,9 @@ by Jason Yang 2015/2/7
                         <td id="projectName" class="ProjectHeaderColumn ClickAble">
                             <font>TestProject</font>
                         </td>
+                        <td id="documentName" class="ProjectHeaderColumn ClickAble">
+                            <font>/TestDocument</font>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -277,17 +244,6 @@ by Jason Yang 2015/2/7
 </script>
 <script>
     //本页面JavaScript
-    function gotoProjectHome()
-    {
-        //链接直项目主页
-    }
-    
-    $("#projectName").click(function(){
-        gotoProjectHome();
-    });
-    $("#projectIcon").click(function(){
-        gotoProjectHome();
-    });
             
     $("#save").click(function(){
         //保存
