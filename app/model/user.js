@@ -7,16 +7,76 @@ var connection = mysql.createConnection({
 });
 connection.connect();
 
-function register(argument){
-	// body...
+function register(userName,userPwd,callback){
+	getUserID(userName,function(result){
+		if(result == false){
+			connection.query('INSERT INTO user (userName,password) VALUES (?,?)',[userName,userPwd],function(err,result){
+				if(err){
+					console.log('userName: ' + userName + ' register Error!');
+					callback(false);
+				}
+				else if(result.affectedRows != null){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			});
+		}
+		else{
+			callback(false);
+		}
+	})
 }
 
-function login (argument) {
-	
+function login (userName,userPwd,callback) {
+	connection.query('SELECT userID FROM user WHERE userName = ? AND password = ?',[userName,userPwd],function(err,result){
+		if(err){
+			console.log('userName: ' + userName + ' password: ' + userPwd + ' login Error');
+		}
+		else{
+			if(result[0] == null || result[0]['userID'] == null){
+				callback(false);
+			}
+			else{
+				callback(result[0]['userID']);
+			}
+		}
+	});
 }
 
-function getUserID(username){
-	;
+function getUserID(userName,callback){
+	connection.query('SELECT userID FROM user WHERE userName = ?',[userName],function(err,result){
+		if(err){
+			console.log('userName: ' + userName + ' getUserID Error!');
+			callback(false);
+		}
+		else{
+			if(result[0] == null || result[0]['userID'] == null){
+				callback(false);
+			}
+			else{
+				callback(result[0]['userID']);
+			}
+		}
+	});
+}
+
+function getUserName(userID,callback){
+	connection.query('SELECT userName FROM user WHERE userID = ?',[userID],function(err,result){
+		if(err){
+			console.log('userID: ' + userID + ' getUserName Error!');
+			callback(false);
+		}
+		else{
+			if(result[0] == null || result[0]['userName'] == null){
+				callback(false);
+			}
+			else{
+				callback(result[0]['userName']);
+			}
+		}
+	});
 }
 
 function checkUserID(userID,callback){
@@ -38,6 +98,8 @@ function checkUserID(userID,callback){
 	});
 }
 
-
+exports.register = register;
+exports.login = login;
 exports.getUserID = getUserID;
+exports.getUserName = getUserName;
 exports.checkUserID = checkUserID;

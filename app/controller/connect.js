@@ -17,6 +17,7 @@ function editDoc(request,response){
 
 function newDoc(request,response){
 	var userID = '11111';
+	request.setEncoding('utf-8');
 	request.on('data',function(chunk){
 		;
 	});
@@ -33,9 +34,10 @@ function newDoc(request,response){
 	});
 }
 
-function delDoc(request,response){
+function deleteDoc(request,response){
 	var userID = '11111';
 	var docID = '11111';
+	request.setEncoding('utf-8');
 	request.on('data',function(chunk){
 		;
 	});
@@ -45,8 +47,10 @@ function delDoc(request,response){
 }
 
 function getDoc(request,response){
-	var userID = '11111';
+	var userID = '11110';
 	var docID = '11111';
+	var userName = 'lizhuoli';
+	request.setEncoding('utf-8');
 	request.on('data',function(chunk){
 		;
 	});
@@ -56,5 +60,5 @@ function getDoc(request,response){
 }
 exports.sync = editDoc;
 exports.upload = newDoc;
-exports.remove = delDoc;
+exports.remove = deleteDoc;
 exports.download = getDoc;
