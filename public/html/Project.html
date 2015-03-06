@@ -6,32 +6,43 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Project</title>
         <style>
-            #projectStatement
-            {
-                min-height: 28px;
-                
-                padding-top: 4px;
-                padding-bottom: 4px;
-                
-                background-color: #D8D8D8;
-            }
-            
             #projectStatemenText
             {
+                margin: auto;
+                margin-top: 16px;
+                margin-bottom: 24px;
+                
+                padding-bottom: 8px;
+                
+                border-bottom: 2px solid #4183C4;
+            }
+            
+            #statementArea
+            {
+                width: 864px;
                 min-height: 20px;
                 
+                margin: auto;
+                
                 text-align: left;
-                font-size: 18px;
+                font-size: 20px;
                 color: #000000;
+                
             }
             
             #projectStatistics
             {
-                height: 80px;
+                min-height: 80px;
                 
                 margin-top: 16px;
+                padding-bottom: 16px;
                 
-                border-bottom: 1px solid #DDDDDD;
+                border-radius: 4px;
+                box-shadow: 0 0 1px #DDDDDD;
+                border-top: 1px solid #DDDDDD;
+                border-left: 1px solid #DDDDDD;
+                border-right: 1px solid #DDDDDD;
+                border-bottom: 2px solid #4183C4;
             }
             
             table#projectStatisticsTable td
@@ -89,15 +100,15 @@
                 </table>
             </div>
         </div>
-        <div id="projectStatement" class="PageColumn">
-            <div id="projectStatemenText" class="MiddleArea">
-                <font>
-                    TestStatement
-                </font>
-            </div>
-        </div>
         <div class="PageColumn">
             <div id="projectStatistics" class="MiddleArea">
+                <div id="projectStatemenText" class="MiddleArea">
+                    <div id="statementArea">
+                        <font>
+                            TestStatement
+                        </font>
+                    </div>
+                </div>
                 <table id="projectStatisticsTable">
                     <tr>
                         <td>

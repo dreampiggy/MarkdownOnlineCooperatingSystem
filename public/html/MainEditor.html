@@ -74,6 +74,18 @@
                 float: left;
             }
             
+            #inputPane
+            {
+                width: inherit;
+                height: 512px;
+                resize :none;
+                
+                text-align: left;
+                border: none;
+                
+                font-family: Arial;
+            }
+            
             #liveView
             {
                 width: 430px;
@@ -193,7 +205,7 @@
                 </table>
             </div>
         </div>
-        <div class="PageColumn">
+        <!--<div class="PageColumn">
             <div id="toolBoxMiddle" class="MiddleArea">
                 <table id="toolBoxTable">
                     <tr>
@@ -203,7 +215,7 @@
                     </tr>
                 </table>
             </div>
-        </div>
+        </div>-->
         <div id="editor" class="PageColumn">
             <div class="MiddleArea">
                 <div id="menu">
@@ -228,8 +240,10 @@
                 </div>
                 <div id="editorBody">
                     <div id="editPannel">
-                        <div id="line0">
-                        </div>
+                        <textarea id="inputPane">
+                        </textarea>
+                        <!--<div id="line0">
+                        </div>-->
                     </div>
                     <div id="liveView">
                     </div>
@@ -239,6 +253,8 @@
     </body>
 </html>
 <script src="../js/jquery-1.11.1.js">
+</script>
+<script src="../js/Global.js">
 </script>
 <script src="../js/Global.js">
 </script>
@@ -261,7 +277,7 @@
         //撤销修改
     });
     
-    function Line(num)
+    /*function Line(num)
     {
         this.container=null;
         this.numberDiv=null;
@@ -286,10 +302,9 @@
         this.startEditing=function()
         {
         }
-    }
-    //代码行的对象构造器
+    }*/
     
-    function Editor()
+    /*function Editor()
     {
         this.lines=new Array();
         this.lines[0]=document.getElementById("line0");
@@ -299,9 +314,13 @@
             this.lines[this.lineNumbers]=new Line(this.lines.length);
             this.lines[this.lineNumbers].display(document.getElementById("editPannel"));
         }
-    }
+    }*/
+    
+    //代码行与编辑器的对象构造器,暂不使用
+    var editor=document.getElementById("inputPane");
+    editor.value="Edit Here.";
 
     //页面运行的JavaScript
-    var thisEditor=new Editor();
-    thisEditor.addLine();
+    //var thisEditor=new Editor();
+    //thisEditor.addLine();
 </script>

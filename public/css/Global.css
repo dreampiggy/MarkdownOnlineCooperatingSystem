@@ -105,6 +105,7 @@ table#headerTable td.UserCtrlButton
             #projectHeader
             {
                 border-bottom: 1px solid #DDDDDD;
+                margin-bottom: 16px;
             }
             
             #projectHeaderMiddle
