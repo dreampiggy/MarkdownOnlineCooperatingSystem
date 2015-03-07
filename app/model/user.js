@@ -97,6 +97,77 @@ function checkUserID(userID,callback){
 		}
 	});
 }
+function getDocList(userID){
+	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result[0] != null){
+			callback(result[0]['docList']);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+function addDocList(userID,docList,docID){
+	var docList = docList + '{' + docID + '}';
+	connection.query('UPDATE user SET ',[userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result[0] != null){
+			callback(result[0]['docList']);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+function getProjectList(userID){
+	connection.query('SELECT projectList FROM user WHERE userID = ?',[userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result[0] != null){
+			callback(result[0]['docList']);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+function addProjectList(userID,projectID){
+	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result[0] != null){
+			callback(result[0]['docList']);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+
+
+function checkDoc(){
+
+}
+
+function checkProject(){
+
+}
+
+
+function editUser(userID,userName){
+
+}
 
 exports.register = register;
 exports.login = login;

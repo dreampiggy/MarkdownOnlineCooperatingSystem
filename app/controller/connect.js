@@ -47,7 +47,7 @@ function deleteDoc(request,response){
 }
 
 function getDoc(request,response){
-	var userID = '11110';
+	var userID = '11111';
 	var docID = '11111';
 	var userName = 'lizhuoli';
 	request.setEncoding('utf-8');
