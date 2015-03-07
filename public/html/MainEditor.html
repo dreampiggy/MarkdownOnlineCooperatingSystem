@@ -74,16 +74,19 @@
                 float: left;
             }
             
-            #inputPane
+            #editPane
             {
                 width: inherit;
-                height: 512px;
+                min-height: 32px;
                 resize :none;
                 
                 text-align: left;
                 border: none;
                 
                 font-family: Arial;
+                
+                overflow-y: hidden;
+                overflow-x: hidden;
             }
             
             #liveView
@@ -92,6 +95,9 @@
                 min-height: 32px;
                 
                 float: right;
+                text-align: left;
+                
+                font-family: Arial;
             }
             
             .MenuTitle
@@ -219,17 +225,17 @@
         <div id="editor" class="PageColumn">
             <div class="MiddleArea">
                 <div id="menu">
-                    <div class="MenuTitle">
-                        <font>>>>>Menu</font>
-                    </div>
                     <div class="Category">
-                        <font>>>Project</font>
+                        <font>>>Document</font>
                     </div>
                     <div id="save" class="MenuButton ClickAble">
                         <font>Save</font>
                     </div>
                     <div id="abandon" class="MenuButton ClickAble">
                         <font>Abandon</font>
+                    </div>
+                    <div class="Category">
+                        <font>>>Editing</font>
                     </div>
                     <div id="revert" class="MenuButton ClickAble">
                         <font>Revert</font>
@@ -240,7 +246,7 @@
                 </div>
                 <div id="editorBody">
                     <div id="editPannel">
-                        <textarea id="inputPane">
+                        <textarea id="editPane">
                         </textarea>
                         <!--<div id="line0">
                         </div>-->
@@ -256,27 +262,9 @@
 </script>
 <script src="../js/Global.js">
 </script>
-<script src="../js/Global.js">
+<script src="../js/MarkdownProcessor_by_Showdown.js">
 </script>
 <script>
-    //本页面JavaScript
-            
-    $("#save").click(function(){
-        //保存
-    });
-    
-    $("#abandon").click(function(){
-        //放弃修改
-    });
-    
-    $("#revert").click(function(){
-        //撤销修改
-    });
-    
-    $("#redo").click(function(){
-        //撤销修改
-    });
-    
     /*function Line(num)
     {
         this.container=null;
@@ -316,11 +304,162 @@
         }
     }*/
     
-    //代码行与编辑器的对象构造器,暂不使用
-    var editor=document.getElementById("inputPane");
-    editor.value="Edit Here.";
-
-    //页面运行的JavaScript
     //var thisEditor=new Editor();
     //thisEditor.addLine();
+    
+    var editPane;
+    var liveViewPane;
+    //编辑器及预览窗口
+    
+    var saveButton;
+    var abandonButtion;
+    var revertButton;
+    var redoButton;
+    //页面中按钮
+    
+    //基本页面元素的声明
+    
+    var inputCache=new Array();
+    var textStatus=new Array();
+    var reverted=new Array();
+
+    var converter=new Showdown.converter();
+    
+    var autoSaveTime=60000;
+    var maxResponceDelay=3000;
+    
+    window.onload=initilizeGUI;
+    
+    function initilizeGUI()
+    {   
+        editPane=document.getElementById("editPane");
+        liveViewPane=document.getElementById("liveView");
+        saveButton=document.getElementById("save");
+        abandonButton=document.getElementById("abandon");
+        revertButton=document.getElementById("revert");
+        redoButton=document.getElementById("redo");
+        //页面元素查找相应DOM
+        
+        $(saveButton).click(function(){
+            onSave();
+        });
+        $(abandonButton).click(function(){
+            onAbandon();
+        });
+        $(revertButton).click(function(){
+            onRevert();
+        });
+        $(redoButton).click(function(){
+            onRedo();
+        });
+        //按钮事件
+        
+        $(editPane).mousedown(function(event){
+            onKeyDown(event);
+        });
+        $(editPane).keydown(function(event){
+            onKeyDown(event);
+        });
+        
+        $(editPane).keyup(function(event){
+            onEditDoc(event);
+        });
+        $(document).mouseover(function(event){
+            onEditDoc(event);
+        });
+        //编辑框输入事件
+        
+        //设定事件
+        
+        editPane.value="#Edit Here";
+        //textStatus.push(editPane.value);
+        convertToLiveView();
+        //初始化操作
+    }
+
+    function preprocessDoc()
+    {
+        var text=editPane.value;
+        return text;
+    }
+
+    function convertToLiveView()
+    {
+        var afterPreprocess=preprocessDoc();
+        liveViewPane.innerHTML=converter.makeHtml(afterPreprocess);
+    }
+    
+    function onKeyDown(event)
+    {
+        switch(event.which)
+        {
+        case 13:
+            textStatus.push(editPane.value);
+            inputCache=new Array();
+            break;
+        default:
+            var last="";
+            if(inputCache.length!=0)
+            {
+                last=inputCache[inputCache.length-1];
+            }
+            else
+            {
+                if(textStatus.length!=0)
+                {
+                    last=textStatus[textStatus.length-1];
+                }
+            }
+            if(editPane.value!=last)
+            {
+                inputCache.push(editPane.value);
+            }
+            break;
+        }
+    }
+    
+    function onEditDoc()
+    {
+        editPane.style.height=editPane.scrollHeight+'px';
+        convertToLiveView();
+    }
+    
+    function onSave()
+    {
+    }
+    
+    function onAbandon()
+    {
+    }
+    
+    function onRevert()
+    {
+        if(inputCache.length!=0)
+        {
+            reverted.push(editPane.value);
+            var text=inputCache.pop();
+            editPane.value=text;
+        }
+        else
+        {
+            if(textStatus.length!=0)
+            {
+                reverted.push(editPane.value);
+                var text=textStatus.pop();
+                editPane.value=text;
+            }
+        }
+        convertToLiveView();
+    }
+    
+    function onRedo()
+    {
+        if(reverted.length!=0)
+        {
+            inputCache.push(editPane.value);
+            var text=reverted.pop();
+            editPane.value=text;
+        }
+        convertToLiveView();
+    }
 </script>
