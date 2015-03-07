@@ -10,10 +10,38 @@ connection.connect();
 
 
 function prepareNew(userID,projectName,projectInfo,response,callback){
-	
+	addProject(userID,projectName,projectInfo,function(result){
+		if(result == true){
+			callback(true);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+function prepareDelete(userID,projectID,response,callback){
+	checkUser(userID,projectID,function(checkResult){
+		if(checkResult){
+			deleteProject(userID,projectID,function(deleteResult){
+				if(deleteResult){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			});
+		}
+		else{
+			callback(false);
+		}
+	});
 }
 
 
+function prepareEdit(userID,docID,projectID,projectInfo,response,callback){
+	
+}
 
 /*
 parameter:

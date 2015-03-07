@@ -1,4 +1,7 @@
 var fs = require('fs');
+var user = require('../app/model/user');
+var docs = require('../app/model/docs');
+var project = require('../app/model/project');
 //var resolver = require("../app/controller/resolver");
 var account = require('../app/controller/account');
 var manager = require('../app/controller/manager');

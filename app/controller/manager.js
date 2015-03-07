@@ -10,20 +10,20 @@ function newProject (request,response) {
 		;
 	});
 	request.on('end',function(){
-		project.prepareNew(userID,prjectName,projectInfo,response,function(result){
-			if(result == false){
-				request.statusCode = 404;
-				request.end();
+		project.addProject(userID,projectName,projectInfo,function(result){
+			if(result){
+				response.stautsCode = 200;
+				response.end();
 			}
 			else{
-				request.statusCode = 200;
-				request.end();
+				response.stautsCode = 404;
+				response.end();
 			}
 		});
 	});
 }
 
-function delProject(){
+function delProject(request,response){
 	var userID = '11111';
 	var projectID = '11111';
 	request.setEncoding('utf-8');
@@ -31,11 +31,21 @@ function delProject(){
 		;
 	});
 	request.on('end',function(){
-		project.prepareDelete(docID,markdownText,userID,response);
+		project.deleteProject(userID,projectID,function(result){
+			if(result){
+				response.stautsCode = 200;
+				response.end();
+			}
+			else{
+				response.stautsCode = 404;
+				response.end();
+			}
+		});
 	});
 }
 
-function editProject(){
+
+function editProject(request,response){
 	var userID = '11111';
 	var docID = '11111';
 	var projectID = '11111';
@@ -44,17 +54,42 @@ function editProject(){
 		;
 	});
 	request.on('end',function(){
-		project.prepareEdit(userID,docID,information,response);
+		project.updateProject(userID,docID,projectID,projectInfo,function(result){
+			if(result){
+				response.stautsCode = 200;
+				response.end();
+			}
+			else{
+				response.stautsCode = 404;
+				response.end();
+			}
+		});
 	});
 }
 
-function getProject(){
+function getProject(request,response){
 	var userID = '11111';
 	var projectID = '11111';
 	request.on('data',function(chunk){
 		;
 	});
 	request.on('end',function(){
-		project.prepareGet(docID,markdownText,userID,response);
+		project.getProject(projectID,function(result){
+			if(result != false){
+				response.write(JSON.parse(result));
+				response.stautsCode = 200;
+				response.end();
+			}
+			else{
+				response.stautsCode = 404;
+				response.end();
+			}
+		});
 	});
 }
+
+
+exports.newProject = getProject;
+exports.delProject = delProject;
+exports.editProject = editProject;
+exports.getProject = getProject;

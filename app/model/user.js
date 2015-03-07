@@ -154,7 +154,61 @@ function addProjectList(userID,projectID){
 	});
 }
 
+function inviteUser(projectID,inviterUserID,beInvitedUserID,callback){
+	connection.query('INSERT INTO invite (userID,inviterID,projectID,state) VALUES (?,?,?,?)',[userID,inviterUserID,beInvitedUserID,0],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result.affectedRows != null){
+			callback(true);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
 
+function acceptInvite(userID,projectID){
+	connection.query('UPDATE invite SET state = ?',[1],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result.affectedRows != null){
+			callback(true);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+function rejectInvite(userID,projectID){
+	connection.query('UPDATE invite SET state = ?',[2],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result.affectedRows != null){
+			callback(true);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+function getInvite(userID){
+	connection.query('SELECT inviterID,projectID FROM invite WHERE userID = ?',[userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result[0] != null){
+			callback(result);//Parse To Json
+		}
+		else{
+			callback(false);
+		}
+	});
+}
 
 function checkDoc(){
 
