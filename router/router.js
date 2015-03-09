@@ -1,70 +1,87 @@
-var fs = require('fs');
 var handler = require("../handler/handler");
 
 function route(app){
-	app.set('public',__dirname + '/../public');
-	var pathname = '';
-	var method = '';
-	app.use(function(request, response, next) {
-		pathname = request.url;
-		method = request.method;
-		console.log("In comes a " + pathname + " to " + method);
-
-		if(pathname == "/"){
-			handler.test(request,response);
-		}
-		else if(pathname == "/markdown"){
-			handler.mdresolve(request,response);
-		}
-		else if(pathname == "/sync"){
-			handler.sync(request,response);
-		}
-		else if(pathname == "/upload"){
-			handler.upload(request,response);
-		}
-		else if(pathname == "/download"){
-			handler.download(request,response);
-		}
-		else if(pathname == "/remove"){
-			handler.remove(request,response);
-		}
-		else if(pathname == "/editor"){
-			handler.editor(request,response);
-		}
-		else if(pathname == "/home"){
-			handler.home(request,response);
-		}
-		else if(pathname == "/project"){
-			handler.project(request,response);
-		}
-		else if(pathname.match(/\/public\/.*/gim) != null){
-			returnFile(pathname,request,response);
-		}
-		else{
-			response.writeHead(404,{"Content-Type":"text/plain"});
-			response.write("404 not found");
-			response.end();
-		}
+//Home Page
+	app.get('/',function(request,response){
+		handler.home(request,response);
 	});
-}
 
-function returnFile(pathname,request,response){
-	var path = './' + pathname;
-	fs.stat(path,function(err,stat){
-		if(err){
-			response.statusCode = 404;
-			response.end("404 not found");
-		}
-		else{
-			var stream = fs.createReadStream(path);
-			response.setHeader('Content-Length',stat.size);
-			stream.pipe(response);
-			stream.on('error',function(err){
-				response.statusCode = 500;
-				response.end("500 server error");
-			});
-		}
+//Public Resource
+	app.get('/public/*',function(request,response){
+		handler.public(request,response);
 	});
+
+/*
+User
+*/
+//User Register
+	app.post('/api/user/register',function(request,response){
+		handler.userRegister(request,response);
+	});
+//User Login
+	app.post('/api/user/login',function(request,response){
+		handler.userLogin(request,response);
+	});
+//User Captcha
+	app.post('/api/user/captcha',function(request,response){
+		handler.userCaptcha(request,response);
+	});
+
+/*
+Doc
+*/
+//Doc Add
+	app.post('/api/doc/add',function(request,response){
+		handler.docAdd(request,response);
+	});
+//Doc remove
+	app.post('/api/doc/remove',function(request,response){
+		handler.docRemove(request,response);
+	});
+//Doc upload
+	app.post('/api/doc/upload',function(request,response){
+		handler.docUpload(request,response);
+	});
+//Doc download
+	app.post('/api/doc/download',function(request,response){
+		handler.docDownload(request,response);
+	});
+//Doc preview
+	app.post('/api/doc/preview',function(request,response){
+		handler.docPreview(request,response);
+	});
+
+/*
+Project
+*/
+//Project Add
+	app.post('/api/project/add',function(request,response){
+		handler.projectAdd(request,response);
+	});
+//Project Add
+	app.post('/api/project/remove',function(request,response){
+		handler.projectRemove(request,response);
+	});
+//Project Add
+	app.post('/api/project/edit',function(request,response){
+		handler.projectEdit(request,response);
+	});
+//Project Add
+	app.post('/api/project/info',function(request,response){
+		handler.projectInfo(request,response);
+	});
+
+
+//404 Page For GET
+	app.get('*', function(request, response){
+		handler.notFound(request,response);
+	});
+//404 Ajax Return For POST
+	app.post('*', function(request, response){
+		response.statusCode = 404;
+		response.end();
+	});
+
 }
 
 exports.route = route;

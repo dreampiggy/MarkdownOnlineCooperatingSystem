@@ -127,9 +127,9 @@ function checkProjectModel (userID,docID,projectID,projectName,projectInfo) {
 	var userList = '{11111}';
 	var docList = '{11111,11112,11113}';
 
-//	project.getProject(projectID,getProjectCallback);//OK!
-//	project.addProject(userID,projectName,projectInfo,addProjectCallback);//OK!
-//	project.updateProject(projectID,userList,docList,projectInfo,updateProjectCallback);//OK!
+	project.getProject(projectID,getProjectCallback);//OK!
+	project.addProject(userID,projectName,projectInfo,addProjectCallback);//OK!
+	project.updateProject(projectID,userList,docList,projectInfo,updateProjectCallback);//OK!
 //	project.deleteProject(projectID,deleteProjectCallback);//OK!
 
 
@@ -140,15 +140,15 @@ function checkProjectModel (userID,docID,projectID,projectName,projectInfo) {
 
 
 //Start !
-// var userID1 = '11111';
-// var userName1 = 'lizhuoli';
-// var password1 = '02BF847AB8EBE451F8930C0BCFB196998123EE9A';//941126
+var userID1 = '11111';
+var userName1 = 'lizhuoli';
+var password1 = '02BF847AB8EBE451F8930C0BCFB196998123EE9A';//941126
 
-// var userID2 = '22222';
-// var userName2 = 'ceshirenyuan';
-// var password2 = 'C984AED014AEC7623A54F0591DA07A85FD4B762D';//000000
-// checkUserModel(userID1,userName1,password1);
-// checkUserModel(userID2,userName2,password2);
+var userID2 = '22222';
+var userName2 = 'ceshirenyuan';
+var password2 = 'C984AED014AEC7623A54F0591DA07A85FD4B762D';//000000
+checkUserModel(userID1,userName1,password1);
+checkUserModel(userID2,userName2,password2);
 
 var userID3 = '11111';
 var docID3 = '11111';

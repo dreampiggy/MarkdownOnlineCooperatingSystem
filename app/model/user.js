@@ -210,8 +210,24 @@ function getInvite(userID){
 	});
 }
 
-function checkDoc(){
-
+function checkDoc(userID,docID,callback){
+	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result[0] != null){
+			var check = '/\^.*\\{' + userID + '\}.*\$/';
+			if(result[0]['userList'].match(eval(check)) != null){
+				callback(true);
+			}
+			else{
+				callback(false);
+			}
+		}
+		else{
+			callback(false);
+		}
+	});
 }
 
 function checkProject(){
@@ -222,6 +238,7 @@ function checkProject(){
 function editUser(userID,userName){
 
 }
+
 
 exports.register = register;
 exports.login = login;

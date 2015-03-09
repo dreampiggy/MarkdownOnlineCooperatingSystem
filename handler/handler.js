@@ -2,80 +2,132 @@ var fs = require('fs');
 var user = require('../app/model/user');
 var docs = require('../app/model/docs');
 var project = require('../app/model/project');
-//var resolver = require("../app/controller/resolver");
 var account = require('../app/controller/account');
 var manager = require('../app/controller/manager');
 var connect = require('../app/controller/connect');
 
-function mdresolve (request,response) {
-	console.log("markdown resolver start!");
-	resolver.resolve(request,response);
-	console.log("markdown resolver end!");
-}
-
-function sync(request,response){
-	console.log("sync start!");
-	connect.sync(request,response);
-	console.log("sync end!");
-}
-
-function upload(request,response){
-	console.log("upload resolver start!");
-	connect.upload(request,response);
-	console.log("upload resolver end!");
-}
-
-function download(request,response){
-	console.log("download resolver start!");
-	connect.download(request,response);
-	console.log("download resolver end!");
-}
-
-function remove(request,response){
-	console.log("remove resolver start!");
-	connect.remove(request,response);
-	console.log("remove resolver end!");
-}
 
 function home(request,response){
-	fileContent = fs.readFileSync("./public/html/index.html", 'utf8');
-	response.writeHead(200,{"Content-Type":"text/html"});
-	response.write(fileContent);
-	response.end();
+	returnFile('/public/html/index.html',request,response)
 }
 
-function test(request,response){
-	fileContent = fs.readFileSync("./public/html/demo.html", 'utf8');
-	response.writeHead(200,{"Content-Type":"text/html"});
-	response.write(fileContent);
-	response.end();
+function public(request,response){
+	returnFile(request.url,request,response);
 }
 
-function editor(){
-	response.writeHead(200,{"Content-Type":"text/plain"});
-	response.write("Hello editor");
-	response.end();
+function userRegister(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
 }
 
-function about(){
-	response.writeHead(200,{"Content-Type":"text/plain"});
-	response.write("Hello about");
-	response.end();
+function userLogin(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
 }
 
-function project(){
-	response.writeHead(200,{"Content-Type":"text/plain"});
-	response.write("Hello project");
-	response.end();
+function userCaptcha(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
 }
 
-exports.mdresolve = mdresolve;
-exports.sync = sync;
-exports.upload = upload;
-exports.download = download;
-exports.remove = remove;
+function docAdd(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function docRemove(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function docUpload(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function docDownload(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function docPreview(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function projectAdd(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function projectRemove(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function projectEdit(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function projectInfo(request,response){
+	console.log(request.url);
+	response.statusCode = 200;
+	response.end;
+}
+
+function notFound(request,response){
+	returnFile('/public/html/Error.html',request,response);
+}
+
+function returnFile(pathname,request,response){
+	var path = __dirname + '/..' + pathname;
+	fs.stat(path,function(err,stat){
+		if(err){
+			response.statusCode = 404;
+			response.end("404 not found");
+		}
+		else{
+			if(stat.isFile()){
+				var stream = fs.createReadStream(path);
+				response.setHeader('Content-Length',stat.size);
+				stream.pipe(response);
+				stream.on('error',function(err){
+					response.statusCode = 500;
+					response.end("500 server error");
+				});
+			}
+			else{
+				response.statusCode = 404;
+				response.end("404 not found");
+			}
+		}
+	});
+}
+
 exports.home = home;
-exports.test = test;
-exports.editor = editor;
-exports.about = about;
-exports.project = project;
+exports.public = public;
+exports.userRegister = userRegister;
+exports.userLogin = userLogin;
+exports.userCaptcha = userCaptcha;
+exports.docAdd = docAdd;
+exports.docRemove = docRemove;
+exports.docUpload = docUpload;
+exports.docDownload = docDownload;
+exports.docPreview = docPreview;
+exports.projectAdd = projectAdd;
+exports.projectRemove = projectRemove;
+exports.projectEdit = projectEdit;
+exports.projectInfo = projectInfo;
+exports.notFound = notFound;
