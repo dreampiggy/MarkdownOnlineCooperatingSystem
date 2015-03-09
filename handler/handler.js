@@ -11,6 +11,10 @@ function home(request,response){
 	returnFile('/public/html/index.html',request,response)
 }
 
+function favicon(request,response){
+	returnFile('/public/resource/favicon.ico',request,response)
+}
+
 function public(request,response){
 	returnFile(request.url,request,response);
 }
@@ -18,73 +22,75 @@ function public(request,response){
 function userRegister(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
 }
 
 function userLogin(request,response){
 	console.log(request.url);
+	account.login(request,response);
 	response.statusCode = 200;
-	response.end;
 }
 
 function userCaptcha(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
 }
 
+function userInfo(request,response){
+	console.log(request.url);
+	account.getInfo(request,response);
+}
 function docAdd(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function docRemove(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function docUpload(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function docDownload(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function docPreview(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function projectAdd(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function projectRemove(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function projectEdit(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function projectInfo(request,response){
 	console.log(request.url);
 	response.statusCode = 200;
-	response.end;
+	response.end();
 }
 
 function notFound(request,response){
@@ -117,10 +123,12 @@ function returnFile(pathname,request,response){
 }
 
 exports.home = home;
+exports.favicon = favicon;
 exports.public = public;
 exports.userRegister = userRegister;
 exports.userLogin = userLogin;
 exports.userCaptcha = userCaptcha;
+exports.userInfo = userInfo;
 exports.docAdd = docAdd;
 exports.docRemove = docRemove;
 exports.docUpload = docUpload;

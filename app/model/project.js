@@ -75,7 +75,7 @@ function getProject (projectID,callback) {
 }
 
 function addProject (userID,projectName,projectInfo,callback){
-	var userList = '{' + userID + '}';
+	var userList = '&' + userID + '&';
 	connection.query('INSERT INTO project (userList,projectName,projectInfo) VALUES (?,?,?)',[userList,projectName,projectInfo],function(err,result){
 		if(err){
 			callback(false);
@@ -123,7 +123,7 @@ function checkUser(userID,projectID,callback){
 			callback(false);
 		}
 		else if(result[0] != null){
-			var check = '/\^.*\\{' + userID + '\}.*\$/';
+			var check = '/\^.*\&' + userID + '\&.*\$/';
 			if(result[0]['userList'].match(eval(check)) != null){
 				callback(true);
 			}
@@ -143,7 +143,7 @@ function checkDoc(docID,projectID,callback){
 			callback(false);
 		}
 		else if(result[0] != null){
-			var check = '/\^.*\\{' + docID + '\}.*\$/';
+			var check = '/\^.*\&' + docID + '\&.*\$/';
 			if(result[0]['docList'].match(eval(check)) != null){
 				callback(true);
 			}

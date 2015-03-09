@@ -6,6 +6,11 @@ function route(app){
 		handler.home(request,response);
 	});
 
+//Favicon
+	app.get('/favicon.ico',function(request,response){
+		handler.favicon(request,response);
+	});
+
 //Public Resource
 	app.get('/public/*',function(request,response){
 		handler.public(request,response);
@@ -24,6 +29,22 @@ User
 	});
 //User Captcha
 	app.post('/api/user/captcha',function(request,response){
+		handler.userCaptcha(request,response);
+	});
+//User Info
+	app.post('/api/user/info',function(request,response){
+		handler.userInfo(request,response);
+	});
+//User Invite
+	app.post('/api/user/invite',function(request,response){
+		handler.userCaptcha(request,response);
+	});
+//User Accept
+	app.post('/api/user/accept',function(request,response){
+		handler.userCaptcha(request,response);
+	});
+//User Reject
+	app.post('/api/user/reject',function(request,response){
 		handler.userCaptcha(request,response);
 	});
 

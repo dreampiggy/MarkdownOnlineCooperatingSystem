@@ -1,3 +1,4 @@
+var qs = require('querystring');
 var project = require('../model/project');
 var user = require('../model/user');
 
@@ -12,11 +13,11 @@ function newProject (request,response) {
 	request.on('end',function(){
 		project.addProject(userID,projectName,projectInfo,function(result){
 			if(result){
-				response.stautsCode = 200;
+				response.statusCode = 200;
 				response.end();
 			}
 			else{
-				response.stautsCode = 404;
+				response.statusCode = 404;
 				response.end();
 			}
 		});
@@ -33,11 +34,11 @@ function delProject(request,response){
 	request.on('end',function(){
 		project.deleteProject(userID,projectID,function(result){
 			if(result){
-				response.stautsCode = 200;
+				response.statusCode = 200;
 				response.end();
 			}
 			else{
-				response.stautsCode = 404;
+				response.statusCode = 404;
 				response.end();
 			}
 		});
@@ -56,11 +57,11 @@ function editProject(request,response){
 	request.on('end',function(){
 		project.updateProject(userID,docID,projectID,projectInfo,function(result){
 			if(result){
-				response.stautsCode = 200;
+				response.statusCode = 200;
 				response.end();
 			}
 			else{
-				response.stautsCode = 404;
+				response.statusCode = 404;
 				response.end();
 			}
 		});
@@ -77,11 +78,11 @@ function getProject(request,response){
 		project.getProject(projectID,function(result){
 			if(result != false){
 				response.write(JSON.parse(result));
-				response.stautsCode = 200;
+				response.statusCode = 200;
 				response.end();
 			}
 			else{
-				response.stautsCode = 404;
+				response.statusCode = 404;
 				response.end();
 			}
 		});

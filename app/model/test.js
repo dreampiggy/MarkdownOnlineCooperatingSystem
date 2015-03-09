@@ -124,8 +124,8 @@ function checkProjectModel (userID,docID,projectID,projectName,projectInfo) {
 		}
 	}
 
-	var userList = '{11111}';
-	var docList = '{11111,11112,11113}';
+	var userList = '&11111&';
+	var docList = '&11111&11112&11113&';
 
 	project.getProject(projectID,getProjectCallback);//OK!
 	project.addProject(userID,projectName,projectInfo,addProjectCallback);//OK!

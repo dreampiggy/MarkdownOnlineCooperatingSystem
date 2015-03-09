@@ -12,7 +12,7 @@ console.log('Database Start!');
 function prepareEdit (docID,markdownText,userID,response) {
 	checkUserList(docID,userID,response,function judgeUserID (result) {
 		if(!result){
-			sendError(404,response);
+			sendError(403,response);
 		}
 		else{
 			updateDoc(docID,markdownText,userID,response);
@@ -30,7 +30,7 @@ function prepareDelete(docID,userID,response){
 			deleteDoc(docID,response);
 		}
 		else{
-			sendError(404,response);
+			sendError(403,response);
 		}
 	});
 }
@@ -38,7 +38,7 @@ function prepareDelete(docID,userID,response){
 function prepareGet(docID,userID,response){
 	checkUserList(docID,userID,response,function judgeUserID (result) {
 		if(!result){
-			sendError(404,response);
+			sendError(403,response);
 		}
 		else{
 			getDoc(docID,response);
@@ -48,7 +48,7 @@ function prepareGet(docID,userID,response){
 
 function addDoc(author,response){
 	var currentTime = new Date();
-	connection.query('INSERT INTO docs (author,datetime,userList) VALUES (?,?,?)',[author,currentTime,'{' + author+ '}'],function(err,result){
+	connection.query('INSERT INTO docs (author,datetime,userList) VALUES (?,?,?)',[author,currentTime,'&' + author+ '&'],function(err,result){
 		if(err){
 			sendError(500,response);
 			return;
@@ -57,7 +57,7 @@ function addDoc(author,response){
 			sendSuccess('add',response);
 		}
 		else{
-			sendError(404,response);
+			sendError(403,response);
 		}
 	});
 }
@@ -72,7 +72,7 @@ function deleteDoc(docID,response){
 			sendSuccess('delete',response);
 		}
 		else{
-			sendError(404,response);
+			sendError(403,response);
 		}
 	});
 }
@@ -88,7 +88,7 @@ function updateDoc(docID,markdownText,userID,response){
 			sendSuccess('update',response);
 		}
 		else{
-			sendError(404,response);
+			sendError(403,response);
 		}
 	});
 }
@@ -100,7 +100,7 @@ function getDoc(docID,response){
 			return;
 		}
 		else if(result[0] == null){
-			sendError(404,response);
+			sendError(403,response);
 			return;
 		}
 		else{
@@ -121,7 +121,7 @@ function checkUserList(docID,userID,response,callback){
 			return;
 		}
 		else{
-			var check = '/\^.*\\{' + userID + '\}.*\$/';
+			var check = '/\^.*\&' + userID + '\&.*\$/';
 			if(result[0]['userList'].match(eval(check)) != null){
 				callback(true);
 			}
@@ -156,8 +156,16 @@ function checkDocID(docID,response,callback){
 
 function sendError(error,response){
 	switch(error){
+		case 403:
+			response.statusCode = 403;
+			response.end();
+			break;
 		case 404:
 			response.statusCode = 404;
+			response.end();
+			break;
+		case 408:
+			response.statusCode = 408;
 			response.end();
 			break;
 		case 500:

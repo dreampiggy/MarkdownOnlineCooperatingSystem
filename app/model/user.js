@@ -45,6 +45,25 @@ function login (userName,userPwd,callback) {
 	});
 }
 
+function checkUserID(userID,callback){
+	connection.query('SELECT userID FROM user WHERE userID = ?',[userID],function(err,result) {
+		if(err){
+			return;
+		}
+		else{
+			if(result[0] == null){
+				callback(false);
+			}
+			else if(result[0]['userID'] != null){
+				callback(true);
+			}
+			else{
+				callback(false);
+			}
+		}
+	});
+}
+
 function getUserID(userName,callback){
 	connection.query('SELECT userID FROM user WHERE userName = ?',[userName],function(err,result){
 		if(err){
@@ -79,31 +98,13 @@ function getUserName(userID,callback){
 	});
 }
 
-function checkUserID(userID,callback){
-	connection.query('SELECT userID FROM user WHERE userID = ?',[userID],function(err,result) {
-		if(err){
-			return;
-		}
-		else{
-			if(result[0] == null){
-				callback(false);
-			}
-			else if(result[0]['userID'] != null){
-				callback(true);
-			}
-			else{
-				callback(false);
-			}
-		}
-	});
-}
-function getDocList(userID){
+function getDocList(userID,callback){
 	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
 		if(err){
 			callback(false);
 		}
 		else if(result[0] != null){
-			callback(result[0]['docList']);
+			callback(result[0]['docList'].replace(/&/g,''));
 		}
 		else{
 			callback(false);
@@ -111,14 +112,14 @@ function getDocList(userID){
 	});
 }
 
-function addDocList(userID,docList,docID){
-	var docList = docList + '{' + docID + '}';
+function addDocList(userID,docList,docID,callback){
+	var docList = docList + '&' + docID + '&';
 	connection.query('UPDATE user SET ',[userID],function(err,result){
 		if(err){
 			callback(false);
 		}
 		else if(result[0] != null){
-			callback(result[0]['docList']);
+			callback(true);
 		}
 		else{
 			callback(false);
@@ -126,13 +127,13 @@ function addDocList(userID,docList,docID){
 	});
 }
 
-function getProjectList(userID){
+function getProjectList(userID,callback){
 	connection.query('SELECT projectList FROM user WHERE userID = ?',[userID],function(err,result){
 		if(err){
 			callback(false);
 		}
 		else if(result[0] != null){
-			callback(result[0]['docList']);
+			callback(result[0]['projectList'].replace(/&/g,''));
 		}
 		else{
 			callback(false);
@@ -140,13 +141,13 @@ function getProjectList(userID){
 	});
 }
 
-function addProjectList(userID,projectID){
+function addProjectList(userID,projectID,callback){
 	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
 		if(err){
 			callback(false);
 		}
 		else if(result[0] != null){
-			callback(result[0]['docList']);
+			callback(true);
 		}
 		else{
 			callback(false);
@@ -168,7 +169,7 @@ function inviteUser(projectID,inviterUserID,beInvitedUserID,callback){
 	});
 }
 
-function acceptInvite(userID,projectID){
+function acceptInvite(userID,projectID,callback){
 	connection.query('UPDATE invite SET state = ?',[1],function(err,result){
 		if(err){
 			callback(false);
@@ -182,7 +183,7 @@ function acceptInvite(userID,projectID){
 	});
 }
 
-function rejectInvite(userID,projectID){
+function rejectInvite(userID,projectID,callback){
 	connection.query('UPDATE invite SET state = ?',[2],function(err,result){
 		if(err){
 			callback(false);
@@ -196,13 +197,13 @@ function rejectInvite(userID,projectID){
 	});
 }
 
-function getInvite(userID){
-	connection.query('SELECT inviterID,projectID FROM invite WHERE userID = ?',[userID],function(err,result){
+function getInvite(userID,callback){
+	connection.query('SELECT projectID FROM invite WHERE userID = ?',[userID],function(err,result){
 		if(err){
 			callback(false);
 		}
 		else if(result[0] != null){
-			callback(result);//Parse To Json
+			callback(result[0]['projectID']);
 		}
 		else{
 			callback(false);
@@ -216,7 +217,7 @@ function checkDoc(userID,docID,callback){
 			callback(false);
 		}
 		else if(result[0] != null){
-			var check = '/\^.*\\{' + userID + '\}.*\$/';
+			var check = '/\^.*\&' + userID + '\&.*\$/';
 			if(result[0]['userList'].match(eval(check)) != null){
 				callback(true);
 			}
@@ -230,18 +231,55 @@ function checkDoc(userID,docID,callback){
 	});
 }
 
-function checkProject(){
-
+function checkProject(userID,projectID,callback){
+	connection.query('SELECT projectList FROM user WHERE userID = ?',[userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result[0] != null){
+			var check = '/\^.*\&' + projectID + '\&.*\$/';
+			if(result[0]['projectID'].match(eval(check)) != null){
+				callback(true);
+			}
+			else{
+				callback(false);
+			}
+		}
+		else{
+			callback(false);
+		}
+	});
 }
 
 
-function editUser(userID,userName){
-
+function editUser(userID,userName,callback){
+	connection,query('UPDATE user SET userName = ? WHERE userID = ?',[userName,userID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result.affectedRows != null){
+			callback(true);
+		}
+		else{
+			callback(false);
+		}
+	});
 }
 
 
 exports.register = register;
 exports.login = login;
+exports.checkUserID = checkUserID;
 exports.getUserID = getUserID;
 exports.getUserName = getUserName;
-exports.checkUserID = checkUserID;
+exports.addDocList = addDocList;
+exports.getDocList = getDocList;
+exports.addProjectList = addProjectList;
+exports.getProjectList = getProjectList;
+exports.getInvite = getInvite;
+exports.acceptInvite = acceptInvite;
+exports.rejectInvite = rejectInvite;
+exports.getInvite = getInvite;
+exports.checkDoc = checkDoc;
+exports.checkProject = checkProject;
+exports.editUser = editUser;
