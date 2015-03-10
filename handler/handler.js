@@ -7,116 +7,106 @@ var manager = require('../app/controller/manager');
 var connect = require('../app/controller/connect');
 
 
-function home(request,response){
-	returnFile('/public/html/index.html',request,response)
+function home(req,res){
+	returnFile('/public/html/index.html',req,res)
 }
 
-function favicon(request,response){
-	returnFile('/public/resource/favicon.ico',request,response)
+function favicon(req,res){
+	returnFile('/public/resource/favicon.ico',req,res)
 }
 
-function public(request,response){
-	returnFile(request.url,request,response);
+function public(req,res){
+	returnFile(req.url,req,res);
 }
 
-function userRegister(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
+function userRegister(req,res){
+	account.register(req,res);
 }
 
-function userLogin(request,response){
-	console.log(request.url);
-	account.login(request,response);
-	response.statusCode = 200;
+function userLogin(req,res){
+	account.login(req,res);
 }
 
-function userCaptcha(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
+function userCaptcha(req,res){
+	account.getCaptcha(req,res);
 }
 
-function userInfo(request,response){
-	console.log(request.url);
-	account.getInfo(request,response);
-}
-function docAdd(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function userInfo(req,res){
+	account.getInfo(req,res);
 }
 
-function docRemove(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function userInvite(req,res){
+	account.inviteUser(req,res);
 }
 
-function docUpload(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function userAccept(req,res){
+	account.acceptUser(req,res);
 }
 
-function docDownload(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function userReject(req,res){
+	account.rejectUser(req,res);
 }
 
-function docPreview(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function docAdd(req,res){
+	connect.addDoc(req,res);
 }
 
-function projectAdd(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function docRemove(req,res){
+	connect.deleteDoc(req,res);
 }
 
-function projectRemove(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function docUpload(req,res){
+	connect.editDoc(req,res);
 }
 
-function projectEdit(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function docDownload(req,res){
+	connect.getDoc(req,res);
 }
 
-function projectInfo(request,response){
-	console.log(request.url);
-	response.statusCode = 200;
-	response.end();
+function docPreview(req,res){
+	connect.previewDoc(req,res);
 }
 
-function notFound(request,response){
-	returnFile('/public/html/Error.html',request,response);
+function projectAdd(req,res){
+	manager.addProject(req,res);
 }
 
-function returnFile(pathname,request,response){
+function projectRemove(req,res){
+	manager.deleteProject(req,res);
+}
+
+function projectEdit(req,res){
+	manager.editProject(req,res);
+}
+
+function projectInfo(req,res){
+	manager.getProject(req,res);
+}
+
+function notFound(req,res){
+	returnFile('/public/html/Error.html',req,res);
+}
+
+function returnFile(pathname,req,res){
 	var path = __dirname + '/..' + pathname;
 	fs.stat(path,function(err,stat){
 		if(err){
-			response.statusCode = 404;
-			response.end("404 not found");
+			res.statusCode = 404;
+			res.end("404 not found");
 		}
 		else{
 			if(stat.isFile()){
 				var stream = fs.createReadStream(path);
-				response.setHeader('Content-Length',stat.size);
-				stream.pipe(response);
+				res.setHeader('Content-Length',stat.size);
+				stream.pipe(res);
 				stream.on('error',function(err){
-					response.statusCode = 500;
-					response.end("500 server error");
+					res.statusCode = 500;
+					res.end("500 server error");
 				});
 			}
 			else{
-				response.statusCode = 404;
-				response.end("404 not found");
+				res.statusCode = 404;
+				res.end("404 not found");
 			}
 		}
 	});
@@ -129,6 +119,9 @@ exports.userRegister = userRegister;
 exports.userLogin = userLogin;
 exports.userCaptcha = userCaptcha;
 exports.userInfo = userInfo;
+exports.userInvite = userInvite;
+exports.userAccept = userAccept;
+exports.userReject = userReject;
 exports.docAdd = docAdd;
 exports.docRemove = docRemove;
 exports.docUpload = docUpload;

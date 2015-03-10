@@ -1,23 +1,33 @@
 var markdown = require("markdown").markdown;
 var formidable = require("formidable");
+var session = require('express-session');
 
-function resolve (request,response) {
+
+function session(req,res){
+	app.use(session({
+	    store: new RedisStore(options),
+	    secret: 'keyboard cat'
+	}));
+}
+
+
+function resolve (req,res) {
 	fileContent = fs.readFileSync("./temp/test.md", 'utf8');
 	var html = '';
 	html = markdown.toHTML(fileContent);
 	fs.writeFileSync("./temp/test.html", fileContent);
-    response.send(html);  
-    response.end();
+    res.send(html);  
+    res.end();
 }
 
-function upload(request,response){
+function upload(req,res){
 	var form = new formidable.IncomingForm();
 	var post = {};
 	var file = {};
 	form.on('error', function(err) {
-		response.writeHead(500, {"Content-Type": "text/plain"});
-		response.write(error + "\n");
-		response.end();
+		res.writeHead(500, {"Content-Type": "text/plain"});
+		res.write(error + "\n");
+		res.end();
         console.log(err);
     });
     form.on('field', function(field, value) { 
@@ -34,23 +44,23 @@ function upload(request,response){
 	        post[field] = value;
     	}
     	else{
-			response.writeHead(500, {"Content-Type": "text/plain"});
-			response.write(error + "\n");
-			response.end();
+			res.writeHead(500, {"Content-Type": "text/plain"});
+			res.write(error + "\n");
+			res.end();
     	}
     });
     // form.on('file', function(field, file) { //上传文件
     //     file[field] = file;
     // })
 	console.log("about to parse");
-	form.parse(request, function(error, fields, files) {
+	form.parse(req, function(error, fields, files) {
 		console.log("parsing done");
 		var html = '';
 		html = markdown.toHTML(post["text"]);
 		fs.writeFileSync("./temp/test.html", fileContent);
-	    response.send(html);  
-	    response.end();
-		response.end();
+	    res.send(html);  
+	    res.end();
+		res.end();
 	});
 }
 

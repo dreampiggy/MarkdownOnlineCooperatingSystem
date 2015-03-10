@@ -9,108 +9,124 @@ var connection = mysql.createConnection({
 connection.connect();
 console.log('Database Start!');
 
-function prepareEdit (docID,markdownText,userID,response) {
-	checkUserList(docID,userID,response,function judgeUserID (result) {
+function prepareEdit (docID,markdownText,userID,res) {
+	checkUserList(docID,userID,res,function judgeUserID (result) {
 		if(!result){
-			sendError(403,response);
+			sendError(403,res);
 		}
 		else{
-			updateDoc(docID,markdownText,userID,response);
+			updateDoc(docID,markdownText,userID,res);
 		}
 	});
 }
 
-function prepareNew(userID,response){
-	addDoc(userID,response);
+function prepareNew(userID,res){
+	addDoc(userID,res);
 }
 
-function prepareDelete(docID,userID,response){
-	checkUserList(docID,userID,response,function judgeUserID(result){
+function prepareDelete(docID,userID,res){
+	checkUserList(docID,userID,res,function judgeUserID(result){
 		if(result){
-			deleteDoc(docID,response);
+			deleteDoc(docID,res);
 		}
 		else{
-			sendError(403,response);
+			sendError(403,res);
 		}
 	});
 }
 
-function prepareGet(docID,userID,response){
-	checkUserList(docID,userID,response,function judgeUserID (result) {
+function prepareGet(docID,userID,res){
+	checkUserList(docID,userID,res,function judgeUserID (result) {
 		if(!result){
-			sendError(403,response);
+			sendError(403,res);
 		}
 		else{
-			getDoc(docID,response);
+			getDoc(docID,res);
 		}
 	});
 }
 
-function addDoc(author,response){
+function addDoc(author,res){
 	var currentTime = new Date();
 	connection.query('INSERT INTO docs (author,datetime,userList) VALUES (?,?,?)',[author,currentTime,'&' + author+ '&'],function(err,result){
 		if(err){
-			sendError(500,response);
+			sendError(500,res);
 			return;
 		}
 		else if(result.affectedRows != 0){
-			sendSuccess('add',response);
+			sendSuccess('add',res);
 		}
 		else{
-			sendError(403,response);
+			sendError(403,res);
 		}
 	});
 }
 
-function deleteDoc(docID,response){
+function deleteDoc(docID,res){
 	connection.query('DELETE FROM docs WHERE docID = ?',[docID],function(err,result){
 		if(err){
-			sendError(500,response);
+			sendError(500,res);
 			return;
 		}
 		else if(result.affectedRows != null){
-			sendSuccess('delete',response);
+			sendSuccess('delete',res);
 		}
 		else{
-			sendError(403,response);
+			sendError(403,res);
 		}
 	});
 }
 
-function updateDoc(docID,markdownText,userID,response){
+function updateDoc(docID,markdownText,userID,res){
 	var currentTime = new Date();
 	connection.query('UPDATE docs SET content = ?,datetime = ? WHERE docID = ?',[markdownText,currentTime,docID],function(err,result){
 		if(err){
-			sendError(500,response);
+			sendError(500,res);
 			return;
 		}
 		else if(result.affectedRows != null){
-			sendSuccess('update',response);
+			sendSuccess('update',res);
 		}
 		else{
-			sendError(403,response);
+			sendError(403,res);
 		}
 	});
 }
 
-function getDoc(docID,response){
+function getDoc(docID,res){
 	connection.query('SELECT docID,content,author,datetime,userList FROM docs WHERE docID = ?',[docID],function(err,result){
 		if(err){
-			sendError(500,response);
+			sendError(500,res);
 			return;
 		}
 		else if(result[0] == null){
-			sendError(403,response);
+			sendError(403,res);
 			return;
 		}
 		else{
-			response.write(result[0]['content']);
-			sendSuccess('get',response);
+			res.write(result[0]['content']);
+			sendSuccess('get',res);
 		}
 	});
 }
 
-function checkUserList(docID,userID,response,callback){
+function getPreviewDoc(docID,callback){
+	connection.query('SELECT content FROM docs WHERE docID = ?',[docID],function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if (result[0] != null){
+			var previewResult = result[0]['content'].slice(0,100);
+			console.log(previewResult);
+			callback(previewResult)
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+function checkUserList(docID,userID,res,callback){
 	connection.query('SELECT userList FROM docs WHERE docID = ?',[docID],function(err,result) {
 		if(err){
 			callback(false);
@@ -132,7 +148,7 @@ function checkUserList(docID,userID,response,callback){
 	})
 }
 
-function checkDocID(docID,response,callback){
+function checkDocID(docID,res,callback){
 	connection.query('SELECT docID FROM docs WHERE docID = ?',[docID],function(err,result){
 		if(err){
 			callback(false);
@@ -154,49 +170,49 @@ function checkDocID(docID,response,callback){
 }
 
 
-function sendError(error,response){
+function sendError(error,res){
 	switch(error){
 		case 403:
-			response.statusCode = 403;
-			response.end();
+			res.statusCode = 403;
+			res.end();
 			break;
 		case 404:
-			response.statusCode = 404;
-			response.end();
+			res.statusCode = 404;
+			res.end();
 			break;
 		case 408:
-			response.statusCode = 408;
-			response.end();
+			res.statusCode = 408;
+			res.end();
 			break;
 		case 500:
-			response.statusCode = 500;
-			response.end();
+			res.statusCode = 500;
+			res.end();
 			break;
 		default:
-			response.end();
+			res.end();
 	}
 }
 
-function sendSuccess(success,response){
+function sendSuccess(success,res){
 	switch(success){
 		case 'add':
-			response.statusCode = 200;
-			response.end();
+			res.statusCode = 200;
+			res.end();
 			break;
 		case 'delete':
-			response.statusCode = 200;
-			response.end();
+			res.statusCode = 200;
+			res.end();
 			break;
 		case 'update':
-			response.statusCode = 200;
-			response.end();
+			res.statusCode = 200;
+			res.end();
 			break;
 		case 'get':
-			response.statusCode = 200;
-			response.end();
+			res.statusCode = 200;
+			res.end();
 			break;
 		default:
-			response.end();
+			res.end();
 	}
 }
 
@@ -205,3 +221,5 @@ exports.prepareEdit = prepareEdit;
 exports.prepareNew = prepareNew;
 exports.prepareDelete = prepareDelete;
 exports.prepareGet = prepareGet;
+exports.getPreviewDoc = getPreviewDoc;
+exports.checkUserList = checkUserList;

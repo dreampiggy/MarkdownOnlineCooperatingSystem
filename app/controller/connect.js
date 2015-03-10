@@ -1,64 +1,102 @@
-var qs = require('querystring');
+var url = require('url');
 var docs = require('../model/docs');
 var user = require('../model/user');
 
-function editDoc(request,response){
-	var docID = '11111';
-	var userID = '11111';
-	var markdownText = '';
-	request.setEncoding('utf-8');
-	request.on('data',function(chunk){
-		markdownText += chunk;
+function editDoc(req,res){
+	var json = '';
+	var docID;
+	var markdownText;
+	var userID;
+	var args;
+	req.setEncoding('utf-8');
+	req.on('data',function(chunk){
+		json += chunk;
 	});
-	request.on('end',function(){
-		docs.prepareEdit(docID,markdownText,userID,response);
+	req.on('end',function(){
+		var args = JSON.parse(json);
+		docID = args['docID'];
+		markdownText = args['text'];
+		userID = args['userID'];
+		docs.prepareEdit(docID,markdownText,userID,res);
 	});
 }
 
-function newDoc(request,response){
-	var userID = '11111';
-	request.setEncoding('utf-8');
-	request.on('data',function(chunk){
+function addDoc(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	req.setEncoding('utf-8');
+	req.on('data',function(chunk){
 		;
 	});
-	request.on('end',function(){
+	req.on('end',function(){
 		user.checkUserID(userID,function(result){
 			if(result){
-				docs.prepareNew(userID,response);
+				docs.prepareNew(userID,res);
 			}
 			else{
-				response.statusCode = 404;
-				response.end();
+				res.statusCode = 404;
+				res.end();
 			}
 		})
 	});
 }
 
-function deleteDoc(request,response){
-	var userID = '11111';
-	var docID = '11111';
-	request.setEncoding('utf-8');
-	request.on('data',function(chunk){
+function deleteDoc(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var docID = args['docID'];
+	req.setEncoding('utf-8');
+	req.on('data',function(chunk){
 		;
 	});
-	request.on('end',function(){
-		docs.prepareDelete(docID,userID,response);
+	req.on('end',function(){
+		docs.prepareDelete(docID,userID,res);
 	});
 }
 
-function getDoc(request,response){
-	var userID = '11111';
-	var docID = '11111';
-	var userName = 'lizhuoli';
-	request.setEncoding('utf-8');
-	request.on('data',function(chunk){
+function getDoc(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var docID = args['docID'];
+	req.setEncoding('utf-8');
+	req.on('data',function(chunk){
 		;
 	});
-	request.on('end',function(){
-		docs.prepareGet(docID,userID,response);
+	req.on('end',function(){
+		docs.prepareGet(docID,userID,res);
 	});
 }
-exports.sync = editDoc;
-exports.upload = newDoc;
-exports.remove = deleteDoc;
-exports.download = getDoc;
+
+//200 OK!
+//403 Not allowed!
+//408 DB Error!
+function previewDoc(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var docID = args['docID'];
+	docs.checkUserList(docID,userID,res,function(result){
+		if(result){
+			docs.getPreviewDoc(docID,function(result){
+				if(result){
+					res.statusCode = 200;
+					res.json({
+						previewDoc: result
+					});
+				}
+				else{
+					res.statusCode = 408;
+					res.end();
+				}
+			})
+		}
+		else{
+			res.statusCode = 403;
+			res.end();
+		}
+	})
+}
+exports.addDoc = addDoc;
+exports.editDoc = editDoc;
+exports.deleteDoc = deleteDoc;
+exports.getDoc = getDoc;
+exports.previewDoc = previewDoc;

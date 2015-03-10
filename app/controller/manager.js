@@ -1,96 +1,105 @@
-var qs = require('querystring');
+var url = require('url');
 var project = require('../model/project');
 var user = require('../model/user');
 
-function newProject (request,response) {
-	var userID = '11111';
-	var prjectName = 'Test';
-	var projectInfo = 'This is a project';
-	request.setEncoding('utf-8');
-	request.on('data',function(chunk){
+function addProject (req,res) {
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var projectName = args['projectName'];
+	var projectInfo = args['projectInfo'];
+	req.setEncoding('utf-8');
+	req.on('data',function(chunk){
 		;
 	});
-	request.on('end',function(){
+	req.on('end',function(){
 		project.addProject(userID,projectName,projectInfo,function(result){
 			if(result){
-				response.statusCode = 200;
-				response.end();
+				res.statusCode = 200;
+				res.end();
 			}
 			else{
-				response.statusCode = 404;
-				response.end();
+				res.statusCode = 404;
+				res.end();
 			}
 		});
 	});
 }
 
-function delProject(request,response){
-	var userID = '11111';
-	var projectID = '11111';
-	request.setEncoding('utf-8');
-	request.on('data',function(chunk){
+function deleteProject(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var projectID = args['projectID'];
+	req.setEncoding('utf-8');
+	req.on('data',function(chunk){
 		;
 	});
-	request.on('end',function(){
+	req.on('end',function(){
 		project.deleteProject(userID,projectID,function(result){
 			if(result){
-				response.statusCode = 200;
-				response.end();
+				res.statusCode = 200;
+				res.end();
 			}
 			else{
-				response.statusCode = 404;
-				response.end();
+				res.statusCode = 404;
+				res.end();
 			}
 		});
 	});
 }
 
 
-function editProject(request,response){
-	var userID = '11111';
-	var docID = '11111';
-	var projectID = '11111';
-	var projectInfo = 'Fuck project';
-	request.on('data',function(chunk){
+function editProject(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var docID = args['docID'];
+	var projectID = args['projectID'];
+	var projectInfo = args['projectInfo'];
+	req.on('data',function(chunk){
 		;
 	});
-	request.on('end',function(){
+	req.on('end',function(){
 		project.updateProject(userID,docID,projectID,projectInfo,function(result){
 			if(result){
-				response.statusCode = 200;
-				response.end();
+				res.statusCode = 200;
+				res.end();
 			}
 			else{
-				response.statusCode = 404;
-				response.end();
+				res.statusCode = 404;
+				res.end();
 			}
 		});
 	});
 }
 
-function getProject(request,response){
-	var userID = '11111';
-	var projectID = '11111';
-	request.on('data',function(chunk){
+function getProject(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var projectID = args['projectID'];
+	req.on('data',function(chunk){
 		;
 	});
-	request.on('end',function(){
+	req.on('end',function(){
 		project.getProject(projectID,function(result){
 			if(result != false){
-				response.write(JSON.parse(result));
-				response.statusCode = 200;
-				response.end();
+				res.statusCode = 200;
+				res.json({
+					projectName: result['projectName'],
+					projectInfo: result['projectInfo'],
+					userList: result['userList'],
+					docList: result['docList'] 
+				})
+				res.end();
 			}
 			else{
-				response.statusCode = 404;
-				response.end();
+				res.statusCode = 404;
+				res.end();
 			}
 		});
 	});
 }
 
 
-exports.newProject = getProject;
-exports.delProject = delProject;
+exports.addProject = addProject;
+exports.deleteProject = deleteProject;
 exports.editProject = editProject;
 exports.getProject = getProject;

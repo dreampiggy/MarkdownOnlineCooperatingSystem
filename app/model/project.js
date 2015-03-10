@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
 connection.connect();
 
 
-function prepareNew(userID,projectName,projectInfo,response,callback){
+function prepareNew(userID,projectName,projectInfo,res,callback){
 	addProject(userID,projectName,projectInfo,function(result){
 		if(result == true){
 			callback(true);
@@ -20,7 +20,7 @@ function prepareNew(userID,projectName,projectInfo,response,callback){
 	});
 }
 
-function prepareDelete(userID,projectID,response,callback){
+function prepareDelete(userID,projectID,res,callback){
 	checkUser(userID,projectID,function(checkResult){
 		if(checkResult){
 			deleteProject(userID,projectID,function(deleteResult){
@@ -39,13 +39,13 @@ function prepareDelete(userID,projectID,response,callback){
 }
 
 
-function prepareEdit(userID,docID,projectID,projectInfo,response,callback){
+function prepareEdit(userID,docID,projectID,projectInfo,res,callback){
 	
 }
 
 /*
 parameter:
-projectID,response,callback
+projectID,res,callback
 
 return:
 True:

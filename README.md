@@ -3,7 +3,7 @@ A document cooperating system of Markdown.
 
 
 # DreamPiggy
->     由于我做后端，我就初步就定下来后端采取Node.js+Express(框架)+第三方库+MySQL数据库+Redis缓存服务器(如果需要的话).
+>     后端采取Node.js+Express(框架)+第三方库+MySQL数据库+Redis缓存服务器
 >     
 >     前端采用了pagedown.js作为Markdown到HTML的解析器以及编辑器模版
 
@@ -34,5 +34,6 @@ A document cooperating system of Markdown.
 6.  temp:存储临时上传文件等
 
 ------
-#### 数据库已经选择用MySQL，markdown.sql存放数据库结构和数据。
-#### 实现文档的增删改查四个接口，下一步先实现项目的增删改查四个接口
+#### 关系数据库已经选择用MySQL，markdown.sql存放数据库结构和数据。
+#### Redis数据库已采用，将会存储Session以及Markdown文本，同时作为缓存服务器
+#### 接口基本实现，可以参考/router/router.js定义的路由介绍

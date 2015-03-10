@@ -1,4 +1,3 @@
-var qs = require('querystring');
 var ccap = require('ccap');
 var url = require('url');
 var user = require('../model/user');
@@ -6,19 +5,19 @@ var user = require('../model/user');
 
 //200 OK!
 //403 Login Failed!
-function login(request,response){
-	var args = url.parse(request.url, true).query;
-	var userName = args['username'];
+function login(req,res){
+	var args = url.parse(req.url, true).query;
+	var userName = args['userName'];
 	var password = args['password'];
 	var captcha = args['captcha'];
 	user.login(userName,password,function(result){
 		if(result){
-			response.statusCode = 200;
-			response.end();
+			res.statusCode = 200;
+			res.end();
 		}
 		else{
-			response.statusCode = 403;
-			response.end();
+			res.statusCode = 403;
+			res.end();
 		}
 	})
 }
@@ -27,52 +26,51 @@ function login(request,response){
 //200 OK!
 //403 Have Registered!
 //408 DB Error!
-function register(request,response){
-	var args = url.parse(request.url, true).query;
-	var userName = args['username'];
+function register(req,res){
+	var args = url.parse(req.url, true).query;
+	var userName = args['userName'];
 	var password = args['password'];
 	user.getUserID(userName,function(result){
 		if(!result){
 			user.register(userName,password,function(result){
 				if(result){
-					response.statusCode = 200;
-					response.end();
+					res.statusCode = 200;
+					res.end();
 				}
 				else{
-					response.statusCode = 408;
-					response.end();
+					res.statusCode = 408;
+					res.end();
 				}
 			});
 		}
 		else{
-			response.statusCode = 403;
-			response.end();
+			res.statusCode = 403;
+			res.end();
 		}
 	});
 }
 
-function getCaptcha(request,response){
-	var args = url.parse(request.url, true).query;
+function getCaptcha(req,res){
+	var args = url.parse(req.url, true).query;
 	var captcha = ccap();
 	var ary = captcha.get()
 	var text = ary[0];
 	var buffer = ary[1];
 	user.addCaptcha(userID,text,function(result){
 		if(result){
-			response.statusCode = 200;
-			response.end(buffer);
+			res.statusCode = 200;
+			res.end(buffer);
 		}
 		else{
-			response.statusCode = 404;
-			response.end();
+			res.statusCode = 404;
+			res.end();
 		}
 	})
 }
 
-function getInfo(request,response){
-	var args = url.parse(request.url, true).query;
-	//var userID = args['userID'];
-	var userID = '11111';
+function getInfo(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
 	var userName;
 	var docList;
 	var projectList;
@@ -82,8 +80,8 @@ function getInfo(request,response){
 		if (counter < 4) {
 			counter++;
 		} else {
-			response.statusCode = 200;
-			response.json({
+			res.statusCode = 200;
+			res.json({
 				username: userName,
 				docList: docList,
 				projectList: projectList,
@@ -97,7 +95,7 @@ function getInfo(request,response){
 			getAll();
 		}
 		else{
-			request.statusCode = 403;
+			req.statusCode = 403;
 		}
 	});
 	user.getDocList(userID,function(result){
@@ -106,7 +104,7 @@ function getInfo(request,response){
 			getAll();
 		}
 		else{
-			request.statusCode = 403;
+			req.statusCode = 403;
 		}
 	});
 	user.getProjectList(userID,function(result){
@@ -115,7 +113,7 @@ function getInfo(request,response){
 			getAll();
 		}
 		else{
-			request.statusCode = 403;
+			req.statusCode = 403;
 		}
 	});
 	user.getInvite(userID,function(result){
@@ -124,7 +122,7 @@ function getInfo(request,response){
 			getAll();
 		}
 		else{
-			request.statusCode = 403;
+			req.statusCode = 403;
 		}
 	});
 }
@@ -132,8 +130,8 @@ function getInfo(request,response){
 //200 OK!
 //403 User and project not related!
 //408 DB Error!
-function inviteUser(request,response){
-	var args = url.parse(request.url, true).query;
+function inviteUser(req,res){
+	var args = url.parse(req.url, true).query;
 	var projectID = args['projectID'];
 	var inviterUserID = args['inviterID'];
 	var beInvitedUserID = args['invitedID'];
@@ -141,18 +139,18 @@ function inviteUser(request,response){
 		if(result){
 			user.inviteUser(projectID,inviterUserID,beInvitedUserID,function(result){
 				if(result){
-					response.statusCode = 200;
-					response.end();
+					res.statusCode = 200;
+					res.end();
 				}
 				else{
-					response.statusCode = 408;
-					response.end();
+					res.statusCode = 408;
+					res.end();
 				}
 			});
 		}
 		else{
-			response.statusCode = 403;
-			response.end();
+			res.statusCode = 403;
+			res.end();
 		}
 	});
 }
@@ -160,36 +158,36 @@ function inviteUser(request,response){
 
 //200 OK!
 //403 Not invited!
-function acceptUser(request,response){
-	var args = url.parse(request.url, true).query;
+function acceptUser(req,res){
+	var args = url.parse(req.url, true).query;
 	var userID = args['userID'];
 	var projectID = args['projectID'];
 	user.acceptInvite(userID,projectID,function(result){
 		if(result){
-			response.statusCode = 200;
-			response.end();
+			res.statusCode = 200;
+			res.end();
 		}
 		else{
-			response.statusCode = 403;
-			response.end();
+			res.statusCode = 403;
+			res.end();
 		}
 	})
 }
 
 //200 OK!
 //403 Not invited!
-function rejectUser(request,response){
-	var args = url.parse(request.url, true).query;
+function rejectUser(req,res){
+	var args = url.parse(req.url, true).query;
 	var userID = args['userID'];
 	var projectID = args['projectID'];
 	user.rejectInvite(userID,projectID,function(result){
 		if(result){
-			response.statusCode = 200;
-			response.end();
+			res.statusCode = 200;
+			res.end();
 		}
 		else{
-			response.statusCode = 403;
-			response.end();
+			res.statusCode = 403;
+			res.end();
 		}
 	})
 }
