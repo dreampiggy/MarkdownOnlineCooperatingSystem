@@ -1,7 +1,6 @@
 var fs = require('fs');
-var user = require('../app/model/user');
-var docs = require('../app/model/docs');
-var project = require('../app/model/project');
+var url = require('url');
+var tools = require('./tools');
 var account = require('../app/controller/account');
 var manager = require('../app/controller/manager');
 var connect = require('../app/controller/connect');
@@ -24,13 +23,52 @@ function userRegister(req,res){
 }
 
 function userLogin(req,res,callback){
-	account.login(req,res,function(result){
-		callback(result);
-	});
+	var args = url.parse(req.url, true).query;
+	var captcha = args['captcha'];
+	tools.checkCaptcha(req,captcha,function(result){
+		if(result){
+			account.login(req,res,function(result){
+				if(result == false){
+					res.statusCode = 404;
+					res.end();
+				}
+				else{
+					console.log('userID: ' + result + ' have login!');
+					tools.setLoginSession(req,res,function(result){
+						if(result){
+							res.statusCode = 200;
+							res.end();
+						}
+						else{
+							res.statusCode = 403;
+							res.end();
+						}
+					});
+				}
+			});
+		}
+		else{
+			res.statusCode = 403;
+			res.end();
+		}
+	})
+}
+function userLogout(req,res){
+	tools.setLogoutSession(req,res,function(result){
+		if(result){
+			console.log('uuid: ' + req.cookies.uuid + ' have logout!');
+			res.statusCode = 200;
+			res.end();
+		}
+		else{
+			res.statusCode = 404;
+			res.end();
+		}
+	})
 }
 
 function userCaptcha(req,res){
-	account.getCaptcha(req,res);
+	tools.setCaptcha(req,res);
 }
 
 function userInfo(req,res){
@@ -119,6 +157,7 @@ exports.favicon = favicon;
 exports.public = public;
 exports.userRegister = userRegister;
 exports.userLogin = userLogin;
+exports.userLogout = userLogout;
 exports.userCaptcha = userCaptcha;
 exports.userInfo = userInfo;
 exports.userInvite = userInvite;

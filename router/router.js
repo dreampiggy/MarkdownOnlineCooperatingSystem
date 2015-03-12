@@ -48,30 +48,15 @@ User
 	});
 //User Login
 	app.post('/api/user/login',function(req,res){
-		handler.userLogin(req,res,function(result){
-			if(result == false){
-				res.statusCode = 404;
-				res.end();
-			}
-			else{
-				console.log('userID: ' + result + ' have login!');
-				req.session.save();
-				res.statusCode = 200;
-				res.end();
-			}
-		});
+		handler.userLogin(req,res);
 	});
 //User Captcha
-	app.post('/api/user/captcha',function(req,res){
+	app.get('/api/user/captcha',function(req,res){
 		handler.userCaptcha(req,res);
 	});
 //User Logout
 	app.post('/api/user/logout',function(req,res){
-		var uuid = req.cookies.uuid;
-		console.log('sessionID ' + uuid + ' have logout!');
-		res.clearCookie('uuid');
-		res.statusCode = 200;
-		res.end();
+		handler.userLogout(req,res);
 	})
 //User Info
 	app.post('/api/user/info',function(req,res){

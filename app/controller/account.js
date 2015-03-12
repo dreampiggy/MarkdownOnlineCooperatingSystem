@@ -1,4 +1,3 @@
-var ccap = require('ccap');
 var url = require('url');
 var user = require('../model/user');
 
@@ -9,7 +8,6 @@ function login(req,res,callback){
 	var args = url.parse(req.url, true).query;
 	var userName = args['userName'];
 	var password = args['password'];
-	var captcha = args['captcha'];
 	user.login(userName,password,function(result){
 		callback(result);
 	})
@@ -41,24 +39,6 @@ function register(req,res){
 			res.end();
 		}
 	});
-}
-
-function getCaptcha(req,res){
-	var args = url.parse(req.url, true).query;
-	var captcha = ccap();
-	var ary = captcha.get()
-	var text = ary[0];
-	var buffer = ary[1];
-	user.addCaptcha(userID,text,function(result){
-		if(result){
-			res.statusCode = 200;
-			res.end(buffer);
-		}
-		else{
-			res.statusCode = 404;
-			res.end();
-		}
-	})
 }
 
 function getInfo(req,res){
@@ -187,7 +167,6 @@ function rejectUser(req,res){
 
 exports.register = register;
 exports.login = login;
-exports.getCaptcha = getCaptcha;
 exports.getInfo = getInfo;
 exports.inviteUser = inviteUser;
 exports.acceptUser = acceptUser;
