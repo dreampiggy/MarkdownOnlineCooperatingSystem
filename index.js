@@ -1,4 +1,4 @@
-var express = require('./node_modules/express/lib/express');
+var express = require('express');
 var router = require('./router/router');
 var app = express();
 

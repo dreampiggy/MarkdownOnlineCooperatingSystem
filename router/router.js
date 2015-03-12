@@ -1,6 +1,29 @@
-var handler = require("../handler/handler");
+var handler = require('../handler/handler');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+
 
 function route(app){
+
+	app.use(session({
+		store: new RedisStore({
+			host: "127.0.0.1",
+			port: 6379,
+			pass: 941126,
+			db: 0
+		}),
+		name: 'uuid',
+		unset: 'destroy',
+		secret: 'markdown',
+		resave: false,
+		saveUninitialized: true,
+		cookie: {maxAge: 3600000 * 24 * 30}
+		})
+	);
+
+	app.use(cookieParser());
+
 //Home Page
 	app.get('/',function(req,res){
 		handler.home(req,res);
@@ -25,12 +48,31 @@ User
 	});
 //User Login
 	app.post('/api/user/login',function(req,res){
-		handler.userLogin(req,res);
+		handler.userLogin(req,res,function(result){
+			if(result == false){
+				res.statusCode = 404;
+				res.end();
+			}
+			else{
+				console.log('userID: ' + result + ' have login!');
+				req.session.save();
+				res.statusCode = 200;
+				res.end();
+			}
+		});
 	});
 //User Captcha
 	app.post('/api/user/captcha',function(req,res){
 		handler.userCaptcha(req,res);
 	});
+//User Logout
+	app.post('/api/user/logout',function(req,res){
+		var uuid = req.cookies.uuid;
+		console.log('sessionID ' + uuid + ' have logout!');
+		res.clearCookie('uuid');
+		res.statusCode = 200;
+		res.end();
+	})
 //User Info
 	app.post('/api/user/info',function(req,res){
 		handler.userInfo(req,res);

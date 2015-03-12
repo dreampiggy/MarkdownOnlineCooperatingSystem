@@ -23,8 +23,10 @@ function userRegister(req,res){
 	account.register(req,res);
 }
 
-function userLogin(req,res){
-	account.login(req,res);
+function userLogin(req,res,callback){
+	account.login(req,res,function(result){
+		callback(result);
+	});
 }
 
 function userCaptcha(req,res){

@@ -5,20 +5,13 @@ var user = require('../model/user');
 
 //200 OK!
 //403 Login Failed!
-function login(req,res){
+function login(req,res,callback){
 	var args = url.parse(req.url, true).query;
 	var userName = args['userName'];
 	var password = args['password'];
 	var captcha = args['captcha'];
 	user.login(userName,password,function(result){
-		if(result){
-			res.statusCode = 200;
-			res.end();
-		}
-		else{
-			res.statusCode = 403;
-			res.end();
-		}
+		callback(result);
 	})
 }
 
