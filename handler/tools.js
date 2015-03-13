@@ -19,7 +19,8 @@ function setCaptcha(req,res){
     height:60,//set height,default is 60
     offset:40,//set text spacing,default is 40
     quality:50,//set pic quality,default is 50
-    fontsize:57//set font size,default is 57
+    fontsize:57,//set font size,default is 57
+    generate:generateText
 	});
 	var ary = captcha.get()
 	var text = ary[0];//captcha code
@@ -72,6 +73,19 @@ function setLogoutSession(req,res,callback){
 			callback(false);
 		}
 	})
+}
+
+
+function generateText(){
+	var str_ary = ['0','1','2','3','4','5','6','7','8','9'];
+	var str_num = 4,
+		r_num = str_ary.length,
+		text = '';
+	for(var i=0;i<str_num;i++){
+		var pos = Math.floor(Math.random()*r_num)
+		text += str_ary[pos];//生成随机数
+	}
+	return text;
 }
 
 exports.setCaptcha = setCaptcha;
