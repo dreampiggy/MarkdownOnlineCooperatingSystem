@@ -21,6 +21,23 @@ function editDoc(req,res){
 	});
 }
 
+
+function syncDoc(req,res){
+	var args = url.parse(req.url, true).query;
+	var userID = args['userID'];
+	var docID = args['docID'];
+	docs.checkUserList(docID,userID,res,function(result){
+		if(result){
+			//token to use socket.io to sync docs
+			res.end();
+		}
+		else{
+			res.statusCode = 403;
+			res.end();
+		}
+	})
+}
+
 function addDoc(req,res){
 	var args = url.parse(req.url, true).query;
 	var userID = args['userID'];
@@ -97,6 +114,7 @@ function previewDoc(req,res){
 }
 exports.addDoc = addDoc;
 exports.editDoc = editDoc;
+exports.syncDoc = syncDoc;
 exports.deleteDoc = deleteDoc;
 exports.getDoc = getDoc;
 exports.previewDoc = previewDoc;

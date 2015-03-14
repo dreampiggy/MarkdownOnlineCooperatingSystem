@@ -9,43 +9,9 @@ var connection = mysql.createConnection({
 connection.connect();
 
 
-function prepareNew(userID,projectName,projectInfo,res,callback){
-	addProject(userID,projectName,projectInfo,function(result){
-		if(result == true){
-			callback(true);
-		}
-		else{
-			callback(false);
-		}
-	});
-}
-
-function prepareDelete(userID,projectID,res,callback){
-	checkUser(userID,projectID,function(checkResult){
-		if(checkResult){
-			deleteProject(userID,projectID,function(deleteResult){
-				if(deleteResult){
-					callback(true);
-				}
-				else{
-					callback(false);
-				}
-			});
-		}
-		else{
-			callback(false);
-		}
-	});
-}
-
-
-function prepareEdit(userID,docID,projectID,projectInfo,res,callback){
-	
-}
-
 /*
 parameter:
-projectID,res,callback
+projectID,callback
 
 return:
 True:
@@ -157,7 +123,6 @@ function checkDoc(docID,projectID,callback){
 	});
 }
 
-exports.prepareNew = prepareNew;
 exports.getProject = getProject;
 exports.addProject = addProject;
 exports.updateProject = updateProject;
