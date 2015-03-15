@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Login</title>
+        <title>Data</title>
         <link href="../css/Form.css" rel="stylesheet" type="text/css">
         <link href="../css/Global.css" rel="stylesheet" type="text/css">
     </head>
@@ -33,7 +33,7 @@
                 <div id="menuBar">
                     <table id="menuTable">
                         <tr>
-                            <td class="ClickAble" id="active">
+                            <td class="Unuseable" id="toLogin">
                                 <font>Login</font>
                             </td>
                             <td class="Unuseable" id="toRegister">
@@ -42,7 +42,7 @@
                             <td class="Unuseable" id="toSecurity">
                                 <font>Security</font>
                             </td>
-                            <td class="Unuseable" id="toData">
+                            <td class="ClickAble" id="active">
                                 <font>Data</font>
                             </td>
                         </tr>
@@ -51,24 +51,24 @@
                 <div id="inputArea">
                     <div class="InputColumn">
                         <div class="InputBar">
-                            <input class="Input" id="userID">
+                            <input type="password" class="Input" id="oldPassword">
                         </div>
                         <div class="InputLabel">
-                            <font>User ID</font>
+                            <font>Old Password</font>
                         </div>
                     </div>
-                    <div class="AlertColumn" id="userIDAlert">
-                        <font>Capital and lowercase letters, numbers, spaces(but not to begin with), and underlines.</font>
+                    <div class="AlertColumn" id="oldPasswordAlert">
+                        <font>Capital and lowercase letters, numbers and underlines.</font>
                     </div>
                     <div class="InputColumn">
                         <div class="InputBar">
-                            <input type="password" class="Input" id="password">
+                            <input type="password" class="Input" id="newName">
                         </div>
                         <div class="InputLabel">
-                            <font>Password</font>
+                            <font>New Name</font>
                         </div>
                     </div>
-                    <div class="AlertColumn" id="passwordAlert">
+                    <div class="AlertColumn" id="newNameAlert">
                         <font>Capital and lowercase letters, numbers and underlines.</font>
                     </div>
                 </div>
@@ -93,8 +93,8 @@
 </script>
 <script>
     var submit;
-    var userID;
-    var password;
+    var oldPassword;
+    var newName;
     
     var pageForm;
     
@@ -102,32 +102,33 @@
     var toRegister;
     var toSecurity;
     var toData;
-    //页面元素声明
+    //页面元素之声明
     
     window.onload=initilize;
     
     function initilize()
     {
+        //页面初始化
         submit=document.getElementById("submit");
-        userID=new UserIDInput(document.getElementById("userID"),document.getElementById("userIDAlert"));
-        password=new UserPasswordInput(document.getElementById("password"),document.getElementById("passwordAlert"));
-        //构造表单对象
+        oldPassword=new UserOldPasswordInput(document.getElementById("oldPassword"),document.getElementById("oldPasswordAlert"));
+        newName=new UserNameInput(document.getElementById("newName"),document.getElementById("newNameAlert"));
+        //表单输入对象之构造
         
-        toLogin=document.getElementById("active");
+        toLogin=document.getElementById("toLogin");
         toRegister=document.getElementById("toRegister");
         toSecurity=document.getElementById("toSecurity");
-        toData=document.getElementById("toData");
-        //页面元素对应dom
+        toData=document.getElementById("active");
+        //页面元素对应之dom
         
-        pageForm=new LoginForm(document.getElementById("submit"));
-        pageForm.addInput(userID);
-        pageForm.addInput(password);
-        //构造表单类及将表单输入加入表单
+        pageForm=new DataForm(document.getElementById("submit"));
+        pageForm.addInput(oldPassword);
+        pageForm.addInput(newName);
+        //表单对象之构造及表单输入框加入表单
         
         activateLabel(toLogin,"");
         activateLabel(toRegister,"");
         activateLabel(toSecurity,"");
         activateLabel(toData,"");
-        //页面初始化工作
+        //设置活动的标签
     }
 </script>

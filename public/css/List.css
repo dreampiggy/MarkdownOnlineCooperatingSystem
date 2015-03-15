@@ -46,3 +46,17 @@
                 font-size: 18px;
                 color: #424242;
             }
+
+            .AddingButtons
+            {
+                height: 32px;
+                width: inherit;
+                
+                margin-bottom: 16px;
+
+                text-align: center;
+                color: #FFFFFF;
+                font-size: 20px;
+
+                background-color: #00FF00;
+            }

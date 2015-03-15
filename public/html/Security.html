@@ -1,7 +1,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Login</title>
+        <title>Security</title>
         <link href="../css/Form.css" rel="stylesheet" type="text/css">
         <link href="../css/Global.css" rel="stylesheet" type="text/css">
     </head>
@@ -33,13 +33,13 @@
                 <div id="menuBar">
                     <table id="menuTable">
                         <tr>
-                            <td class="ClickAble" id="active">
+                            <td class="Unuseable" id="toLogin">
                                 <font>Login</font>
                             </td>
                             <td class="Unuseable" id="toRegister">
                                 <font>Register</font>
                             </td>
-                            <td class="Unuseable" id="toSecurity">
+                            <td class="ClickAble" id="active">
                                 <font>Security</font>
                             </td>
                             <td class="Unuseable" id="toData">
@@ -51,25 +51,36 @@
                 <div id="inputArea">
                     <div class="InputColumn">
                         <div class="InputBar">
-                            <input class="Input" id="userID">
+                            <input type="password" class="Input" id="oldPassword">
                         </div>
                         <div class="InputLabel">
-                            <font>User ID</font>
+                            <font>Old Password</font>
                         </div>
                     </div>
-                    <div class="AlertColumn" id="userIDAlert">
-                        <font>Capital and lowercase letters, numbers, spaces(but not to begin with), and underlines.</font>
+                    <div class="AlertColumn" id="oldPasswordAlert">
+                        <font>Capital and lowercase letters, numbers and underlines.</font>
                     </div>
                     <div class="InputColumn">
                         <div class="InputBar">
-                            <input type="password" class="Input" id="password">
+                            <input type="password" class="Input" id="newPassword">
                         </div>
                         <div class="InputLabel">
-                            <font>Password</font>
+                            <font>New Password</font>
                         </div>
                     </div>
-                    <div class="AlertColumn" id="passwordAlert">
+                    <div class="AlertColumn" id="newPasswordAlert">
                         <font>Capital and lowercase letters, numbers and underlines.</font>
+                    </div>
+                    <div class="InputColumn">
+                        <div class="InputBar">
+                            <input type="password" class="Input" id="repassword">
+                        </div>
+                        <div class="InputLabel">
+                            <font>Repeat New Password</font>
+                        </div>
+                    </div>
+                    <div class="AlertColumn" id="repasswordAlert">
+                        <font>Reapeat your password in case you got wrong words in your password input.</font>
                     </div>
                 </div>
             </div>
@@ -93,8 +104,9 @@
 </script>
 <script>
     var submit;
-    var userID;
-    var password;
+    var oldPassword;
+    var newPassword;
+    var repassword;
     
     var pageForm;
     
@@ -102,32 +114,35 @@
     var toRegister;
     var toSecurity;
     var toData;
-    //页面元素声明
+    //声明页面元素
     
     window.onload=initilize;
     
     function initilize()
     {
         submit=document.getElementById("submit");
-        userID=new UserIDInput(document.getElementById("userID"),document.getElementById("userIDAlert"));
-        password=new UserPasswordInput(document.getElementById("password"),document.getElementById("passwordAlert"));
-        //构造表单对象
+        oldPassword=new UserOldPasswordInput(document.getElementById("oldPassword"),document.getElementById("oldPasswordAlert"));
+        newPassword=new UserPasswordInput(document.getElementById("newPassword"),document.getElementById("newPasswordAlert"));
+        repassword=new UserRepasswordInput(document.getElementById("repassword"),document.getElementById("repasswordAlert"));
+        //构造输入框对象
         
-        toLogin=document.getElementById("active");
+        toLogin=document.getElementById("toLogin");
         toRegister=document.getElementById("toRegister");
-        toSecurity=document.getElementById("toSecurity");
+        toSecurity=document.getElementById("active");
         toData=document.getElementById("toData");
         //页面元素对应dom
         
-        pageForm=new LoginForm(document.getElementById("submit"));
-        pageForm.addInput(userID);
-        pageForm.addInput(password);
-        //构造表单类及将表单输入加入表单
+        pageForm=new SecurityForm(document.getElementById("submit"));
+        pageForm.addInput(oldPassword);
+        pageForm.addInput(newPassword);
+        pageForm.addInput(repassword);
+        pageForm.linkPasswordRepassword(newPassword,repassword);
+        //构造表单对象并增加输入框
         
         activateLabel(toLogin,"");
         activateLabel(toRegister,"");
         activateLabel(toSecurity,"");
         activateLabel(toData,"");
-        //页面初始化工作
+        //页面初始化
     }
 </script>

@@ -1,14 +1,12 @@
-//---
-//共有JavaScript
-//by Jason Yang 2015/2/7
-//---
-function toPersonalPage()
+function setUserName(name)
 {
-    //链接至用户个人主页
+    document.getElementById("usrName").innerHTML="<font>"+name+"</font>";
 }
+//设置heeader的用户名
 
 $("#systemBrand").click(function(){
-    //链接至系统主页面
+    alert("index");
+    //连接至系统主页
 });
 $("#usrName").click(function(){
     toPersonalPage();
@@ -17,16 +15,35 @@ $("#usrAvator").click(function(){
     toPersonalPage();
 });
 $("#notifacations").click(function(){
-    //链接至用户消息页面
+    alert("notifications");
+    //连接至消息页面（尚未实现）
 });
 $("#exit").click(function(){
+    alert("exit");
     //退出登录
 });
+//header事件注册
 
-function gotoProjectHome()
+function toPersonalPage()
 {
-    //链接至项目主页
+    alert("personal");
+    //连接至个人主页
 }
+
+
+
+
+function setProjectName(name)
+{
+    document.getElementById("projectName").innerHTML="<font>"+name+"</font>";
+}
+//设置project header的项目名
+
+function setDocumentName(name)
+{
+    document.getElementById("documentName").innerHTML="<font>/"+name+"</font>";
+}
+//设置project header的文件名
     
 $("#projectName").click(function(){
     gotoProjectHome();
@@ -35,6 +52,14 @@ $("#projectIcon").click(function(){
     gotoProjectHome();
 });
 
-$("#documName").click(function(){
-    //至文档主页
+$("#documentName").click(function(){
+    alert("document");
+    //连接至document主页
 });
+//projedct header事件注册
+
+function gotoProjectHome()
+{
+    alert("project");
+    //连接至project主页
+}

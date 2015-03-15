@@ -1,6 +1,3 @@
-<!--
-项目主页
--->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -60,9 +57,20 @@
                 background-color: #FF0000;
                 color: #FFFFFF;
             }
+            
+            #addDocumentForm
+            {
+                display: none;
+            }
+            
+            #addContributorForm
+            {
+                display: none;
+            }
         </style>
         <link href="../css/Global.css" rel="stylesheet" type="text/css">
         <link href="../css/List.css" rel="stylesheet" type="text/css">
+        <link href="../css/Form.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <div id="header" class="PageColumn">
@@ -75,7 +83,7 @@
                         <td id="usrAvator"  class="Clickable">
                         </td>
                         <td id="usrName"  class="Clickable">
-                            <font>TestUser</font>
+                            <font></font>
                         </td>
                         <td id="notifacations"  class="UserCtrlButton Clickable">
                             <font>Notifications</font>
@@ -94,7 +102,7 @@
                         <td id="projectIcon" class="ProjectHeaderColumn ClickAble">
                         </td>
                         <td id="projectName" class="ProjectHeaderColumn ClickAble">
-                            <font>TestProject</font>
+                            <font></font>
                         </td>
                     </tr>
                 </table>
@@ -105,7 +113,6 @@
                 <div id="projectStatemenText" class="MiddleArea">
                     <div id="statementArea">
                         <font>
-                            TestStatement
                         </font>
                     </div>
                 </div>
@@ -170,6 +177,38 @@
                         Documents
                     </font>
                 </div>
+                <div class="AddingButtons ClickAble" id="newDocument">
+                    <font>+ New Document</font>
+                </div>
+                <div id="addDocumentForm">
+                    <div class="InputColumn">
+                        <div class="InputBar">
+                            <input class="Input" id="documentNameInput">
+                        </div>
+                        <div class="InputLabel">
+                            <font>Document Name</font>
+                        </div>
+                    </div>
+                    <div class="AlertColumn" id="documentNameAlert">
+                        <font>Capital and lowercase letters, numbers, spaces(but not to begin with), and underlines.</font>
+                    </div> 
+                    <div class="InputColumn">
+                        <div class="InputBar">
+                            <input class="Input" id="documentStatement">
+                        </div>
+                        <div class="InputLabel">
+                            <font>Statement</font>
+                        </div>
+                    </div>
+                    <div class="AlertColumn" id="documentStatementAlert">
+                        <font>A short and clear statement for your project.</font>
+                    </div>
+                    <div id="addDocumentSubmit" class="LargeButton Submit">
+                        <font>
+                            Submit
+                        </font>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="PageColumn">
@@ -179,11 +218,32 @@
                         Contributors
                     </font>
                 </div>
+                <div class="AddingButtons ClickAble" id="newContributor">
+                    <font>+ New Contributor</font>
+                </div>
+                <div id="addContributorForm">
+                    <div class="InputColumn">
+                        <div class="InputBar">
+                            <input class="Input" id="contributorNameInput">
+                        </div>
+                        <div class="InputLabel">
+                            <font>Document Name</font>
+                        </div>
+                    </div>
+                    <div class="AlertColumn" id="contributorNameAlert">
+                        <font>Capital and lowercase letters, numbers, spaces(but not to begin with), and underlines.</font>
+                    </div> 
+                    <div id="addContributorSubmit" class="LargeButton Submit">
+                        <font>
+                            Submit
+                        </font>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="PageColumn">
             <div class="MiddleArea">
-                <div id="submit" class="LargeButton Delete ClickAble">
+                <div id="deleteThis" class="LargeButton Delete ClickAble">
                     <font>
                         Delete This
                     </font>
@@ -198,13 +258,86 @@
 </script>
 <script src="../js/List.js">
 </script>
+<script src="../js/Form.js">
+</script>
 <script>
-    //本页面JavaScript
+    var newDocument;
+    var newContributor;
     
-    //页面运行的JavaScript
-    var testDocument=new listColumn("Test","Test");
-    testDocument.display(document.getElementById("documents"));
+    var documentNameInput;
+    var documentStatement;
+    var addDocumentSubmit;
     
-    var testContributor=new listColumn("Test","Test");
-    testContributor.display(document.getElementById("contributors"));
+    var contributorNameInput;
+    var addContributorSubmit;
+    
+    var newDocumentForm;
+    var newContributorForm;
+    
+    var deleteThis;
+    
+    var statementsArea;
+    //声明页面元素
+    
+    window.onload=initilize;
+    
+    function initilize()
+    {
+        newDocument=document.getElementById("newDocument");
+        newContributor=document.getElementById("newContributor");
+        
+        deleteThis=document.getElementById("deleteThis");
+        
+        statementsArea=document.getElementById("statementsArea");
+        //页面元素对应dom
+        
+        addDocumentSubmit=document.getElementById("addDocumentSubmit");
+        documentNameInput=new UserNameInput(document.getElementById("documentNameInput"),document.getElementById("documentNameAlert"));
+        documentStatement=new StatementInput(document.getElementById("documentStatement"),document.getElementById("documentStatementAlert"));
+        
+        addContributorSubmit=document.getElementById("addContributorSubmit");
+        contributorNameInput=new UserNameInput(document.getElementById("contributorNameInput"),document.getElementById("contributorNameAlert"));
+        //构造输入框对象
+        
+        newDocumentForm=new AddDocumentForm(addDocumentSubmit);
+        newDocumentForm.addInput(documentNameInput);
+        newDocumentForm.addInput(documentStatement);
+        //构造新文件表单并键入输入框
+        
+        newContributorForm=new AddDocumentForm(addContributorSubmit);
+        newContributorForm.addInput(contributorNameInput);
+        //构造协作人表单并加入输入框
+        
+        $(newDocument).click(function(){
+            onClickNewDocument();
+        });
+        $(newContributor).click(function(){
+            onClickNewContributor();
+        });
+        
+        $(deleteThis).click(function(){
+            onClickDeleteThis();
+        });
+        //注册事件
+    }
+    
+    function onClickNewDocument()
+    {
+        $("#addDocumentForm").slideToggle("slow");
+    }
+    
+    function onClickNewContributor()
+    {
+        $("#addContributorForm").slideToggle("slow");
+    }
+    
+    function onClickDeleteThis()
+    {
+        alert("delete This");
+    }
+    
+    function setStatement(statement)
+    {
+        statementsArea.innerHTML="<font>"+statement+"</font>";
+    }
 </script>

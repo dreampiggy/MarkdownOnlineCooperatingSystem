@@ -1,6 +1,3 @@
-<!--
-编辑器页面
--->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -183,7 +180,7 @@
                         <td id="usrAvator"  class="Clickable">
                         </td>
                         <td id="usrName"  class="Clickable">
-                            <font>TestUser</font>
+                            <font></font>
                         </td>
                         <td id="notifacations"  class="UserCtrlButton Clickable">
                             <font>Notifications</font>
@@ -202,10 +199,10 @@
                         <td id="projectIcon" class="ProjectHeaderColumn ClickAble">
                         </td>
                         <td id="projectName" class="ProjectHeaderColumn ClickAble">
-                            <font>TestProject</font>
+                            <font></font>
                         </td>
                         <td id="documentName" class="ProjectHeaderColumn ClickAble">
-                            <font>/TestDocument</font>
+                            <font></font>
                         </td>
                     </tr>
                 </table>
@@ -222,6 +219,19 @@
                 </table>
             </div>
         </div>-->
+        <!--
+        #menu：含有编辑选项
+        
+        #save：存档当期文本
+        #abandon：放弃修改，退出
+        #revert：撤销
+        #redo：重做
+
+        #editorBody编辑器
+        
+        #editPannel：编辑框，暂时使用textarea =3=
+        #liveView：实时预览框，当编辑框有输入事件时即更新
+        -->
         <div id="editor" class="PageColumn">
             <div class="MiddleArea">
                 <div id="menu">
@@ -248,8 +258,6 @@
                     <div id="editPannel">
                         <textarea id="editPane">
                         </textarea>
-                        <!--<div id="line0">
-                        </div>-->
                     </div>
                     <div id="liveView">
                     </div>
@@ -265,72 +273,32 @@
 <script src="../js/MarkdownProcessor_by_Showdown.js">
 </script>
 <script>
-    /*function Line(num)
-    {
-        this.container=null;
-        this.numberDiv=null;
-        this.textDiv=null;
-        
-        this.number=num;
-        
-        this.display=function(parent)
-        {
-            this.container=document.createElement("div");
-            $(this.container).addClass("line");
-            this.numberDiv=document.createElement("div");
-            $(this.numberDiv).addClass("lineNumber");
-            this.numberDiv.innerHTML="<font>"+this.number+"</font>";
-            this.textDiv=document.createElement("div");
-            $(this.textDiv).addClass("lineText");
-            $(parent).append(this.container);
-            $(this.container).append(this.numberDiv);
-            $(this.container).append(this.textDiv);
-        }
-        
-        this.startEditing=function()
-        {
-        }
-    }*/
-    
-    /*function Editor()
-    {
-        this.lines=new Array();
-        this.lines[0]=document.getElementById("line0");
-        
-        this.addLine=function()
-        {
-            this.lines[this.lineNumbers]=new Line(this.lines.length);
-            this.lines[this.lineNumbers].display(document.getElementById("editPannel"));
-        }
-    }*/
-    
-    //var thisEditor=new Editor();
-    //thisEditor.addLine();
-    
     var editPane;
     var liveViewPane;
-    //编辑器及预览窗口
     
     var saveButton;
     var abandonButtion;
     var revertButton;
     var redoButton;
-    //页面中按钮
-    
-    //基本页面元素的声明
+    //页面元素声明
     
     var inputCache=new Array();
     var textStatus=new Array();
     var reverted=new Array();
+    //关于撤销和重做的栈
+    //inputCache：在还行之前储存的当前内容，每有输入动作即压栈
+    //textStatus：每换行将当前文本压栈
+    //reverted：每撤销一次即压栈，重做时退栈
 
     var converter=new Showdown.converter();
+    //markdown解析器
     
     var autoSaveTime=60000;
     var maxResponceDelay=3000;
     
-    window.onload=initilizeGUI;
+    window.onload=initilize;
     
-    function initilizeGUI()
+    function initilize()
     {   
         editPane=document.getElementById("editPane");
         liveViewPane=document.getElementById("liveView");
@@ -338,7 +306,7 @@
         abandonButton=document.getElementById("abandon");
         revertButton=document.getElementById("revert");
         redoButton=document.getElementById("redo");
-        //页面元素查找相应DOM
+        //页面元素对应dom
         
         $(saveButton).click(function(){
             onSave();
@@ -352,7 +320,6 @@
         $(redoButton).click(function(){
             onRedo();
         });
-        //按钮事件
         
         $(editPane).mousedown(function(event){
             onKeyDown(event);
@@ -367,14 +334,11 @@
         $(document).mouseover(function(event){
             onEditDoc(event);
         });
-        //编辑框输入事件
-        
-        //设定事件
+        //利用jQuery注册事件
         
         editPane.value="#Edit Here";
-        //textStatus.push(editPane.value);
         convertToLiveView();
-        //初始化操作
+        //页面初始化工作
     }
 
     function preprocessDoc()
@@ -426,10 +390,12 @@
     
     function onSave()
     {
+        alert("save");
     }
     
     function onAbandon()
     {
+        alert("abandon");
     }
     
     function onRevert()

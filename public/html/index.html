@@ -1,6 +1,3 @@
-<!--
-系统主页
--->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -74,7 +71,7 @@
                 border-left: 1px solid #D8D8D8;
             }
             
-            table#naviTable td#active
+            table#naviTable td#home
             {
                 background-color: #FFFFFF;
                 
@@ -87,6 +84,52 @@
             .FeatureColunm
             {
                 height: 256px;
+            }
+            
+            .StyleOne
+            {
+                background-color: #FFFFFF;
+                
+                color: #4183C4;
+            }
+            
+            .StyleTwo
+            {
+                background-color: #4183C4;
+                
+                color: #FFFFFF;
+            }
+            
+            #register
+            {
+                
+                height: 38px;
+                width: 512px;
+
+                padding-top: 10px;
+
+                margin: auto;
+                margin-top: 64px;
+
+                font-size: 20px;
+                color: #FFFFFF;
+                
+                background-color: #FF0000;
+            }
+            
+            #login
+            {
+                height: 28px;
+                width: 512px;
+
+                padding-top: 6px;
+
+                margin: auto;
+                margin-top: 16px;
+                margin-bottom: 64px;
+
+                font-size: 18px;
+                color: #4183C4;
             }
         </style>
         <link href="../css/Global.css" rel="stylesheet" type="text/css">
@@ -102,7 +145,7 @@
                         <td id="usrAvator"  class="Clickable">
                         </td>
                         <td id="usrName"  class="Clickable">
-                            <font>TestUser</font>
+                            <font></font>
                         </td>
                         <td id="notifacations"  class="UserCtrlButton Clickable">
                             <font>Notifications</font>
@@ -120,16 +163,16 @@
                     <div id="naviBar">
                         <table id="naviTable">
                             <tr>
-                                <td class="ClickAble" id="active">
+                                <td class="ClickAble" id="home">
                                     <font>Home</font>
                                 </td>
-                                <td class="ClickAble">
-                                    <font>My Page</font>
+                                <td class="ClickAble" id="features">
+                                    <font>Features</font>
                                 </td>
-                                <td class="ClickAble">
+                                <td class="ClickAble" id="help">
                                     <font>Help</font>
                                 </td>
-                                <td class="ClickAble">
+                                <td class="ClickAble" id="about">
                                     <font>About Us</font>
                                 </td>
                             </tr>
@@ -143,9 +186,23 @@
                 </div>
             </div>
         </div>
-        <div class="PageColumn FeatureColunm">
+        <div class="PageColumn FeatureColunm StyleOne">
         </div>
-        <div class="PageColumn FeatureColunm" style="background-color: #4183C4">
+        <div class="PageColumn FeatureColunm StyleTwo">
+        </div>
+        <div class="PageColumn" id="loginAndRegister">
+            <div class="MiddleArea">
+                <div id="register" class="ClickAble">
+                    <font>
+                        Register Now!
+                    </font>
+                </div>
+                <div id="login" class="ClickAble">
+                    <font>
+                        Already have account? Login here!
+                    </font>
+                </div>
+            </div>
         </div>
     </body>
 </html>
@@ -154,7 +211,92 @@
 <script src="../js/Global.js">
 </script>
 <script>
-    //本页面JavaScript
+    var home;
+    var features;
+    var help;
+    var about;
     
-    //页面运行的JavaScript
+    var register;
+    var login;
+    
+    var loginAndRegister;
+    //页面内容声明
+    
+    var loggedin;
+    //boolean值，用户是否已经登陆
+    
+    window.onload=initilize;
+    
+    function initilize()
+    {
+        home=document.getElementById("home");
+        features=document.getElementById("features");
+        help=document.getElementById("help");
+        about=document.getElementById("about");
+        
+        register=document.getElementById("register");
+        login=document.getElementById("login");
+        
+        loginAndRegister=document.getElementById("loginAndRegister");
+        //页面元素对应dom
+        
+        $(home).click(function(){
+            onClickHome();
+        });
+        $(features).click(function(){
+            onClickFeatures();
+        });
+        $(help).click(function(){
+            onClickHelp();
+        });
+        $(about).click(function(){
+            onClickAbout();
+        });
+        
+        $(register).click(function(){
+            onClickRegister();
+        });
+        $(login).click(function(){
+            onClickLogin();
+        });
+        //利用jQuery注册事件
+        
+        loggedin=true;
+        if(loggedin)
+        {
+            loginAndRegister.style.display="none";
+            //如用户已登录，则隐藏登陆/注册按钮
+        }
+        //页面初始化工作
+    }
+    
+    function onClickHome()
+    {
+        alert("home");
+    }
+    
+    function onClickFeatures()
+    {
+        alert("features");
+    }
+    
+    function onClickHelp()
+    {
+        alert("help");
+    }
+    
+    function onClickAbout()
+    {
+        alert("about");
+    }
+    
+    function onClickRegister()
+    {
+        alert("register");
+    }
+    
+    function onClickLogin()
+    {
+        alert("login");
+    }
 </script>

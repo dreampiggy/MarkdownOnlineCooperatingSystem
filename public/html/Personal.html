@@ -1,6 +1,3 @@
-<!--
-用户个人主页
--->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -56,8 +53,32 @@
             {
                 height: 64px;
             }
+            
+            #addProjectForm
+            {
+                display: none;
+            }
+            
+            #editData
+            {
+                float: left;
+                
+                background-color: #00FF00;
+                
+                color: #FFFFFF;
+            }
+            
+            #securitySettings
+            {
+                float: right;
+                
+                background-color: #4183C4;
+                
+                color: #FFFFFF;
+            }
         </style>
         <link href="../css/Global.css" rel="stylesheet" type="text/css">
+        <link href="../css/Form.css" rel="stylesheet" type="text/css">
         <link href="../css/List.css" rel="stylesheet" type="text/css">
     </head>
     <body>
@@ -71,7 +92,7 @@
                         <td id="usrAvator"  class="Clickable">
                         </td>
                         <td id="usrName"  class="Clickable">
-                            <font>TestUser</font>
+                            <font></font>
                         </td>
                         <td id="notifacations"  class="UserCtrlButton Clickable">
                             <font>Notifications</font>
@@ -91,14 +112,8 @@
                         </td>
                         <td id="information">
                             <div id="userName">
-                                <font>
-                                    TestName
-                                </font>
                             </div>
                             <div id="userID">
-                                <font>
-                                    TestID
-                                </font>
                             </div>
                             <div id="statistics">
                                 <table id="statisticsTable">
@@ -166,6 +181,56 @@
                         Projects
                     </font>
                 </div>
+                <div id="list">
+                </div>
+                <div class="AddingButtons ClickAble" id="addProject">
+                    <font>+ New Project</font>
+                </div>
+                <div id="addProjectForm">
+                    <div class="InputColumn">
+                        <div class="InputBar">
+                            <input class="Input" id="projectNameInput">
+                        </div>
+                        <div class="InputLabel">
+                            <font>Project Name</font>
+                        </div>
+                    </div>
+                    <div class="AlertColumn" id="projectNameAlert">
+                        <font>Capital and lowercase letters, numbers, spaces(but not to begin with), and underlines.</font>
+                    </div> 
+                    <div class="InputColumn">
+                        <div class="InputBar">
+                            <input class="Input" id="statement">
+                        </div>
+                        <div class="InputLabel">
+                            <font>Statement</font>
+                        </div>
+                    </div>
+                    <div class="AlertColumn" id="statementAlert">
+                        <font>A short and clear statement for your project.</font>
+                    </div>
+                    <div id="submit" class="LargeButton Submit">
+                        <font>
+                            Submit
+                        </font>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="PageColumn">
+            <div class="MiddleArea">
+                <div class="buttonArea" id="settingButtons">
+                    <div id="editData" class="HalfButton ClickAble">
+                        <font>
+                            Edit Data
+                        </font>
+                    </div>
+                    <div id="securitySettings" class="HalfButton ClickAble">
+                        <font>
+                            Security Settings
+                        </font>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
@@ -176,10 +241,91 @@
 </script>
 <script src="../js/List.js">
 </script>
+<script src="../js/Form.js">
+</script>
 <script>
-    //本页面JavaScript
+    var newProject;
     
-    //页面运行的JavaScript
-    var testProject=new listColumn("Test","Test");
-    testProject.display(document.getElementById("projects"));
+    var projectName;
+    var statement;
+    var submit;
+    
+    var pageForm;
+    
+    var settingButtons;
+    var editData;
+    var securitySettings;
+    
+    var usrName;
+    var usrID;
+    //页面元素声明
+    
+    var isMe;
+    //boolean值，表示当前登入用户是否为此用户
+    
+    window.onload=initilize;
+    
+    function initilize()
+    {
+        newProject=document.getElementById("addProject");
+        
+        submit=document.getElementById("submit");
+        projectName=new UserNameInput(document.getElementById("projectNameInput"),document.getElementById("projectNameAlert"));
+        statement=new StatementInput(document.getElementById("statement"),document.getElementById("statementAlert"));
+        //构造新增Project表单输入框
+        
+        settingButtons=document.getElementById("settingButtons");
+        editData=document.getElementById("editData");
+        securitySettings=document.getElementById("securitySettings");
+        
+        usrName=document.getElementById("userName");
+        usrID=document.getElementById("userID");
+        //页面元素对应dom
+        
+        pageForm=new AddProjectForm(document.getElementById("submit"));
+        pageForm.addInput(projectName);
+        pageForm.addInput(statement);
+        //构造新增Project表单并加入输入框
+        
+        $(newProject).click(function(){
+            onClickNewProject();
+        });
+        
+        $(editData).click(function(){
+            onClickEditData();
+        });
+        $(securitySettings).click(function(){
+            onClickSecuritySettings();
+        });
+        //注册事件
+        
+        idMe=false;
+        if(!isMe)
+        {
+            newProject.style.display="none";
+            settingButtons.style.display="none";
+        }
+        //若当前登陆人非此用户则隐藏新增project及安全设置与个人信息设置按钮
+        //页面初始化
+    }
+    
+    function onClickNewProject()
+    {
+        $("#addProjectForm").slideToggle("slow");
+    }
+    
+    function onClickEditData()
+    {
+        alert("edit Data");
+    }
+    
+    function onClickSecuritySettings()
+    {
+        alert("security");
+    }
+    
+    function setUserNameAndID(name,id)
+    {
+        usrName.innerHTML="<font>"
+    }
 </script>

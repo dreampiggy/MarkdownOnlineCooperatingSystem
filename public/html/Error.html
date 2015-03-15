@@ -102,9 +102,6 @@
                     </font>
                 </div>
                 <div id="errorReport">
-                    <font>
-                        404<br>Page Not Found.
-                    </font>
                 </div>
             </div>
         </div>
@@ -122,10 +119,17 @@
 <script src="jquery-1.11.1.js">
 </script>
 <script>
-    //本页面JavaScript
     $("#errorTitle").click(function(){
         $("#errorReport").slideDown("slow")
     });
     
-    //页面运行的JavaScript
+    function setErrorReport(report)
+    {
+        document.getElementById("errorReport").innerHTML="<font>"+report+"</font>";
+    }
+    //设置错误报告内容
+    
+    $("#Return").click(function(){
+        alert("return");
+    });
 </script>

@@ -102,77 +102,99 @@ table#headerTable td.UserCtrlButton
     font-size: 16px;
 }
 
-            #projectHeader
-            {
-                border-bottom: 1px solid #DDDDDD;
-                margin-bottom: 16px;
-            }
+#projectHeader
+{
+    border-bottom: 1px solid #DDDDDD;
+    margin-bottom: 16px;
+}
             
-            #projectHeaderMiddle
-            {
-                height: 80px;
-            }
-            
-            table#projectHeaderTable
-            {
-                padding-top: 20px;
-            }
-            
-            table#projectHeaderTable td.ProjectHeaderColumn
-            {   
-                min-width: 2px;
-                
-                text-align: left;
-                
-                font-size: 24px;
-                color: #848484;
-            }
-            
-            table#projectHeaderTable td#projectIcon
-            {
-                width: 32px;
-                height: 32px;
-                
-                background-image: url("project.png");
-                background-size: 32px, 32px;
-                background-repeat: no-repeat;
-            }
-            
-            .StatisticElementValue
-            {
-                height: 48px;
-                width: 128px;
-                
-                font-size: 32px;
-                font-weight: bold;
-                color: #4183C4;
-                
-                text-align: center;
-                
-                margin: auto;
-            }
-            
-            .StatisticElementTitle
-            {
-                height: 16px;
-                width: 128px;
-                
-                font-size: 12px;
-                
-                text-align: center;
-                
-                margin: auto;
-            }
+#projectHeaderMiddle
+{
+    height: 80px;
+}
 
-            .LargeButton
-            {
-                height: 38px;
-                width: 512px;
+table#projectHeaderTable
+{
+    padding-top: 20px;
+}
+            
+table#projectHeaderTable td.ProjectHeaderColumn
+{   
+    min-width: 2px;
                 
-                padding-top: 10px;
+    text-align: left;
                 
-                margin: auto;
-                margin-top: 64px;
+    font-size: 24px;
+    color: #848484;
+}
+            
+table#projectHeaderTable td#projectIcon
+{
+    width: 32px;
+    height: 32px;
                 
-                font-size: 20px;
-            }
+    background-image: url("project.png");
+    background-size: 32px, 32px;
+    background-repeat: no-repeat;
+}
+            
+.StatisticElementValue
+{
+    height: 48px;
+    width: 128px;
+
+    font-size: 32px;
+    font-weight: bold;
+    color: #4183C4;
+
+    text-align: center;
+
+    margin: auto;
+}
+            
+.StatisticElementTitle
+{
+    height: 16px;
+    width: 128px;
+
+    font-size: 12px;
+
+    text-align: center;
+
+    margin: auto;
+}
+
+.LargeButton
+{
+    height: 38px;
+    width: 512px;
+
+    padding-top: 10px;
+
+    margin: auto;
+    margin-top: 64px;
+    margin-bottom: 64px;
+
+    font-size: 20px;
+}
+
+.ButtonArea
+{
+    height: 38px;
+    width: 512px;
+    
+    margin: auto;
+                
+    margin-top: 64px;
+    margin-bottom: 64px;
+}
+
+.HalfButton
+{
+    height: 38px;
+    width: 256px;
+                
+    padding-top: 10px;
+                
+    font-size: 20px;
+}

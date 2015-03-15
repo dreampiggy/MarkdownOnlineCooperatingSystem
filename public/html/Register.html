@@ -1,11 +1,8 @@
-<!--
-用户注册页面
--->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Register</title>
-        <link href="../css/FormedPages.css" rel="stylesheet" type="text/css">
+        <link href="../css/Form.css" rel="stylesheet" type="text/css">
         <link href="../css/Global.css" rel="stylesheet" type="text/css">
     </head>
     <body>
@@ -19,7 +16,7 @@
                         <td id="usrAvator"  class="Clickable">
                         </td>
                         <td id="usrName"  class="Clickable">
-                            <font>TestUser</font>
+                            <font></font>
                         </td>
                         <td id="notifacations"  class="UserCtrlButton Clickable">
                             <font>Notifications</font>
@@ -36,16 +33,16 @@
                 <div id="menuBar">
                     <table id="menuTable">
                         <tr>
-                            <td class="ClickAble">
+                            <td class="Unuseable" id="toLogin">
                                 <font>Login</font>
                             </td>
                             <td class="ClickAble" id="active">
                                 <font>Register</font>
                             </td>
-                            <td class="Unuseable">
+                            <td class="Unuseable" id="toSecurity">
                                 <font>Security</font>
                             </td>
-                            <td class="Unuseable">
+                            <td class="Unuseable" id="toData">
                                 <font>Data</font>
                             </td>
                         </tr>
@@ -54,27 +51,47 @@
                 <div id="inputArea">
                     <div class="InputColumn">
                         <div class="InputBar">
-                            <input class="Input">
+                            <input class="Input" id="userID">
                         </div>
                         <div class="InputLabel">
                             <font>User ID</font>
                         </div>
                     </div>
+                    <div class="AlertColumn" id="userIDAlert">
+                        <font>Capital and lowercase letters, numbers, spaces(but not to begin with), and underlines.</font>
+                    </div>
                     <div class="InputColumn">
                         <div class="InputBar">
-                            <input type="password" class="Input">
+                            <input class="Input" id="userName">
+                        </div>
+                        <div class="InputLabel">
+                            <font>User Name</font>
+                        </div>
+                    </div>
+                    <div class="AlertColumn" id="userNameAlert">
+                        <font>Capital and lowercase letters, numbers, spaces(but not to begin with), and underlines.</font>
+                    </div>
+                    <div class="InputColumn">
+                        <div class="InputBar">
+                            <input type="password" class="Input" id="password">
                         </div>
                         <div class="InputLabel">
                             <font>Password</font>
                         </div>
                     </div>
+                    <div class="AlertColumn" id="passwordAlert">
+                        <font>Capital and lowercase letters, numbers and underlines.</font>
+                    </div>
                     <div class="InputColumn">
                         <div class="InputBar">
-                            <input type="password" class="Input">
+                            <input type="password" class="Input" id="repassword">
                         </div>
                         <div class="InputLabel">
                             <font>Repeat Password</font>
                         </div>
+                    </div>
+                    <div class="AlertColumn"  id="repasswordAlert">
+                        <font>Reapeat your password in case you got wrong words in your password input.</font>
                     </div>
                 </div>
             </div>
@@ -94,8 +111,52 @@
 </script>
 <script src="../js/Global.js">
 </script>
+<script src="../js/Form.js">
+</script>
 <script>
-    //本页面JavaScript
+    var submit;
+    var userID;
+    var userName;
+    var password;
+    var repassword;
     
-    //页面运行的JavaScript
+    var pageForm;
+    
+    var toLogin;
+    var toRegister;
+    var toSecurity;
+    var toData;
+    //声明页面元素
+    
+    window.onload=initilize;
+    
+    function initilize()
+    {
+        submit=document.getElementById("submit");
+        userID=new UserIDInput(document.getElementById("userID"),document.getElementById("userIDAlert"));
+        userName=new UserNameInput(document.getElementById("userName"),document.getElementById("userNameAlert"));
+        password=new UserPasswordInput(document.getElementById("password"),document.getElementById("passwordAlert"));
+        repassword=new UserRepasswordInput(document.getElementById("repassword"),document.getElementById("repasswordAlert"));
+        //构造输入框对象
+        
+        toLogin=document.getElementById("toLogin");
+        toRegister=document.getElementById("active");
+        toSecurity=document.getElementById("toSecurity");
+        toData=document.getElementById("toData");
+        //页面元素对应dom
+        
+        pageForm=new RegisterForm(document.getElementById("submit"));
+        pageForm.addInput(userID);
+        pageForm.addInput(userName);
+        pageForm.addInput(password);
+        pageForm.addInput(repassword);
+        pageForm.linkPasswordRepassword(password,repassword);
+        //构造表单对象并增加输入框
+        
+        activateLabel(toLogin,"");
+        activateLabel(toRegister,"");
+        activateLabel(toSecurity,"");
+        activateLabel(toData,"");
+        //页面初始化
+    }
 </script>
