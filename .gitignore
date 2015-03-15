@@ -1,5 +1,6 @@
 .DS_Store
 .idea/
-node_modules/ccap/cap_img/
+node_modules/
+mongo/
 dump.rdb
 npm-debug.log
