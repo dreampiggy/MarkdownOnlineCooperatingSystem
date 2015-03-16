@@ -2,50 +2,89 @@ var db = ('./mongoose').db;
 var user = require('./user');
 var docs = require('./docs');
 var project = require('./project');
-console.log('Unit sTest Start!');
 var mongoose = require('./mongoose').mongoose;
 var db = require('./mongoose').db;
 
-var kittySchema = mongoose.Schema({
-    name: String
-})
-kittySchema.methods.speak = function(){
-	var greeting = this.name
-	? "My name is : " + this.name
-	: "I don't have a name.";
-	console.log(greeting);
-}
+console.log('Unit sTest Start!');
+// var kittySchema = mongoose.Schema({
+//     name: String
+// })
+// kittySchema.methods.speak = function(){
+// 	var greeting = this.name
+// 	? "My name is : " + this.name
+// 	: "I don't have a name.";
+// 	console.log(greeting);
+// }
 
 
 
 
-var Kitten = mongoose.model('Kitten',kittySchema);
+// var Kitten = mongoose.model('Kitten',kittySchema);
 
-var silence = new Kitten({ name: 'Silence' });
-console.log(silence.name);
+// var silence = new Kitten({ name: 'Silence' });
+// console.log(silence.name);
 
-var fluffy = new Kitten({ name: 'fluffy' });
+// var fluffy = new Kitten({ name: 'fluffy' });
 
-fluffy.save(function(err,fluffy){
-	if(err){
-		console.log(err);
-	}
-	fluffy.speak();
-})
+// fluffy.save(function(err,fluffy){
+// 	if(err){
+// 		console.log(err);
+// 	}
+// 	fluffy.speak();
+// })
 
-Kitten.find(function(err,kittens){
-	if(err){
-		console.log(err);
-	}
-	console.log(kittens);
-})
+// Kitten.find(function(err,kittens){
+// 	if(err){
+// 		console.log(err);
+// 	}
+// 	console.log(kittens);
+// })
+
+// var animalSchema = new mongoose.Schema({
+// 	name: String,
+// 	type: String
+// });
+// animalSchema.methods.findSimilarTypes = function (cb) {
+//   return this.model('Animal').find({ type: this.type }, cb);
+// };
+// animalSchema.statics.findByName = function (name, cb) {
+//   this.find({ name: new RegExp(name, 'i') }, cb);
+// };
+// animalSchema.virtual('nameandtype').get(function(){
+// 	return this.name + '~~~' + this.type;
+// });
+// animalSchema.virtual('nameandtype').set(function(args){
+// 	var split = args.split(' ');
+// 	this.name = split[0];
+// 	this.type = split[1];
+// })
 
 
 
-
-
-
-
+// var Animal = mongoose.model('Animal', animalSchema);
+// var dog = new Animal({
+// 	name: 'doggy',
+// 	type: 'dog'
+// });
+// console.log(dog.nameandtype);
+// dog.nameandtype = 'doggggg! dog?';
+// console.log(dog.nameandtype);
+// Animal.findByName('dog',function(err,result){
+// 	console.log(result);
+// })
+// dog.findSimilarTypes(function(err,result){
+// 	console.log(result);
+// })
+// dog.save(function(err,result){
+// 	if(err)console.log(err);
+// 	else console.log(result);
+// });
+// Animal.create({
+// 	name: 'littleDog',
+// 	type: 'bigDog'
+// },function(err,result){
+// 	console.log(result);
+// });
 
 
 

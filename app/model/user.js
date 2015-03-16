@@ -1,37 +1,42 @@
 var mongoose = require('./mongoose').mongoose;
 var db = require('./mongoose').db;
-
+var crypto = require('crypto');
+var async = require('async');
 
 var Schema = mongoose.Schema
   , ObjectId = Schema.ObjectId;
+
+
 var userSchema = new Schema({
-	ID: ObjectId,
 	userName: String,
-	number: { type: Number, min: 10 },
+	userNumber: {type: Number, min: 8, default: 10000000 },
 	password: String,
-	docList: String,
-	projectList: String
+	docList: [String],
+	projectList: [String],
 });
-
 var userModel = mongoose.model('user', userSchema);
+var inviteSchema = new Schema({
+	userID: String,
+	inviterID: String,
+	projectID: String,
+	state: {type: Number, max:1, default: 0}
+})
+var inviteModel = mongoose.model('invite',inviteSchema);
 
-var userEntity = new userModel();
 
-userModel
-.find({userName: 'lizhuoli'})
-.exec(function(err,result){
-	console.log(result);
-});
 
 function register(userName,userPwd,callback){
+	var password = sha1(userPwd);
 	getUserID(userName,function(result){
-		if(result == false){
-			connection.query('INSERT INTO user (userName,password) VALUES (?,?)',[userName,userPwd],function(err,result){
+		if(!result){
+			userModel.create({
+				userName: userName,
+				password: password
+			},function(err,result){
 				if(err){
-					console.log('userName: ' + userName + ' register Error!');
 					callback(false);
 				}
-				else if(result.affectedRows != null){
+				else if(result){
 					callback(true);
 				}
 				else{
@@ -42,142 +47,202 @@ function register(userName,userPwd,callback){
 		else{
 			callback(false);
 		}
-	})
+	});
 }
 
 function login (userName,userPwd,callback) {
-	connection.query('SELECT userID FROM user WHERE userName = ? AND password = ?',[userName,userPwd],function(err,result){
+	var password = sha1(userPwd);
+	userModel
+	.findOne({
+		userName: userName,
+		password: password
+	})
+	.exec(function(err,result){
 		if(err){
-			console.log('userName: ' + userName + ' password: ' + userPwd + ' login Error');
+			callback(false);
+		}
+		else if(result){
+			callback(result._id);
 		}
 		else{
-			if(result[0] == null || result[0]['userID'] == null){
-				callback(false);
-			}
-			else{
-				callback(result[0]['userID']);
-			}
+			callback(false);
 		}
-	});
+	})
 }
 
-function checkUserID(userID,callback){
-	connection.query('SELECT userID FROM user WHERE userID = ?',[userID],function(err,result) {
+function editUser(userID,userName,callback){
+	userModel
+	.findOneAndUpdate({
+		_id: userID
+	},{
+		userName: userName
+	},function(err,result){
 		if(err){
-			return;
+			callback(false);
+		}
+		else if(result){
+			callback(true);
 		}
 		else{
-			if(result[0] == null){
-				callback(false);
-			}
-			else if(result[0]['userID'] != null){
-				callback(true);
-			}
-			else{
-				callback(false);
-			}
+			callback(false);
 		}
-	});
+	})
 }
 
 function getUserID(userName,callback){
-	connection.query('SELECT userID FROM user WHERE userName = ?',[userName],function(err,result){
+	userModel
+	.findOne({
+		userName: userName
+	})
+	.exec(function(err,result){
 		if(err){
-			console.log('userName: ' + userName + ' getUserID Error!');
 			callback(false);
 		}
-		else{
-			if(result[0] == null || result[0]['userID'] == null){
-				callback(false);
-			}
-			else{
-				callback(result[0]['userID']);
-			}
+		else if(result != null){
+			callback(result._id);
 		}
-	});
+		else{
+			callback(false);
+		}
+	})
 }
 
 function getUserName(userID,callback){
-	connection.query('SELECT userName FROM user WHERE userID = ?',[userID],function(err,result){
+	userModel
+	.findOne({
+		_id: userID
+	})
+	.exec(function(err,result){
 		if(err){
-			console.log('userID: ' + userID + ' getUserName Error!');
 			callback(false);
 		}
-		else{
-			if(result[0] == null || result[0]['userName'] == null){
-				callback(false);
-			}
-			else{
-				callback(result[0]['userName']);
-			}
+		else if(result != null){
+			callback(result.userName);
 		}
-	});
+		else{
+			callback(false);
+		}
+	})
 }
 
 function getDocList(userID,callback){
-	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
+	userModel
+	.findOne({
+		_id: userID
+	})
+	.exec(function(err,result){
 		if(err){
 			callback(false);
 		}
-		else if(result[0] != null){
-			callback(result[0]['docList'].replace(/&/g,''));
+		else if(result != null){
+			callback(result.docList);
 		}
 		else{
 			callback(false);
 		}
-	});
+	})
 }
 
-function addDocList(userID,docList,docID,callback){
-	var docList = docList + '&' + docID + '&';
-	connection.query('UPDATE user SET ',[userID],function(err,result){
-		if(err){
-			callback(false);
-		}
-		else if(result[0] != null){
-			callback(true);
+function addDocList(userID,docID,callback){
+	getDocList(userID,function(result){
+		if(result && !result.in_array(docID)){//check if the docList have the same docID as provide
+			result.push(docID);//push the new docID to the docList
+			console.log(result);
+			userModel
+			.findOneAndUpdate({},{
+				docList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
 		}
 		else{
 			callback(false);
 		}
-	});
+	})
 }
 
 function getProjectList(userID,callback){
-	connection.query('SELECT projectList FROM user WHERE userID = ?',[userID],function(err,result){
+	userModel
+	.findOne({
+		_id: userID
+	})
+	.exec(function(err,result){
 		if(err){
 			callback(false);
 		}
-		else if(result[0] != null){
-			callback(result[0]['projectList'].replace(/&/g,''));
+		else if(result != null){
+			callback(result.projectList);
 		}
 		else{
 			callback(false);
 		}
-	});
+	})
 }
 
 function addProjectList(userID,projectID,callback){
-	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
-		if(err){
-			callback(false);
-		}
-		else if(result[0] != null){
-			callback(true);
+	getProjectList(userID,function(result){
+		if(result && !result.in_array(projectID)){//check if the projectID have the same projectList as provide
+			result.push(projectID);//push the new projectID to the projectList
+			console.log(result);
+			userModel
+			.findOneAndUpdate({},{
+				projectList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
 		}
 		else{
 			callback(false);
 		}
-	});
+	})
 }
 
 function inviteUser(projectID,inviterUserID,beInvitedUserID,callback){
-	connection.query('INSERT INTO invite (userID,inviterID,projectID,state) VALUES (?,?,?,?)',[userID,inviterUserID,beInvitedUserID,0],function(err,result){
-		if(err){
-			callback(false);
+	if(inviterUserID == beInvitedUserID){//Not allowed to invite yourself
+		callback(false);
+		return;
+	}
+	getInvite(beInvitedUserID,function(result){
+		if(result){//when the projectID and inviterID both the same,it's not allowed
+			var notInvited = true;
+			result.forEach(function(elem){
+				if(elem.projectID == projectID &&elem.inviterID == inviterUserID){
+					notInvited = false;
+				}
+			});
 		}
-		else if(result.affectedRows != null){
-			callback(true);
+		if(notInvited || !result){
+			inviteModel.create({
+				userID: beInvitedUserID,
+				inviterID: inviterUserID,
+				projectID: projectID
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			});
 		}
 		else{
 			callback(false);
@@ -186,11 +251,17 @@ function inviteUser(projectID,inviterUserID,beInvitedUserID,callback){
 }
 
 function acceptInvite(userID,projectID,callback){
-	connection.query('UPDATE invite SET state = ?',[1],function(err,result){
+	inviteModel
+	.findOneAndUpdate({
+		userID: userID,
+		projectID: projectID
+	},{
+		state: 1
+	},function(err,result){
 		if(err){
 			callback(false);
 		}
-		else if(result.affectedRows != null){
+		else if(result){
 			callback(true);
 		}
 		else{
@@ -200,11 +271,17 @@ function acceptInvite(userID,projectID,callback){
 }
 
 function rejectInvite(userID,projectID,callback){
-	connection.query('UPDATE invite SET state = ?',[2],function(err,result){
+	inviteModel
+	.findOneAndUpdate({
+		userID: userID,
+		projectID: projectID
+	},{
+		state: -1
+	},function(err,result){
 		if(err){
 			callback(false);
 		}
-		else if(result.affectedRows != null){
+		else if(result){
 			callback(true);
 		}
 		else{
@@ -214,75 +291,159 @@ function rejectInvite(userID,projectID,callback){
 }
 
 function getInvite(userID,callback){
-	connection.query('SELECT projectID FROM invite WHERE userID = ?',[userID],function(err,result){
+	inviteModel
+	.find({
+		userID: userID
+	})
+	.exec(function(err,result){
 		if(err){
 			callback(false);
 		}
-		else if(result[0] != null){
-			callback(result[0]['projectID']);
+		else if(result.length != 0){
+			callback(result);
 		}
 		else{
 			callback(false);
 		}
-	});
+	})
 }
 
-function checkDoc(userID,docID,callback){
-	connection.query('SELECT docList FROM user WHERE userID = ?',[userID],function(err,result){
+function checkUserID(userID,callback){
+	userModel
+	.findOne({
+		userID: userID
+	})
+	.exec(function(err,result){
 		if(err){
 			callback(false);
 		}
-		else if(result[0] != null){
-			var check = '/\^.*\&' + userID + '\&.*\$/';
-			if(result[0]['userList'].match(eval(check)) != null){
-				callback(true);
-			}
-			else{
-				callback(false);
-			}
-		}
-		else{
-			callback(false);
-		}
-	});
-}
-
-function checkProject(userID,projectID,callback){
-	connection.query('SELECT projectList FROM user WHERE userID = ?',[userID],function(err,result){
-		if(err){
-			callback(false);
-		}
-		else if(result[0] != null){
-			var check = '/\^.*\&' + projectID + '\&.*\$/';
-			if(result[0]['projectID'].match(eval(check)) != null){
-				callback(true);
-			}
-			else{
-				callback(false);
-			}
-		}
-		else{
-			callback(false);
-		}
-	});
-}
-
-
-function editUser(userID,userName,callback){
-	connection,query('UPDATE user SET userName = ? WHERE userID = ?',[userName,userID],function(err,result){
-		if(err){
-			callback(false);
-		}
-		else if(result.affectedRows != null){
+		else if(result != null){
 			callback(true);
 		}
 		else{
 			callback(false);
 		}
-	});
+	})
+}
+
+function checkDoc(userID,docID,callback){
+	getDocList(userID,function(result){
+		if(result && result.in_array(docID)){
+			userModel
+			.findOne({})
+			.exec(function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
+function checkProject(userID,projectID,callback){
+	getProjectList(userID,function(result){
+		if(result && result.in_array(projectID)){
+			userModel
+			.findOne({})
+			.exec(function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
+		}
+		else{
+			callback(false);
+		}
+	})
 }
 
 
+//sha1 encode the password
+function sha1(str) {
+    var md5sum = crypto.createHash('sha1');
+    md5sum.update(str,'utf-8');
+    str = md5sum.digest('hex');
+    return str;
+}
+
+
+//tools to check if an element in the array
+Array.prototype.in_array = function(e)  
+{  
+	for(i=0;i<this.length;i++)  
+	{  
+		if(this[i] == e)  
+		return true;  
+	}  
+	return false;  
+}  
+
+// checkUserID(111112,function(result){
+// 	console.log(result);
+// })
+// getUserID('lizhuoli',function(result){
+// 	console.log(result);
+// });
+// getUserName('5506f74d20b5087702e67e6f',function(result){
+// 	console.log(result);
+// })
+// getDocList('5506f74d20b5087702e67e6f',function(result){
+// 	console.log(result);
+// })
+// addDocList('5506f74d20b5087702e67e6f','11113',function(result){
+// 	console.log(result);
+// })
+// addProjectList('5506f74d20b5087702e67e6f','11111',function(result){
+// 	console.log(result);
+// })
+// getDocList('5506f74d20b5087702e67e6f',function(result){
+// 	console.log(result);
+// })
+// getProjectList('5506f74d20b5087702e67e6f',function(result){
+// 	console.log(result);
+// })
+// checkDoc('5506f74d20b5087702e67e6f','11111',function(result){
+// 	console.log(result);
+// })
+// checkProject('5506f74d20b5087702e67e6f','11111',function(result){
+// 	console.log(result);
+// })
+// editUser('5506f74d20b5087702e67e6f','lizhuoli',function(result){
+// 	console.log(result);
+// })
+// login('lizhuoli','fuckyou?',function(result){
+// 	console.log(result);
+// })
+// register('lizhuoli2','fuckyou',function(result){
+// 	console.log(result);
+// })
+// getInvite('fuck',function(result){
+// 	console.log(result);
+// });
+// getInvite('user2',function(result){
+// 	console.log(result);
+// })
+// inviteUser('11111111','user1','user1',function(result){
+// 	console.log(result);
+// });
+// rejectInvite('user1','11111111',function(result){
+// 	console.log(result);
+// })
 exports.register = register;
 exports.login = login;
 exports.checkUserID = checkUserID;
