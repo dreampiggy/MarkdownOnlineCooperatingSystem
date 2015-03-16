@@ -1,0 +1,35 @@
+*
+{
+	outline: none;
+}
+
+body
+{
+	text-align: center;
+
+	margin: 0px;
+	padding: 0px;
+
+    background-attachment: fixed;
+    background-color: #FFFFFF;
+}
+
+a
+{
+	text-decoration: none;
+}
+
+font
+{
+	font-family: Arial;
+}
+
+.Clickable
+{
+    cursor: pointer;
+}
+
+.PageColumn
+{
+    width: 100%;
+}
