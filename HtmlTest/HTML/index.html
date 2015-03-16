@@ -1,17 +1,177 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Marktogether</title>
+        <title>Features</title>
         <style>
+            #cover
+            {
+                height: 768px;
+                
+                background-image: url("../RESORCE/hills.jpg");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            
+            .ImgColumn
+            {
+                height: 512px;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+            
+            .TextColumn
+            {
+                height: 512px;
+                
+                background-color: #F2F2F2;
+            }
+            
+            .AuthorColumn
+            {
+                height: 256px;
+                background-color: white;
+            }
+            
+            #header_container
+            {
+                height: 64px;
+            }
+            
+            .headerFixed
+            {
+                height: inherit;
+                
+                background-color: black;
+                opacity: 0.7;
+            }
+            
+            #header
+            {
+                height: 48px;
+                
+                margin: auto;
+            }
+            
+            .headerFixed #header
+            {
+                padding-top: 8px;
+            }
+            
+            #feature_documenting
+            {
+                background-image: url("../RESORCE/leaves.jpg");
+            }
+            
+            #feature_markdown
+            {
+                background-image: url("../RESORCE/flower.jpg")
+            }
+            
+            #navi_brand_container
+            {
+                height: 48px;
+                
+                float: left;
+            }
+            
+            #userHeader
+            {
+                height: 48px;
+                width: 128px;
+                
+                float: right;
+            }
+            
+            #brand
+            {
+                height: inherit;
+                width: 128px;
+                
+                float: left;
+            }
+            
+            #navi
+            {
+                height: inherit;
+                float: right;
+            }
+            
+            table#naviTable
+            {
+                height: inherit;
+            }
+            
+            table#naviTable td
+            {
+                height: inherit;
+                width: 78px;
+                
+                border-collapse: collapse;
+            }
+            
+            @media screen and (min-width: 1024px)
+            {    
+                #header
+                {
+                    width: 1024px;
+                }
+            }
+            
+            @media screen and (max-width: 1024px)
+            { 
+                #header
+                {
+                    width: 100%;
+                }
+            }
         </style>
-        <link href="../css/Global.css" rel="stylesheet" type="text/css">
+        <link href="../CSS/Global.css" rel="stylesheet" type="text/css">
     </head>
     <body>
+        <div class="PageColumn" id="cover">
+            <div class="PageColumn" id="header_container">
+                <div class="headerFixed">
+                    <div id="header">
+                        <div id="navi_brand_container">
+                            <div id="brand">
+                            </div>
+                            <div id="navi">
+                                <table id="naviTable">
+                                    <tr>
+                                        <td id="cooperating">
+                                        </td>
+                                        <td id="documenting">
+                                        </td>
+                                        <td id="markdown">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="userHeader">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="PageColumn TextColumn">
+        </div>
+        <div class="PageColumn ImgColumn" id="feature_documenting">
+        </div>
+        <div class="PageColumn TextColumn">
+        </div>
+        <div class="PageColumn ImgColumn" id="feature_markdown">
+        </div>
+        <div class="PageColumn TextColumn">
+        </div>
+        <div class="PageColumn AuthorColumn">
     </body>
 </html>
-<script src="../js/jquery-1.11.1.js">
+<script src="../JS/jquery-1.11.1.js">
 </script>
-<script src="../js/Global.js">
+<script src="../JS/Global.js">
 </script>
 <script>
 </script>
