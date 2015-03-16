@@ -1,11 +1,27 @@
-var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '941126',
-  database : 'markdown'
+var mongoose = require('./mongoose').mongoose;
+var db = require('./mongoose').db;
+
+
+var Schema = mongoose.Schema
+  , ObjectId = Schema.ObjectId;
+var userSchema = new Schema({
+	ID: ObjectId,
+	userName: String,
+	number: { type: Number, min: 10 },
+	password: String,
+	docList: String,
+	projectList: String
 });
-connection.connect();
+
+var userModel = mongoose.model('user', userSchema);
+
+var userEntity = new userModel();
+
+userModel
+.find({userName: 'lizhuoli'})
+.exec(function(err,result){
+	console.log(result);
+});
 
 function register(userName,userPwd,callback){
 	getUserID(userName,function(result){

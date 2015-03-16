@@ -5,8 +5,11 @@ client = redis.createClient(6379,'127.0.0.1',{
     auth_pass: 941126
 });
 client.on('error', function (err) {  
-    console.log('Error: ' + err);  
+    console.log('Redis connect ERROR for: ' + err);  
 }); 
+client.on('connect',function(){
+	console.log('Redis connect OK!');
+})
 
 
 function setCaptcha(req,res){
@@ -88,7 +91,33 @@ function generateText(){
 	return text;
 }
 
+function returnFile(pathname,req,res){
+	var path = __dirname + '/..' + pathname;
+	fs.stat(path,function(err,stat){
+		if(err){
+			res.statusCode = 404;
+			res.end("404 not found");
+		}
+		else{
+			if(stat.isFile()){
+				var stream = fs.createReadStream(path);
+				res.setHeader('Content-Length',stat.size);
+				stream.pipe(res);
+				stream.on('error',function(err){
+					res.statusCode = 500;
+					res.end("500 server error");
+				});
+			}
+			else{
+				res.statusCode = 404;
+				res.end("404 not found");
+			}
+		}
+	});
+}
+
 exports.setCaptcha = setCaptcha;
 exports.checkCaptcha = checkCaptcha;
 exports.setLoginSession = setLoginSession;
 exports.setLogoutSession = setLogoutSession;
+exports.returnFile = returnFile;

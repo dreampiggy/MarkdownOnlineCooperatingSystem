@@ -1,7 +1,15 @@
 var handler = require('../handler/handler');
+var express = require('express');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
+var livedb = require('livedb');
+var sharejs = require('share');
+var browserChannel = require('browserchannel').server
+var Duplex = require('stream').Duplex;
+var db = require('livedb-mongo')('mongodb://localhost:27017/test', {safe:true});
+var backend = livedb.client(db);
+var share = require('share').server.createClient({backend: backend});
 
 
 function route(app){
@@ -24,6 +32,43 @@ function route(app){
 
 	app.use(cookieParser());
 
+	app.use(browserChannel({
+		base: '/api/doc/sync'
+		// hostPrefixes: Array of extra subdomain prefixes on which clients can connect.
+		// headers: Map of additional response headers to send with requests.
+		// cors: Set Access-Control-Allow-Origin header.
+		// corsAllowCredentials: (Default false) Sets the Access-Control-Allow-Credentials header in responses. 
+		// keepAliveInterval: (Default 20000 = 20 seconds).
+		// sessionTimeoutInterval: (Default 30 seconds).
+	},function(client) {
+		var stream = new Duplex({objectMode: true});
+
+		stream._read = function() {};
+		stream._write = function(chunk, encoding, callback) {
+		if (client.state !== 'closed') {
+			client.send(chunk);
+		}
+		callback();//write to stream
+		};
+
+		client.on('message', function(data) {
+			console.log(data);
+			stream.push(data);
+		});
+
+		client.on('close', function(reason) {
+			stream.push(null);
+			stream.emit('close');
+		});
+
+		stream.on('end', function() {
+			client.close();
+		});
+
+		// Give the stream to sharejs
+		return share.listen(stream);
+	}));
+
 //Home Page
 	app.get('/',function(req,res){
 		handler.home(req,res);
@@ -35,10 +80,9 @@ function route(app){
 	});
 
 //Public Resource
-	app.get('/public/*',function(req,res){
-		handler.public(req,res);
-	});
-
+	// app.get('/public/*',function(req,res){
+	// 	handler.public(req,res);
+	// });
 /*
 User
 */
@@ -59,7 +103,7 @@ User
 		handler.userLogout(req,res);
 	})
 //User Info
-	app.post('/api/user/info',function(req,res){
+	app.get('/api/user/info',function(req,res){
 		handler.userInfo(req,res);
 	});
 //User Invite
@@ -91,11 +135,11 @@ Doc
 		handler.docUpload(req,res);
 	});
 //Doc download
-	app.post('/api/doc/download',function(req,res){
+	app.get('/api/doc/download',function(req,res){
 		handler.docDownload(req,res);
 	});
 //Doc preview
-	app.post('/api/doc/preview',function(req,res){
+	app.get('/api/doc/preview',function(req,res){
 		handler.docPreview(req,res);
 	});
 
@@ -115,7 +159,7 @@ Project
 		handler.projectEdit(req,res);
 	});
 //Project Add
-	app.post('/api/project/info',function(req,res){
+	app.get('/api/project/info',function(req,res){
 		handler.projectInfo(req,res);
 	});
 

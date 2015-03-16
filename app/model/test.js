@@ -1,15 +1,56 @@
-var mysql = require('mysql');
+var db = ('./mongoose').db;
 var user = require('./user');
 var docs = require('./docs');
 var project = require('./project');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '941126',
-  database : 'markdown'
-});
-connection.connect();
 console.log('Unit sTest Start!');
+var mongoose = require('./mongoose').mongoose;
+var db = require('./mongoose').db;
+
+var kittySchema = mongoose.Schema({
+    name: String
+})
+kittySchema.methods.speak = function(){
+	var greeting = this.name
+	? "My name is : " + this.name
+	: "I don't have a name.";
+	console.log(greeting);
+}
+
+
+
+
+var Kitten = mongoose.model('Kitten',kittySchema);
+
+var silence = new Kitten({ name: 'Silence' });
+console.log(silence.name);
+
+var fluffy = new Kitten({ name: 'fluffy' });
+
+fluffy.save(function(err,fluffy){
+	if(err){
+		console.log(err);
+	}
+	fluffy.speak();
+})
+
+Kitten.find(function(err,kittens){
+	if(err){
+		console.log(err);
+	}
+	console.log(kittens);
+})
+
+
+
+
+
+
+
+
+
+
+
+
 
 function checkUserModel (userID,userName,password,docNum,projectNum) {
 	function getUserIDCallback (result) {
@@ -140,22 +181,22 @@ function checkProjectModel (userID,docID,projectID,projectName,projectInfo) {
 
 
 //Start !
-var userID1 = '11111';
-var userName1 = 'lizhuoli';
-var password1 = '02BF847AB8EBE451F8930C0BCFB196998123EE9A';//941126
+// var userID1 = '11111';
+// var userName1 = 'lizhuoli';
+// var password1 = '02BF847AB8EBE451F8930C0BCFB196998123EE9A';//941126
 
-var userID2 = '22222';
-var userName2 = 'ceshirenyuan';
-var password2 = 'C984AED014AEC7623A54F0591DA07A85FD4B762D';//000000
-checkUserModel(userID1,userName1,password1);
-checkUserModel(userID2,userName2,password2);
+// var userID2 = '22222';
+// var userName2 = 'ceshirenyuan';
+// var password2 = 'C984AED014AEC7623A54F0591DA07A85FD4B762D';//000000
+// checkUserModel(userID1,userName1,password1);
+// checkUserModel(userID2,userName2,password2);
 
-var userID3 = '11111';
-var docID3 = '11111';
-var projectID3 = '11111';
-var projectName3 = 'pro3';
-var projectInfo3 = 'pro3 Info';
-checkProjectModel(userID3,docID3,projectID3,projectName3,projectInfo3);
+// var userID3 = '11111';
+// var docID3 = '11111';
+// var projectID3 = '11111';
+// var projectName3 = 'pro3';
+// var projectInfo3 = 'pro3 Info';
+// checkProjectModel(userID3,docID3,projectID3,projectName3,projectInfo3);
 
 
 exports.checkUserModel = checkUserModel;

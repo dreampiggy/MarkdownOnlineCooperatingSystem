@@ -1,12 +1,5 @@
-var mysql      = require('mysql');
+var db = require('./mongoose').db;
 var user = require('./user');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '941126',
-  database : 'markdown'
-});
-connection.connect();
 
 
 /*

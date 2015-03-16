@@ -62,27 +62,32 @@
             #editPannel
             {
                 width: 432px;
-                min-height: 32px;
-                
+
                 margin-right: 8px;
                 
                 border-right: 1px solid #DDDDDD;
                 
+                overflow-x: hidden;
+
                 float: left;
             }
             
             #editPane
             {
                 width: inherit;
-                min-height: 32px;
+                
+                margin-right: 32px;
+
                 resize :none;
                 
                 text-align: left;
+
                 border: none;
                 
                 font-family: Arial;
                 
                 overflow-y: hidden;
+
                 overflow-x: hidden;
             }
             
@@ -256,7 +261,7 @@
                 </div>
                 <div id="editorBody">
                     <div id="editPannel">
-                        <textarea id="editPane">
+                        <textarea id="editPane" autofocus onhaschange= "this.style.posHeight=this.scrollHeight">Connecting...
                         </textarea>
                     </div>
                     <div id="liveView">
@@ -272,6 +277,9 @@
 </script>
 <script src="../js/MarkdownProcessor_by_Showdown.js">
 </script>
+<script type="text/javascript" src="../js/bcsocket.js"></script>
+<script type="text/javascript" src="../js/text.js"></script>
+<script type="text/javascript" src="../js/share.js"></script>
 <script>
     var editPane;
     var liveViewPane;
@@ -331,13 +339,55 @@
         $(editPane).keyup(function(event){
             onEditDoc(event);
         });
-        $(document).mouseover(function(event){
-            onEditDoc(event);
-        });
+        // $(document).mouseover(function(event){
+        //     onEditDoc(event);
+        // });
+        //lizhuoli:Don't allowed,sharejs must be use in the right order of event.So i remove it.use another edit such as setTimeout to sync textarea to the markdown code area.
         //利用jQuery注册事件
+        var userID = '11111';
+        var docID = '11111';
+        var projectID = '11111';
+
+        var ajaxData = {
+            userID: userID,
+            docID: docID
+        };
+
+        var snapshotText = '';
+        $.ajax({
+            type: 'GET',
+            url: '/api/doc/download',
+            data: ajaxData,
+            success: function(data){
+                snapshotText;
+            },
+            error: function(data){
+                editPane.value = '#fuck';
+            }
+        })
         
-        editPane.value="#Edit Here";
-        convertToLiveView();
+
+        var elem = document.getElementById('editPane');
+        var browserChannel = new BCSocket('http://localhost:8888/api/doc/sync', {reconnect: true});
+        var sharejs = new window.sharejs.Connection(browserChannel);
+
+
+        var doc = sharejs.get(docID, projectID);//get() to get the doc by docID
+
+        doc.subscribe(function(err){
+          console.log(doc);
+        });//Subcribe this doc to sync with server.What easy!!!!
+
+        doc.whenReady(function () {
+          if (!doc.type) doc.create('text');
+          if (doc.type && doc.type.name === 'text')
+            doc.attachTextarea(elem);
+            convertToLiveView();
+        });
+
+        // editPane.value="#Edit Here";
+        // convertToLiveView();
+        //lizhuoli:start to live view when the doc is ready.Use the doc.whenReady event to do it.
         //页面初始化工作
     }
 

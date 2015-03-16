@@ -1,13 +1,5 @@
-var mysql = require('mysql');
+var db = ('./mongoose').db;
 var user = require('./user');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : '941126',
-  database : 'markdown'
-});
-connection.connect();
-console.log('Database Start!');
 
 function prepareEdit (docID,markdownText,userID,res) {
 	checkUserList(docID,userID,res,function judgeUserID (result) {

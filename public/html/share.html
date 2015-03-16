@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/share.js"></script>
 <script>
 var elem = document.getElementById('pad');
-var browserChannel = new BCSocket(null, {reconnect: true});
+var browserChannel = new BCSocket('http://localhost:8888/api/doc/sync', {reconnect: true});
 var sharejs = new window.sharejs.Connection(browserChannel);
 
 
@@ -22,6 +22,7 @@ var docID = '11111';//docID,same as docID
 var projectID = '11111';//CollectionID.For us is projectID
 var doc = sharejs.get(docID, projectID);//get() to get the doc by docID
 
+console.log(doc);
  
 doc.subscribe(function(err){
   console.log(doc);

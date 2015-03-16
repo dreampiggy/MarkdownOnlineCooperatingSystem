@@ -7,11 +7,11 @@ var connect = require('../app/controller/connect');
 
 
 function home(req,res){
-	returnFile('/public/html/index.html',req,res)
+	res.redirect('html/index.html');
 }
 
 function favicon(req,res){
-	returnFile('/public/resource/favicon.ico',req,res)
+	returnFile('resource/favicon.ico',req,res)
 }
 
 function public(req,res){
