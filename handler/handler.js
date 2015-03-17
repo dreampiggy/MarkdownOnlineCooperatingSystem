@@ -1,4 +1,3 @@
-var fs = require('fs');
 var url = require('url');
 var tools = require('./tools');
 var account = require('../app/controller/account');
@@ -11,11 +10,11 @@ function home(req,res){
 }
 
 function favicon(req,res){
-	returnFile('resource/favicon.ico',req,res)
+	tools.returnFile('resource/favicon.ico',req,res)
 }
 
 function public(req,res){
-	returnFile(req.url,req,res);
+	tools.returnFile(req.url,req,res);
 }
 
 function userRegister(req,res){
@@ -124,32 +123,7 @@ function projectInfo(req,res){
 }
 
 function notFound(req,res){
-	returnFile('/public/html/Error.html',req,res);
-}
-
-function returnFile(pathname,req,res){
-	var path = __dirname + '/..' + pathname;
-	fs.stat(path,function(err,stat){
-		if(err){
-			res.statusCode = 404;
-			res.end("404 not found");
-		}
-		else{
-			if(stat.isFile()){
-				var stream = fs.createReadStream(path);
-				res.setHeader('Content-Length',stat.size);
-				stream.pipe(res);
-				stream.on('error',function(err){
-					res.statusCode = 500;
-					res.end("500 server error");
-				});
-			}
-			else{
-				res.statusCode = 404;
-				res.end("404 not found");
-			}
-		}
-	});
+	tools.returnFile('/public/html/Error.html',req,res);
 }
 
 exports.home = home;
