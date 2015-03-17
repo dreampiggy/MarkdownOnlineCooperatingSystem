@@ -1,7 +1,13 @@
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta name="author" content="Jason Yang" />
         <title>Features</title>
+        <link href="../CSS/Global.css" rel="stylesheet" type="text/css">
+        <link href="../CSS/Header.css" rel="stylesheet" type="text/css">
+        <link href="../CSS/font-awesome.css" rel="stylesheet" type="text/css">
         <style>
             #cover
             {
@@ -28,35 +34,10 @@
                 background-color: #F2F2F2;
             }
             
-            .AuthorColumn
+            .AboutColumn
             {
                 height: 256px;
                 background-color: white;
-            }
-            
-            #header_container
-            {
-                height: 64px;
-            }
-            
-            .headerFixed
-            {
-                height: inherit;
-                
-                background-color: black;
-                opacity: 0.7;
-            }
-            
-            #header
-            {
-                height: 48px;
-                
-                margin: auto;
-            }
-            
-            .headerFixed #header
-            {
-                padding-top: 8px;
             }
             
             #feature_documenting
@@ -69,90 +50,193 @@
                 background-image: url("../RESORCE/flower.jpg")
             }
             
-            #navi_brand_container
+            #sideMenu_container
             {
-                height: 48px;
-                
-                float: left;
+                position: fixed;
+
+                top: 104px;
             }
             
-            #userHeader
+            #sideMenu
             {
-                height: 48px;
-                width: 128px;
-                
                 float: right;
             }
             
-            #brand
+            .SideMemuColumn
             {
-                height: inherit;
-                width: 128px;
+                margin-top: 12px;
+                margin-bottom: 12px;
+                
+                height: 48px;
+            }
+            
+            .SideMenuButtonPrompt
+            {
+                padding-top: 8px;
+                
+                height: 32px;
                 
                 float: left;
-            }
-            
-            #navi
-            {
-                height: inherit;
-                float: right;
-            }
-            
-            table#naviTable
-            {
-                height: inherit;
-            }
-            
-            table#naviTable td
-            {
-                height: inherit;
-                width: 78px;
                 
-                border-collapse: collapse;
+                font-size: 20px;
+                color: black;
+                opacity: 0.5;
+            }
+            
+            .SideMenuButton
+            {
+                height: 48px;
+                width: 48px; 
+                
+                border-radius: 24px;
+                
+                margin-right: 8px;
+                
+                background-color: darkorange;
+                opacity: 0.5;
+                
+                float: right;
+                
+                text-align: center;
+                font-size: 24px;
+                color: black;
+            }
+            
+            .SideMenuButton i
+            {
+                display: block;
+                margin-top: 12px;
+            }
+            
+            #header_container
+            {
+                height: 96px;
+                
+                background-color: black;
+                opacity: 0.5;
+            }
+            
+            #header_container .ClickAble:hover,#sideMenu .ClickAble:hover
+            {
+                opacity: 0.75;
+            }
+            
+            #feature_documenting_textOnImg
+            {
+                height: 512px;
+                
+                margin: auto;
             }
             
             @media screen and (min-width: 1024px)
             {    
-                #header
+                #feature_documenting_textOnImg
                 {
                     width: 1024px;
                 }
             }
-            
-            @media screen and (max-width: 1024px)
+
+            @media only screen and (max-width: 1023px)
             { 
-                #header
+                #feature_documenting_textOnImg
                 {
                     width: 100%;
                 }
             }
         </style>
-        <link href="../CSS/Global.css" rel="stylesheet" type="text/css">
     </head>
     <body>
+        <div class="PageColumn" id="sideMenu_container">
+            <div id="sideMenu">
+                <div class="SideMemuColumn">
+                    <div class="SideMenuButtonPrompt">
+                        Cooperating
+                    </div>
+                    <div class="ClickAble SideMenuButton">
+                        <i class="icon-coffee"></i>
+                    </div>
+                </div>
+                <div class="SideMemuColumn">
+                    <div class="SideMenuButtonPrompt">
+                        Documenting
+                    </div>
+                    <div class="ClickAble SideMenuButton">
+                        <i class="icon-folder-open"></i>
+                    </div>
+                </div>
+                <div class="SideMemuColumn">
+                    <div class="SideMenuButtonPrompt">
+                        Markdown
+                    </div>
+                    <div class="ClickAble SideMenuButton">
+                        <i class="icon-font"></i>
+                    </div>
+                </div>
+                <div class="SideMemuColumn">
+                    <div class="SideMenuButtonPrompt">
+                        Login
+                    </div>
+                    <div class="ClickAble SideMenuButton">
+                        <i class="icon-signin"></i>
+                    </div>
+                </div>
+                <div class="SideMemuColumn">
+                    <div class="SideMenuButtonPrompt">
+                        Register
+                    </div>
+                    <div class="ClickAble SideMenuButton">
+                        <i class="icon-user"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="PageColumn" id="cover">
             <div class="PageColumn" id="header_container">
-                <div class="headerFixed">
-                    <div id="header">
-                        <div id="navi_brand_container">
-                            <div id="brand">
-                            </div>
-                            <div id="navi">
-                                <table id="naviTable">
-                                    <tr>
-                                        <td id="cooperating">
-                                        </td>
-                                        <td id="documenting">
-                                        </td>
-                                        <td id="markdown">
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                <div id="header">
+                    <div id="navi_brand_container">
+                        <div id="brand_container">
+                            <table id="brandTable" class="ClickAble">
+                                <tr>
+                                    <td>
+                                        <i class="icon-comments-alt"></i> Marktogether
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
-                        <div id="userHeader">
+                        <div id="naviTable_container">
+                            <table id="naviTable">
+                                <tr>
+                                    <td id="cooperating" class="ClickAble">
+                                        Cooperating
+                                    </td>
+                                    <td id="documenting" class="ClickAble">
+                                        Documenting
+                                    </td>
+                                    <td id="markdown" class="ClickAble">
+                                        Markdown
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
+                    <div id="userTable_container">
+                        <table id="userTable">
+                            <tr>
+                                <td id="cooperating" class="ClickAble">
+                                    Login
+                                </td>
+                                <td id="documenting" class="ClickAble">
+                                    Register
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="menu">
+                    </div>
+                </div>
+            </div>
+            <div class="PageColumn" id="feature_documenting_textOnImg_container">
+                <div id="feature_documenting_textOnImg">
                 </div>
             </div>
         </div>
@@ -166,7 +250,7 @@
         </div>
         <div class="PageColumn TextColumn">
         </div>
-        <div class="PageColumn AuthorColumn">
+        <div class="PageColumn AboutColumn">
     </body>
 </html>
 <script src="../JS/jquery-1.11.1.js">
@@ -174,4 +258,24 @@
 <script src="../JS/Global.js">
 </script>
 <script>
+    var cooperating;
+    var documenting;
+    var markdown;
+    
+    //var cooperating_side;
+    //var documenting_side;
+    //var markdown_side;
+    
+    window.onload=initilize;
+    
+    function initilize()
+    {
+        cooperating=$("#cooperating");
+        documenting=$("#documenting");
+        markdown=$("#markdown");
+        
+        cooperating.click(function(){goToCooperating();})
+        documenting.click(function(){goToDocumenting();})
+        markdown.click(function(){goToMarkdown();})
+    }
 </script>

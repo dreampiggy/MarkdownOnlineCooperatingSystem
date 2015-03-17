@@ -1,0 +1,133 @@
+#header
+{
+    height: 48px;
+
+    margin: auto;
+
+    padding-top: 24px;
+}
+
+#navi_brand_container,#userTable_container
+{
+    height: inherit;
+
+    text-align: center;
+    color: white;
+}
+
+#navi_brand_container
+{
+    float: left;
+}
+
+#userTable_container
+{
+    float: right;
+}
+
+#brand_container,#naviTable_container
+{
+    height: inherit;
+}
+
+#brand_container
+{
+    float: left;
+}
+
+#naviTable_container
+{
+    float: right;
+}
+
+table#brandTable,table#naviTable, table#userTable
+{
+    margin: center;
+
+    height: inherit;
+}
+
+table#brandTable td,table#naviTable td,table#userTable td
+{
+    height: inherit;
+
+    border-collapse: collapse;
+
+    text-align: center;
+    color: white;
+}
+
+table#brandTable td
+{
+    width: 192px;
+
+    font-size: 24px;
+}
+
+table#naviTable td
+{
+    width: 128px;
+
+    font-size: 16px;
+
+    border-right: 2px solid white;
+}
+
+table#userTable td
+{
+    width: 64px;
+
+    font-size: 16px;
+    text-align: left;
+    
+    color: darkorange;
+}
+
+#menu
+{
+    height: inherit;
+
+    float: right;
+    margin-right: 8px;
+
+    display: none;
+    
+    color: white;
+}
+
+@media screen and (min-width: 1024px)
+{    
+    #header
+    {
+        width: 1024px;
+    }
+}
+            
+@media only screen and (max-width: 1023px)
+{ 
+    #header
+    {
+        width: 100%;
+    }
+}
+            
+@media screen and (max-width: 767px)
+{
+    #naviTable_Container,#userTable_container
+    {
+        display: none;
+    }
+
+    #menu
+    {
+        display: inline;
+    }
+}
+
+@media screen and (max-width: 247px)
+{
+    #
+    {
+        display: none;
+    }
+}

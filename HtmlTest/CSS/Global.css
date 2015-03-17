@@ -5,23 +5,11 @@
 
 body
 {
-	text-align: center;
-
 	margin: 0px;
 	padding: 0px;
-
-    background-attachment: fixed;
-    background-color: #FFFFFF;
-}
-
-a
-{
-	text-decoration: none;
-}
-
-font
-{
-	font-family: Arial;
+    
+    font-family: Arial,Verdana,Sans-serif;
+    text-decoration: none;
 }
 
 .Clickable
