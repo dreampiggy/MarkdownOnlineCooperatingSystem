@@ -3,14 +3,8 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
-var livedb = require('livedb');
-var sharejs = require('share');
 var browserChannel = require('browserchannel').server
-var Duplex = require('stream').Duplex;
-var db = require('livedb-mongo')('mongodb://localhost:27017/test', {safe:true});
-var backend = livedb.client(db);
-var share = require('share').server.createClient({backend: backend});
-
+var communicate = require('../app/share/share').communicate;
 
 function route(app){
 
@@ -40,33 +34,8 @@ function route(app){
 		// corsAllowCredentials: (Default false) Sets the Access-Control-Allow-Credentials header in responses. 
 		// keepAliveInterval: (Default 20000 = 20 seconds).
 		// sessionTimeoutInterval: (Default 30 seconds).
-	},function(client) {
-		var stream = new Duplex({objectMode: true});
-
-		stream._read = function() {};
-		stream._write = function(chunk, encoding, callback) {
-		if (client.state !== 'closed') {
-			client.send(chunk);
-		}
-		callback();//write to stream
-		};
-
-		client.on('message', function(data) {
-			console.log(data);
-			stream.push(data);
-		});
-
-		client.on('close', function(reason) {
-			stream.push(null);
-			stream.emit('close');
-		});
-
-		stream.on('end', function() {
-			client.close();
-		});
-
-		// Give the stream to sharejs
-		return share.listen(stream);
+	},function(client){
+		communicate(client);//see /app/share/share.js
 	}));
 
 //Home Page

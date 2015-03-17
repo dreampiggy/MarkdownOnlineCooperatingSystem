@@ -1,7 +1,5 @@
 var mongoose = require('./mongoose').mongoose;
-var db = require('./mongoose').db;
 var crypto = require('crypto');
-var async = require('async');
 
 var Schema = mongoose.Schema
   , ObjectId = Schema.ObjectId;
@@ -27,7 +25,7 @@ var inviteModel = mongoose.model('invite',inviteSchema);
 
 function register(userName,userPwd,callback){
 	var password = sha1(userPwd);
-	getUserID(userName,function(result){
+	getUserByName(userName,function(result){
 		if(!result){
 			userModel.create({
 				userName: userName,
@@ -89,7 +87,7 @@ function editUser(userID,userName,callback){
 	})
 }
 
-function getUserID(userName,callback){
+function getUserByName(userName,callback){
 	userModel
 	.findOne({
 		userName: userName
@@ -107,7 +105,7 @@ function getUserID(userName,callback){
 	})
 }
 
-function getUserName(userID,callback){
+function getUserByID(userID,callback){
 	userModel
 	.findOne({
 		_id: userID
@@ -117,7 +115,7 @@ function getUserName(userID,callback){
 			callback(false);
 		}
 		else if(result != null){
-			callback(result.userName);
+			callback(result);
 		}
 		else{
 			callback(false);
@@ -134,7 +132,7 @@ function getDocList(userID,callback){
 		if(err){
 			callback(false);
 		}
-		else if(result != null){
+		else if(result){
 			callback(result.docList);
 		}
 		else{
@@ -145,7 +143,7 @@ function getDocList(userID,callback){
 
 function addDocList(userID,docID,callback){
 	getDocList(userID,function(result){
-		if(result && !result.in_array(docID)){//check if the docList have the same docID as provide
+		if(result && (result.length == 0 || !result.in_array(docID))){//check if the docList have the same docID as provide
 			result.push(docID);//push the new docID to the docList
 			console.log(result);
 			userModel
@@ -178,7 +176,7 @@ function getProjectList(userID,callback){
 		if(err){
 			callback(false);
 		}
-		else if(result != null){
+		else if(result){
 			callback(result.projectList);
 		}
 		else{
@@ -189,7 +187,7 @@ function getProjectList(userID,callback){
 
 function addProjectList(userID,projectID,callback){
 	getProjectList(userID,function(result){
-		if(result && !result.in_array(projectID)){//check if the projectID have the same projectList as provide
+		if(result && (result.length == 0 || !result.in_array(projectID))){//check if the projectID have the same projectList as provide
 			result.push(projectID);//push the new projectID to the projectList
 			console.log(result);
 			userModel
@@ -299,7 +297,7 @@ function getInvite(userID,callback){
 		if(err){
 			callback(false);
 		}
-		else if(result.length != 0){
+		else if(result){
 			callback(result);
 		}
 		else{
@@ -396,10 +394,10 @@ Array.prototype.in_array = function(e)
 // checkUserID(111112,function(result){
 // 	console.log(result);
 // })
-// getUserID('lizhuoli',function(result){
+// getUserByName('lizhuoli',function(result){
 // 	console.log(result);
 // });
-// getUserName('5506f74d20b5087702e67e6f',function(result){
+// getUserByID('5506f74d20b5087702e67e6f',function(result){
 // 	console.log(result);
 // })
 // getDocList('5506f74d20b5087702e67e6f',function(result){
@@ -447,8 +445,8 @@ Array.prototype.in_array = function(e)
 exports.register = register;
 exports.login = login;
 exports.checkUserID = checkUserID;
-exports.getUserID = getUserID;
-exports.getUserName = getUserName;
+exports.getUserByName = getUserByName;
+exports.getUserByID = getUserByID;
 exports.addDocList = addDocList;
 exports.getDocList = getDocList;
 exports.addProjectList = addProjectList;

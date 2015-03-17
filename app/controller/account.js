@@ -1,6 +1,6 @@
 var url = require('url');
 var user = require('../model/user');
-
+var async = require('async');
 
 //200 OK!
 //403 Login Failed!
@@ -21,82 +21,56 @@ function register(req,res){
 	var args = url.parse(req.url, true).query;
 	var userName = args['userName'];
 	var password = args['password'];
-	user.getUserID(userName,function(result){
-		if(!result){
-			user.register(userName,password,function(result){
-				if(result){
-					res.statusCode = 200;
-					res.end();
-				}
-				else{
-					res.statusCode = 408;
-					res.end();
-				}
-			});
+	user.register(userName,password,function(result){
+		if(result){
+			res.statusCode = 200;
+			res.end();
 		}
 		else{
 			res.statusCode = 403;
 			res.end();
 		}
-	});
+	})
 }
 
 function getInfo(req,res){
 	var args = url.parse(req.url, true).query;
 	var userID = args['userID'];
-	var userName;
-	var docList;
-	var projectList;
-	var inviteList;
-	var counter = 1;
-	function getAll(){
-		if (counter < 4) {
-			counter++;
-		} else {
+	async.parallel([
+	    function(callback){
+	    	user.getUserByID(userID,function(result){
+	    		callback(null, result);
+	    	});
+	    },
+	    function(callback){
+	    	user.getInvite(userID,function(result){
+	    		callback(null, result);
+	    	});
+	    }
+	],
+	// optional callback
+	function(err, results){
+		if(err){
+			console.log(err);
+			res.statusCode = 404;
+			res.end();
+		}
+		else if(results[0] && results[1]){
 			res.statusCode = 200;
 			res.json({
-				username: userName,
-				docList: docList,
-				projectList: projectList,
-				invitelist: inviteList
+				userName: results[0].userName,
+				docList: results[0].docList,
+				projectList: results[0].projectList,
+				inviteList: results[1]//Prepare to use json k-v array.Talk it latter
 			});
-		}
-	}
-	user.getUserName(userID,function(result){
-		if(result != false){
-			userName = result;
-			getAll();
+			res.end();
 		}
 		else{
-			req.statusCode = 403;
+			res.statusCode = 404;
+			res.end();
 		}
-	});
-	user.getDocList(userID,function(result){
-		if(result != false){
-			docList = result;
-			getAll();
-		}
-		else{
-			req.statusCode = 403;
-		}
-	});
-	user.getProjectList(userID,function(result){
-		if(result != false){
-			projectList = result;
-			getAll();
-		}
-		else{
-			req.statusCode = 403;
-		}
-	});
-	user.getInvite(userID,function(result){
-		if(result != false){
-			inviteList = result;
-			getAll();
-		}
-		else{
-			req.statusCode = 403;
-		}
+	    // the results array will equal ['one','two'] even though
+	    // the second function had a shorter timeout.
 	});
 }
 

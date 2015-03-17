@@ -1,6 +1,7 @@
 var url = require('url');
 var docs = require('../model/docs');
 var user = require('../model/user');
+var share = require('../share/share');
 
 function editDoc(req,res){
 	var json = '';

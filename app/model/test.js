@@ -1,4 +1,3 @@
-var db = ('./mongoose').db;
 var user = require('./user');
 var docs = require('./docs');
 var project = require('./project');
