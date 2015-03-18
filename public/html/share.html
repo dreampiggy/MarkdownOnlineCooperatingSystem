@@ -18,8 +18,8 @@ var browserChannel = new BCSocket('http://localhost:8888/api/doc/sync', {reconne
 var sharejs = new window.sharejs.Connection(browserChannel);
 
 
-var projectID = '5506757487329c8df8e734ec';//CollectionID.For us is projectID
-var docID = '55078d38a64aa3d401c894dc';//docID,same as docID
+var projectID = '55078d38a64aa3d401c894dc';//CollectionID.For us is projectID
+var docID = '550986982ea42e8b03d5e12e';//docID,same as docID
 var doc = sharejs.get(projectID, docID);//get() to get the doc by docID
 
 console.log(doc);

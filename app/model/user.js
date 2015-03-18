@@ -9,7 +9,7 @@ var userSchema = new Schema({
 	userName: String,
 	userNumber: {type: Number, min: 8, default: 10000000 },
 	password: String,
-	docList: [String],
+	inviteList: [String],
 	projectList: [String],
 });
 var userModel = mongoose.model('user', userSchema);
@@ -123,49 +123,49 @@ function getUserByID(userID,callback){
 	})
 }
 
-function getDocList(userID,callback){
-	userModel
-	.findOne({
-		_id: userID
-	})
-	.exec(function(err,result){
-		if(err){
-			callback(false);
-		}
-		else if(result){
-			callback(result.docList);
-		}
-		else{
-			callback(false);
-		}
-	})
-}
+// function getDocList(userID,callback){
+// 	userModel
+// 	.findOne({
+// 		_id: userID
+// 	})
+// 	.exec(function(err,result){
+// 		if(err){
+// 			callback(false);
+// 		}
+// 		else if(result){
+// 			callback(result.docList);
+// 		}
+// 		else{
+// 			callback(false);
+// 		}
+// 	})
+// }
 
-function addDocList(userID,docID,callback){
-	getDocList(userID,function(result){
-		if(result && (result.length == 0 || !result.in_array(docID))){//check if the docList have the same docID as provide
-			result.push(docID);//push the new docID to the docList
-			console.log(result);
-			userModel
-			.findOneAndUpdate({},{
-				docList: result
-			},function(err,result){
-				if(err){
-					callback(false);
-				}
-				else if(result){
-					callback(true);
-				}
-				else{
-					callback(false);
-				}
-			})
-		}
-		else{
-			callback(false);
-		}
-	})
-}
+// function addDocList(userID,docID,callback){
+// 	getDocList(userID,function(result){
+// 		if(result && (result.length == 0 || !result.in_array(docID))){//check if the docList have the same docID as provide
+// 			result.push(docID);//push the new docID to the docList
+// 			console.log(result);
+// 			userModel
+// 			.findOneAndUpdate({},{
+// 				docList: result
+// 			},function(err,result){
+// 				if(err){
+// 					callback(false);
+// 				}
+// 				else if(result){
+// 					callback(true);
+// 				}
+// 				else{
+// 					callback(false);
+// 				}
+// 			})
+// 		}
+// 		else{
+// 			callback(false);
+// 		}
+// 	})
+// }
 
 function getProjectList(userID,callback){
 	userModel
@@ -346,28 +346,28 @@ function checkUserID(userID,callback){
 	})
 }
 
-function checkDoc(userID,docID,callback){
-	getDocList(userID,function(result){
-		if(result && result.in_array(docID)){
-			userModel
-			.findOne({})
-			.exec(function(err,result){
-				if(err){
-					callback(false);
-				}
-				else if(result){
-					callback(true);
-				}
-				else{
-					callback(false);
-				}
-			})
-		}
-		else{
-			callback(false);
-		}
-	})
-}
+// function checkDoc(userID,docID,callback){
+// 	getDocList(userID,function(result){
+// 		if(result && result.in_array(docID)){
+// 			userModel
+// 			.findOne({})
+// 			.exec(function(err,result){
+// 				if(err){
+// 					callback(false);
+// 				}
+// 				else if(result){
+// 					callback(true);
+// 				}
+// 				else{
+// 					callback(false);
+// 				}
+// 			})
+// 		}
+// 		else{
+// 			callback(false);
+// 		}
+// 	})
+// }
 
 function checkProject(userID,projectID,callback){
 	getProjectList(userID,function(result){
@@ -402,16 +402,24 @@ function sha1(str) {
 }
 
 
+//delete the first element by value in the array and return new array
+Array.prototype.del_value=function(v){
+	for(i=0;i<this.length;i++){
+		if(this[i] == v){
+			this.splice(i,1);
+			return this;
+		}
+	}
+	return false;
+};
 //tools to check if an element in the array
-Array.prototype.in_array = function(e)  
-{  
-	for(i=0;i<this.length;i++)  
-	{  
-		if(this[i] == e)  
-		return true;  
-	}  
-	return false;  
-}  
+Array.prototype.in_array = function(e){
+	for(i=0;i<this.length;i++){
+		if(this[i] == e)
+		return true;
+	}
+	return false;
+};
 
 // checkUserID(111112,function(result){
 // 	console.log(result);
@@ -469,8 +477,6 @@ exports.login = login;
 exports.checkUserID = checkUserID;
 exports.getUserByName = getUserByName;
 exports.getUserByID = getUserByID;
-exports.addDocList = addDocList;
-exports.getDocList = getDocList;
 exports.addProjectList = addProjectList;
 exports.getProjectList = getProjectList;
 exports.inviteUser = inviteUser;
@@ -478,6 +484,5 @@ exports.getInvite = getInvite;
 exports.acceptInvite = acceptInvite;
 exports.rejectInvite = rejectInvite;
 exports.getInvite = getInvite;
-exports.checkDoc = checkDoc;
 exports.checkProject = checkProject;
 exports.editUser = editUser;

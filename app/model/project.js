@@ -131,7 +131,6 @@ function addUserList(projectID,userID,callback){
 	getUserList(projectID,function(result){
 		if(result && (result.length == 0 || !result.in_array(userID))){//check if the userList have the same userID as provide
 			result.push(userID);//push the new userID to the userList
-			console.log(result);
 			projectModel
 			.findOneAndUpdate({},{
 				userList: result
@@ -177,7 +176,6 @@ function addDocList(projectID,docID,callback){
 	getDocList(projectID,function(result){
 		if(result && (result.length == 0 || !result.in_array(docID))){//check if the docList have the same docID as provide
 			result.push(docID);//push the new docID to the docList
-			console.log(result);
 			projectModel
 			.findOneAndUpdate({},{
 				docList: result
@@ -199,6 +197,37 @@ function addDocList(projectID,docID,callback){
 	})
 }
 
+function deleteDocList(projectID,docID,callback){
+	getDocList(projectID,function(result){
+		if(result && result.in_array(docID)){
+			var newDocList = result.del_value(docID);
+			if(newDocList){
+				projectModel
+				.findOneAndUpdate({
+					_id: projectID
+				},{
+					docList: newDocList
+				},function(err,result){
+					if(err){
+						callback(false);
+					}
+					else if(result){
+						callback(true);
+					}
+					else{
+						callback(false);
+					}
+				})
+			}
+			else{
+				callback(false);
+			}
+		}
+		else{
+			callback(false);
+		}
+	})
+}
 
 function getDocList(projectID,callback){
 	projectModel
@@ -264,6 +293,26 @@ function checkDoc(docID,projectID,callback){
 	});
 }
 
+
+//delete the first element by value in the array and return new array
+Array.prototype.del_value=function(v){
+	for(i=0;i<this.length;i++){
+		if(this[i] == v){
+			this.splice(i,1);
+			return this;
+		}
+	}
+	return false;
+};
+//tools to check if an element in the array
+Array.prototype.in_array = function(e){
+	for(i=0;i<this.length;i++){
+		if(this[i] == e)
+		return true;
+	}
+	return false;
+};
+
 // getProjectByName('pro1',function(result){
 // 	console.log(result);
 // })
@@ -302,5 +351,6 @@ exports.updateProject = updateProject;
 exports.deleteProject = deleteProject;
 exports.addUserList = addUserList;
 exports.addDocList = addDocList;
+exports.deleteDocList = deleteDocList;
 exports.checkDoc = checkDoc;
 exports.checkUser = checkUser;

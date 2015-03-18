@@ -1,6 +1,7 @@
 var mongoose = require('./mongoose').mongoose;
 var share = require('../share/share');
 var user = require('./user');
+var async = require('async');
 
 var Schema = mongoose.Schema
   , ObjectId = Schema.ObjectId;
@@ -14,9 +15,10 @@ var docSchema = new Schema({
 var docModel = mongoose.model('doc', docSchema);
 
 
-function getDocByID(docID,callback){
+function getDocByID(projectID,docID,callback){
 	docModel
 	.findOne({
+		projectID: projectID,
 		_id: docID
 	})
 	.exec(function(err,result){
@@ -35,8 +37,8 @@ function getDocByID(docID,callback){
 function getDocByName(projectID,docName,callback){
 	docModel
 	.findOne({
-		docName: docName,
-		projectID: projectID
+		projectID: projectID,
+		docName: docName
 	})
 	.exec(function(err,result){
 		if(err){
@@ -51,10 +53,30 @@ function getDocByName(projectID,docName,callback){
 	})
 }
 
-function getDocContent(projectID,docID,callback){
-	share.getSnapshot(projectID,docID,function(result){
+function getDocPreview(projectID,docID,callback){
+	getDocByID(projectID,docID,function(result){
 		if(result){
-			callback(result);
+			var docName = result.docName;
+			var time = result.time;
+			share.getSnapshot(projectID,docID,function(result){
+				if(result){
+					var snapshot = '';
+					if(result.length < 200){//default is 200 character(include any utf-8 character)
+						snapshot = result.data;
+					}
+					else{
+						snapshot = result.data.substr(0,200);
+					}
+					callback({
+						docName: docName,
+						time: time,
+						previewData: snapshot
+					});
+				}
+				else{
+					callback(false);
+				}
+			})			
 		}
 		else{
 			callback(false);
@@ -92,10 +114,52 @@ function newDoc(projectID,docName,authorID,callback){
 
 
 
-function deleteDoc(projectID,docID,callback){
-	share.deleteDoc(projectID,doc,function(result){
-		callback(result);
-	});
+function deleteDoc(projectID,docID,userID,callback){
+	async.auto({
+		checkAuthor: function(callback){
+			checkAuthor(projectID,docID,userID,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('Not the author of the docID: ' + docID,null);
+				}
+			})
+		},
+		thisDeleteDoc: ['checkAuthor',function(callback){
+			docModel
+			.remove({
+				_id: docID,
+				authorID: userID
+			},function(err,result){
+				if(err){
+					callback('Remove form docs collection Error',null);
+				}
+				else{
+					callback(null,result);
+				}
+			})
+		}],
+		shareDeleteDoc: ['checkAuthor',function(callback){
+			share.deleteDoc(projectID,docID,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('Remove from livedb Error',null);
+				}
+			})
+		}]
+	},
+	function(err,results){
+		if(err){
+			console.log(err);
+			callback(false);
+		}
+		else{
+			callback(true);
+		}
+	})
 }
 
 function editDocInfo(projectID,docID,docName,callback){
@@ -119,11 +183,10 @@ function editDocInfo(projectID,docID,docName,callback){
 }
 
 
-function addUserList(docID,userID,callback){
-	getUserList(docID,function(result){
+function addUserList(projectID,docID,userID,callback){
+	getUserList(projectID,docID,function(result){
 		if(result && (result.length == 0 || !result.in_array(userID))){//check if the userList have the same userID as provide
 			result.push(userID);//push the new userID to the userList
-			console.log(result);
 			docModel
 			.findOneAndUpdate({},{
 				userList: result
@@ -146,9 +209,10 @@ function addUserList(docID,userID,callback){
 }
 
 
-function getUserList(docID,callback){
+function getUserList(projectID,docID,callback){
 	docModel
 	.findOne({
+		projectID: projectID,
 		_id: docID
 	})
 	.exec(function(err,result){
@@ -164,22 +228,10 @@ function getUserList(docID,callback){
 	});
 }
 
-function checkUser(docID,userID,callback){
-	getUserList(docID,function(result){
+function checkUser(projectID,docID,userID,callback){
+	getUserList(projectID,docID,function(result){
 		if(result && result.in_array(userID)){
-			docModel
-			.findOne({})
-			.exec(function(err,result){
-				if(err){
-					callback(false);
-				}
-				else if(result){
-					callback(true);
-				}
-				else{
-					callback(false);
-				}
-			})
+			callback(true);
 		}
 		else{
 			callback(false);
@@ -187,66 +239,50 @@ function checkUser(docID,userID,callback){
 	});
 }
 
+function checkAuthor(projectID,docID,authorID,callback){
+	docModel
+	.findOne({
+		projectID: projectID,
+		_id: docID,
+		authorID: authorID
+	},function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result){
+			callback(true);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
 
-//No use.Because the sharejs have an API to get the snapshot.So it don't need 
-// //use this to get the doc content
-// function getDocContent(docID,callback){
-// 	if(!mongodb){
-// 		console.log('fuck');
-// 		callback(false);
-// 		return;
-// 	}
-// 	getDoc(docID,function(result){
-// 		if(result){
-// 			findDocuments(mongodb,result.contentID,function(result){
-// 				callback(result);
-// 			});
-// 		}
-// 		else{
-// 			callback(false);
-// 		}
-// 	})
-// }
-
-// function findDocuments (db,collectionName,callback) {// Get the documents from mongodb test db collection
-//   	var collection = db.collection(collectionName);
-//   	collection.find({}).toArray(function(err, docs) {
-//   		if(err){
-//   			callback(false);
-//   		}
-//   		else{
-//   			var result = docs[0];
-//   			callback(result._data);
-//   		}
-//   	});
-// }
-
-
-// 	getDocContent('5507d62f26da51c20247f878',function(result){
-// 		console.log(result);
-// 	});
-// function prepareEdit (docID,markdownText,userID,res) {
-// 	checkUserList(docID,userID,res,function judgeUserID (result) {
-// 		if(!result){
-// 			sendError(403,res);
-// 		}
-// 		else{
-// 			updateDoc(docID,markdownText,userID,res);
-// 		}
-// 	});
-// }
-// newDoc('5506757487329c8df8e734ec','doc3','5506f74d20b5087702e67e6f',function(result){
-// 	console.log(result);
-// })
-// editDocInfo('5506757487329c8df8e734ec','5507fa245fb0b322054e751f','fuckdoc',function(result){
-// 	console.log(result);
-// })
+//delete the first element by value in the array and return new array
+Array.prototype.del_value=function(v){
+	for(i=0;i<this.length;i++){
+		if(this[i] == v){
+			this.splice(i,1);
+			return this;
+		}
+	}
+	return false;
+};
+//tools to check if an element in the array
+Array.prototype.in_array = function(e){
+	for(i=0;i<this.length;i++){
+		if(this[i] == e)
+		return true;
+	}
+	return false;
+};
 
 exports.checkUser = checkUser;
+exports.getDocByID = getDocByID;
 exports.getDocByName = getDocByName;
 exports.addUserList = addUserList;
 exports.getUserList = getUserList;
-exports.getDocContent = getDocContent;
+exports.getDocPreview = getDocPreview;
 exports.newDoc = newDoc;
 exports.deleteDoc = deleteDoc;
 exports.editDocInfo = editDocInfo;

@@ -99,13 +99,13 @@ Doc
 	app.post('/api/doc/remove',function(req,res){
 		handler.docRemove(req,res);
 	});
-//Doc upload
-	app.post('/api/doc/upload',function(req,res){
-		handler.docUpload(req,res);
+//Doc info
+	app.get('/api/doc/info',function(req,res){
+		handler.docGetInfo(req,res);
 	});
-//Doc download
-	app.get('/api/doc/download',function(req,res){
-		handler.docDownload(req,res);
+//Doc edit
+	app.post('/api/doc/edit',function(req,res){
+		handler.docEditInfo(req,res);
 	});
 //Doc preview
 	app.get('/api/doc/preview',function(req,res){

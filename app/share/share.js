@@ -42,7 +42,6 @@ function getSnapshot(projectID,docID,callback){
             callback(false);
         }
         else{
-            console.log(snapshot);
             callback(snapshot);
         }
     })
@@ -51,7 +50,7 @@ function getSnapshot(projectID,docID,callback){
 
 
 function deleteDoc(projectID,docID,callback){
-    livedb.submit(projectID, docID, {del:true}, function(err) {
+    backend.submit(projectID, docID, {del:true}, function(err) {
         if(err){
             callback(false);
         }
@@ -61,9 +60,6 @@ function deleteDoc(projectID,docID,callback){
     });
 }
 
-// getSnapshot('5506757487329c8df8e734ec','55078d38a64aa3d401c894dc',function(result){
-//     console.log(result);
-// })
 
 exports.communicate = communicate;
 exports.share = share;

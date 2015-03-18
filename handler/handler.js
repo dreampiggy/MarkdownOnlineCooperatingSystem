@@ -35,23 +35,8 @@ function userLogin(req,res){
 	tools.checkCaptcha(req,captcha,function(result){
 		if(result){
 			account.login(req,function(result){
-				if(result != 403){
-					console.log('userID: ' + result + ' have login!');
-					tools.setLoginSession(req,result,function(result){
-						if(result){
-							res.status(200);
-							res.end();
-						}
-						else{
-							res.status(408);
-							res.end();
-						}
-					});
-				}
-				else{
-					res.status(403);
-					res.end();
-				}
+				res.status(result);
+				res.end();
 			});
 		}
 		else{
@@ -123,29 +108,78 @@ function userAccept(req,res){
 //403 Not allowed!
 function userReject(req,res){
 	account.rejectUser(req,function(result){
-		res.status(result);
-		res.end();
+		if(result){
+			res.status(result);
+			res.end();
+		}
 	});
 }
 
+//200 OK!
+//403 Same docName or wrong projectID
+//Attention:Different projects may have docs whose docName are the same but docID are different
 function docAdd(req,res){
-	connect.addDoc(req,res);
+	connect.addDoc(req,function(result){
+		if(result){
+			res.status(result);
+			res.end();
+		}
+	});
 }
 
 function docRemove(req,res){
-	connect.deleteDoc(req,res);
+	connect.deleteDoc(req,function(result){
+		if(result){
+			res.status(result);
+			res.end();
+		}
+	});
 }
 
-function docUpload(req,res){
-	connect.editDoc(req,res);
+function docEditInfo(req,res){
+	connect.editDoc(req,function(result){
+		if(result){
+			res.status(result);
+			res.end();
+		}
+	});
 }
 
-function docDownload(req,res){
-	connect.getDoc(req,res);
+function docGetInfo(req,res){
+	connect.getDoc(req,function(result){
+		if(result){
+			res.status(200);
+			res.json({
+				docName: result.docName,
+				time: result.time,
+				authorID: result.authorID,
+				userList: result.userList
+			});
+			res.end();
+		}
+		else{
+			res.status(404);
+			res.end();
+		}
+	});
 }
 
 function docPreview(req,res){
-	connect.previewDoc(req,res);
+	connect.previewDoc(req,function(result){
+		if(result){
+			res.status(200);
+			res.json({
+				docName: result.docName,
+				time: result.time,
+				previewData: result.previewData
+			});
+			res.end();
+		}
+		else{
+			res.status(404);
+			res.end();
+		}
+	});
 }
 
 function projectAdd(req,res){
@@ -181,8 +215,8 @@ exports.userAccept = userAccept;
 exports.userReject = userReject;
 exports.docAdd = docAdd;
 exports.docRemove = docRemove;
-exports.docUpload = docUpload;
-exports.docDownload = docDownload;
+exports.docEditInfo = docEditInfo;
+exports.docGetInfo = docGetInfo;
 exports.docPreview = docPreview;
 exports.projectAdd = projectAdd;
 exports.projectRemove = projectRemove;

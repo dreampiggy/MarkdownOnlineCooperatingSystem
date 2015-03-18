@@ -3,15 +3,23 @@ var user = require('../model/user');
 var async = require('async');
 var tools = require('../../handler/tools');
 
-//result userID
+//200 OK!
 //403 Login Failed!
+//408 DB or session Error!
 function login(req,callback){
 	var args = url.parse(req.url, true).query;
 	var userName = args['userName'];
 	var password = args['password'];
 	user.login(userName,password,function(result){
 		if(result){
-			callback(result);
+			tools.setLoginSession(req,result,function(result){
+				if(result){
+					callback(200);
+				}
+				else{
+					callback(408);
+				}
+			});
 		}
 		else{
 			callback(403);
@@ -75,7 +83,6 @@ function getInfo(req,callback){
 		else if(results.getUserByID && results.getInvite){
 			var json = ({
 				userName: results.getUserByID.userName,
-				docList: results.getUserByID.docList,
 				projectList: results.getUserByID.projectList,
 				inviteList: results.getInvite
 			});
@@ -94,6 +101,7 @@ function inviteUser(req,callback){
 	var projectID = args['projectID'];
 	var inviterUserID = args['inviterID'];
 	var beInvitedUserID;
+	//principle:if 3 or more function are needed,use async.Otherwise,use callback
 	async.auto({
 		getSession: function(callback){
 			tools.getSession(req,function(result){
@@ -135,21 +143,6 @@ function inviteUser(req,callback){
 			callback(200);
 		}
 	})
-	// user.checkProject(inviterUserID,projectID,function(result){
-	// 	if(result){
-	// 		user.inviteUser(projectID,inviterUserID,beInvitedUserID,function(result){
-	// 			if(result){
-	// 				callback(200);
-	// 			}
-	// 			else{
-	// 				callback(403);
-	// 			}
-	// 		});
-	// 	}
-	// 	else{
-	// 		callback(403);
-	// 	}
-	// });
 }
 
 
