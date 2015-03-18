@@ -216,20 +216,40 @@ function inviteUser(projectID,inviterUserID,beInvitedUserID,callback){
 		callback(false);
 		return;
 	}
+	var notInvited;
 	getInvite(beInvitedUserID,function(result){
-		if(result){//when the projectID and inviterID both the same,it's not allowed
-			var notInvited = true;
+		if(result && result.state == 0){//when the projectID and inviterID both the same,it's not allowed
+			notInvited = true;
 			result.forEach(function(elem){
-				if(elem.projectID == projectID &&elem.inviterID == inviterUserID){
+				if(elem.projectID == projectID && elem.inviterID == inviterUserID){
 					notInvited = false;
 				}
 			});
 		}
-		if(notInvited || !result){
+		if(notInvited){
 			inviteModel.create({
 				userID: beInvitedUserID,
 				inviterID: inviterUserID,
 				projectID: projectID
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			});
+		}
+		else if(result.state == -1){//allow user who was rejected the invite to reinvite again
+			inviteModel.findOneAndUpdate({
+				userID: beInvitedUserID,
+				inviterID: inviterUserID,
+				projectID: projectID
+			},{
+				state: 0
 			},function(err,result){
 				if(err){
 					callback(false);
@@ -252,7 +272,8 @@ function acceptInvite(userID,projectID,callback){
 	inviteModel
 	.findOneAndUpdate({
 		userID: userID,
-		projectID: projectID
+		projectID: projectID,
+		state: 0
 	},{
 		state: 1
 	},function(err,result){
@@ -272,7 +293,8 @@ function rejectInvite(userID,projectID,callback){
 	inviteModel
 	.findOneAndUpdate({
 		userID: userID,
-		projectID: projectID
+		projectID: projectID,
+		state: 0
 	},{
 		state: -1
 	},function(err,result){
@@ -290,7 +312,7 @@ function rejectInvite(userID,projectID,callback){
 
 function getInvite(userID,callback){
 	inviteModel
-	.find({
+	.findOne({
 		userID: userID
 	})
 	.exec(function(err,result){
@@ -451,6 +473,7 @@ exports.addDocList = addDocList;
 exports.getDocList = getDocList;
 exports.addProjectList = addProjectList;
 exports.getProjectList = getProjectList;
+exports.inviteUser = inviteUser;
 exports.getInvite = getInvite;
 exports.acceptInvite = acceptInvite;
 exports.rejectInvite = rejectInvite;

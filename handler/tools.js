@@ -13,6 +13,23 @@ client.on('connect',function(){
 })
 
 
+function getSession(req,callback){
+	var uuid;
+	if(typeof req.cookies.uuid == 'undefiend'){
+		callback(false);
+		return;
+	}
+	uuid = req.cookies.uuid;
+	client.hgetall(uuid,function(err,reply){
+		if(reply && reply.state == 'online'){
+			callback(reply);
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
 function setCaptcha(req,res){
 	var uuid;
 	if(typeof req.cookies.uuid != 'undefiend'){
@@ -30,8 +47,8 @@ function setCaptcha(req,res){
 	var text = ary[0];//captcha code
 	var buffer = ary[1];//captcha picture
 	client.hmset(uuid,{
-		'state': 'offline',
-		'captcha': text
+		state: 'offline',
+		captcha: text
 	},function(err, reply){
 		res.end(buffer);
 	})
@@ -53,10 +70,11 @@ function checkCaptcha (req,captcha,callback) {
 	})
 }
 
-function setLoginSession(req,res,callback){
+function setLoginSession(req,userID,callback){
 	var uuid = req.cookies.uuid;
 	client.hmset(uuid,{
-		'state': 'online'
+		state: 'online',
+		userID: userID
 	},function(err,reply){
 		if(reply){
 			callback(true);
@@ -67,7 +85,7 @@ function setLoginSession(req,res,callback){
 	})
 }
 
-function setLogoutSession(req,res,callback){
+function setLogoutSession(req,callback){
 	var uuid = req.cookies.uuid;
 	client.del(uuid,function(err,reply){
 		if(reply){
@@ -163,7 +181,7 @@ function upload(req,res){
 
 
 
-
+exports.getSession = getSession;
 exports.setCaptcha = setCaptcha;
 exports.checkCaptcha = checkCaptcha;
 exports.setLoginSession = setLoginSession;

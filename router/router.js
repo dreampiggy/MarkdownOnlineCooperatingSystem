@@ -20,7 +20,7 @@ function route(app){
 		secret: 'markdown',
 		resave: false,
 		saveUninitialized: true,
-		cookie: {maxAge: 3600000 * 24 * 30}
+		cookie: {maxAge: 3600000 * 24}//Session only save for 1 day.So after 1 day you must relogin -.-~
 		})
 	);
 
