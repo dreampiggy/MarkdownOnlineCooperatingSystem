@@ -1,5 +1,6 @@
 var url = require('url');
 var user = require('../model/user');
+var project = require('../model/project');
 var async = require('async');
 var tools = require('../../handler/tools');
 
@@ -10,9 +11,11 @@ function login(req,callback){
 	var args = url.parse(req.url, true).query;
 	var userName = args['userName'];
 	var password = args['password'];
+	var userID;
 	user.login(userName,password,function(result){
 		if(result){
-			tools.setLoginSession(req,result,function(result){
+			userID = result;
+			tools.setLoginSession(req,userID,userName,function(result){
 				if(result){
 					callback(200);
 				}
@@ -51,7 +54,7 @@ function register(req,callback){
 function getInfo(req,callback){
 	var args = url.parse(req.url, true).query;
 	var userID;
-	//teach you how async to handle the logic: getSession->(getUserByID||getInvite)->sendResponse
+	//teach you how async to handle the logic: getSession->(getUserByID||getAllInvite)->sendResponse
 	async.auto({
 		getSession: function(callback){
 			tools.getSession(req,function(result){
@@ -68,28 +71,20 @@ function getInfo(req,callback){
 			user.getUserByID(userID,function(result){
 				callback(null,result);
 			})
-		}],
-		getInvite: ['getSession',function(callback){
-			user.getInvite(userID,function(result){
-				callback(null,result);
-			})
 		}]
 	},
 	function(err,results){
 		if(err){
 			console.log(err);
-			callback(408);
+			callback(403);
 		}
-		else if(results.getUserByID && results.getInvite){
+		else{
 			var json = ({
 				userName: results.getUserByID.userName,
 				projectList: results.getUserByID.projectList,
-				inviteList: results.getInvite
+				inviteList: results.getUserByID.inviteList
 			});
 			callback(json);
-		}
-		else{
-			callback(403);
 		}
 	})
 }
@@ -99,14 +94,22 @@ function getInfo(req,callback){
 function inviteUser(req,callback){
 	var args = url.parse(req.url, true).query;
 	var projectID = args['projectID'];
-	var inviterUserID = args['inviterID'];
+	var inviterUserID;
+	var beInvitedUserName = args['beInvitedName'];
+	var inviterUserName;
+	var userObject;
 	var beInvitedUserID;
 	//principle:if 3 or more function are needed,use async.Otherwise,use callback
 	async.auto({
 		getSession: function(callback){
 			tools.getSession(req,function(result){
 				if(result){
-					beInvitedUserID = result.userID;
+					inviterUserID = result.userID;
+					inviterUserName = result.userName;
+					userObject = {
+						userID: result.userID,
+						userName: result.userName
+					};
 					callback(null,result.userID);
 				}
 				else{
@@ -114,25 +117,46 @@ function inviteUser(req,callback){
 				}
 			})
 		},
-		checkProject: ['getSession',function(callback){
-			user.checkProject(inviterUserID,projectID,function(result){
+		getUserByName: function(callback){
+			user.getUserByName(beInvitedUserName,function(result){
+				if(result){
+					beInvitedUserID = result._id;
+					callback(null,result);
+				}
+				else{
+					callback('No inviterID',null);
+				}
+			})
+		},
+		checkUser: ['getSession','getUserByName',function(callback){
+			project.checkUser(userObject,projectID,function(result){
 				if(result){
 					callback(null,result);
 				}
 				else{
-					callback(projectID + ' Inviter not in this project',null);
+					callback('Inviter ' + inviterUserID +' not in this project: ' + projectID,null);
 				}
 			})
 		}],
-		inviteUser: ['getSession','checkProject',function(callback){
+		inviteUser: ['checkUser',function(callback){
 			user.inviteUser(projectID,inviterUserID,beInvitedUserID,function(result){
 				if(result){
 					callback(null,result);
 				}
 				else{
-					callback(projectID + ' Have invite or have accepted',null);
+					callback(inviterUserID +'   '+ beInvitedUserID + ' Have invite or have accepted',null);
 				}
 			});
+		}],
+		addInviteList: ['inviteUser',function(callback){//the beinvited user should add the inviterID and name to list
+			user.addInviteList(beInvitedUserID,inviterUserName,projectID,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('Add inviteList wrong',null);
+				}
+			})
 		}]
 	},function(err,results){
 		if(err){
@@ -151,21 +175,104 @@ function inviteUser(req,callback){
 function acceptUser(req,callback){
 	var args = url.parse(req.url, true).query;
 	var projectID = args['projectID'];
+	var inviterUserName = args['inviterName'];
+	var inviterUserID;
+	var inviteObject;
 	var userID;
-	tools.getSession(req,function(result){
-		if(result){
-			userID = result.userID;
-			user.acceptInvite(userID,projectID,function(result){
+	var userObject;
+	var projectObject;
+	async.auto({
+		getSession: function(callback){
+			tools.getSession(req,function(result){
 				if(result){
-					callback(200);
+					userID = result.userID;
+					userObject = {
+						userID: result.userID,
+						userName: result.userName
+					};
+					callback(null,result);
 				}
 				else{
-					callback(403);
+					callback('No session',null);
+				}
+			});
+		},
+		getUserByName: function(callback){
+			user.getUserByName(inviterUserName,function(result){
+				if(result){
+					inviterUserID = result._id;
+					inviteObject = {
+						inviterID: inviterUserID,
+						inviterName: inviterUserName
+					};
+					callback(null,result);
+				}
+				else{
+					callback('No inviterID',null);
 				}
 			})
+		},
+		getProjectName: function(callback){
+			project.getProjectByID(projectID,function(result){
+				if(result){
+					projectObject = {
+						projectID: projectID,
+						projectName: result.projectName
+					};
+					callback(null,result);
+				}
+				else{
+					callback('No project',null);
+				}
+			})
+		},
+		acceptInvite: ['getSession','getUserByName',function(callback){
+			user.acceptInvite(userID,inviterUserID,projectID,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('No invite',null);
+				}
+			})
+		}],
+		deleteInviteList: ['acceptInvite',function(callback){
+			user.deleteInviteList(userID,inviterUserName,projectID,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('Delete inviteList wrong',null);
+				}
+			})
+		}],
+		addProjectList: ['getProjectName','deleteInviteList',function(callback){
+			user.addProjectList(userID,projectObject,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('Add projectList wrong',null);
+				}
+			})
+		}],
+		addUserList: ['deleteInviteList',function(callback){
+			project.addUserList(projectID,userObject,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('Add userList wrong',null);
+				}
+			})
+		}]
+	},function(err,results){
+		if(err){
+			console.log(err);
+			callback(403);
 		}
 		else{
-			callback(403);
+			callback(200);
 		}
 	})
 }
@@ -175,21 +282,84 @@ function acceptUser(req,callback){
 function rejectUser(req,callback){
 	var args = url.parse(req.url, true).query;
 	var projectID = args['projectID'];
+	var inviterUserName = args['inviterName'];
+	var inviterUserID;
+	var inviteObject;
 	var userID;
-	tools.getSession(req,function(result){
-		if(result){
-			userID = result.userID;
-			user.rejectInvite(userID,projectID,function(result){
+	var userObject;
+	var projectObject;
+	async.auto({
+		getSession: function(callback){
+			tools.getSession(req,function(result){
 				if(result){
-					callback(200);
+					userID = result.userID;
+					userObject = {
+						userID: result.userID,
+						userName: result.userName
+					};
+					callback(null,result);
 				}
 				else{
-					callback(403);
+					callback('No session',null);
 				}
-			})			
+			});
+		},
+		getUserByName: function(callback){
+			user.getUserByName(inviterUserName,function(result){
+				if(result){
+					inviterUserID = result._id;
+					inviteObject = {
+						inviterID: inviterUserID,
+						inviterName: inviterUserName
+					};
+					callback(null,result);
+				}
+				else{
+					callback('No inviterID',null);
+				}
+			})
+		},
+		getProjectName: function(callback){
+			project.getProjectByID(projectID,function(result){
+				if(result){
+					projectObject = {
+						projectID: projectID,
+						projectName: result.projectName
+					};
+					callback(null,result);
+				}
+				else{
+					callback('No project',null);
+				}
+			})
+		},
+		rejectInvite: ['getSession','getUserByName',function(callback){
+			user.rejectInvite(userID,inviterUserID,projectID,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('No invite',null);
+				}
+			})
+		}],
+		deleteInviteList: ['rejectInvite',function(callback){
+			user.deleteInviteList(userID,inviterUserName,projectID,function(result){
+				if(result){
+					callback(null,result);
+				}
+				else{
+					callback('Delete inviteList wrong',null);
+				}
+			})
+		}]
+	},function(err,results){
+		if(err){
+			console.log(err);
+			callback(403);
 		}
 		else{
-			callback(403);
+			callback(200);
 		}
 	})
 }

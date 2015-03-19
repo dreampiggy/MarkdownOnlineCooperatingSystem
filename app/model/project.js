@@ -5,30 +5,14 @@ var Schema = mongoose.Schema
 var projectSchema = new Schema({
 	projectName: String,
 	projectInfo: String,
-	userList: [String],
-	docList: [String],
-	admin: {type:String, default:''}
+	userList: [Schema.Types.Mixed],
+	docList: [Schema.Types.Mixed],
+	admin: String
 });
 var projectModel = mongoose.model('project', projectSchema);
 
 
-/*
-parameter:
-projectID,callback
 
-return:
-True:
-{ projectName: 'projectName',
-  projectInfo: 'projectInfo',
-  userList: '{user1}{user2}',
-  docList: '{doc1}{doc2}' }
-
-False:
-false
-
-Error:
-false
-*/
 function getProjectByID (projectID,callback) {
 	projectModel
 	.findOne({
@@ -66,19 +50,22 @@ function getProjectByName(projectName,callback){
 	})
 }
 
-function addProject (userID,projectName,projectInfo,callback){
-	getProjectByName(userID,function(result){
+
+function addProject (userObject,projectName,projectInfo,callback){
+	var userID = userObject.userID;
+	getProjectByName(projectName,function(result){
 		if(!result){
 			projectModel.create({
 				admin: userID,
 				projectName: projectName,
-				projectInfo: projectInfo
+				projectInfo: projectInfo,
+				userList: [userObject]
 			},function(err,result){
 				if(err){
 					callback(false);
 				}
 				else if(result){
-					callback(true);
+					callback(result._id);
 				}
 				else{
 					callback(false);
@@ -91,12 +78,13 @@ function addProject (userID,projectName,projectInfo,callback){
 	});
 }
 
+
 function updateProject (projectID,projectInfo,callback){
 	projectModel
 	.findOneAndUpdate({
 		_id: projectID
 	},{
-		projectID: projectID
+		projectInfo: projectInfo
 	},function(err,result){
 		if(err){
 			callback(false);
@@ -108,7 +96,8 @@ function updateProject (projectID,projectInfo,callback){
 			callback(false);
 		}
 	})
-};
+}
+
 
 function deleteProject(projectID,callback){
 	projectModel
@@ -127,12 +116,43 @@ function deleteProject(projectID,callback){
 	});
 }
 
-function addUserList(projectID,userID,callback){
+
+function addUserList(projectID,userObject,callback){
 	getUserList(projectID,function(result){
-		if(result && (result.length == 0 || !result.in_array(userID))){//check if the userList have the same userID as provide
-			result.push(userID);//push the new userID to the userList
+		if(result && (result.length == 0 || !checkUserList(result,userObject))){//check if the userList have the same userID/userName
+			result.push(userObject);//push the new userID/userName to the userList
 			projectModel
-			.findOneAndUpdate({},{
+			.findOneAndUpdate({
+				_id: projectID
+			},{
+				userList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
+
+function deleteUserList(projectID,userObject,callback){
+	getUserList(projectID,function(result){
+		if(result && checkUserList(result,userObject)){//check if the userList have the same userID/userName
+			result = delUserListElem(result,userObject);
+			projectModel
+			.findOneAndUpdate({
+				_id: projectID
+			},{
 				userList: result
 			},function(err,result){
 				if(err){
@@ -172,12 +192,15 @@ function getUserList(projectID,callback){
 }
 
 
-function addDocList(projectID,docID,callback){
+
+function addDocList(projectID,docObject,callback){
 	getDocList(projectID,function(result){
-		if(result && (result.length == 0 || !result.in_array(docID))){//check if the docList have the same docID as provide
-			result.push(docID);//push the new docID to the docList
+		if(result && (result.length == 0 || !checkDocList(docObject))){//check if the docList have the same docID/docName
+			result.push(docObject);//push the new docID/docName to the docList
 			projectModel
-			.findOneAndUpdate({},{
+			.findOneAndUpdate({
+				_id: projectID
+			},{
 				docList: result
 			},function(err,result){
 				if(err){
@@ -197,37 +220,34 @@ function addDocList(projectID,docID,callback){
 	})
 }
 
-function deleteDocList(projectID,docID,callback){
+
+function deleteDocList(projectID,docObject,callback){
 	getDocList(projectID,function(result){
-		if(result && result.in_array(docID)){
-			var newDocList = result.del_value(docID);
-			if(newDocList){
-				projectModel
-				.findOneAndUpdate({
-					_id: projectID
-				},{
-					docList: newDocList
-				},function(err,result){
-					if(err){
-						callback(false);
-					}
-					else if(result){
-						callback(true);
-					}
-					else{
-						callback(false);
-					}
-				})
-			}
-			else{
-				callback(false);
-			}
+		if(result && checkDocList(docObject)){
+			result = delDocListElem(result,docObject);
+			projectModel
+			.findOneAndUpdate({
+				_id: projectID
+			},{
+				docList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
 		}
 		else{
 			callback(false);
 		}
 	})
 }
+
 
 function getDocList(projectID,callback){
 	projectModel
@@ -247,22 +267,11 @@ function getDocList(projectID,callback){
 	})
 }
 
-function checkUser(userID,projectID,callback){
+
+function checkUser(userObject,projectID,callback){
 	getUserList(projectID,function(result){
-		if(result && result.in_array(userID)){
-			projectModel
-			.findOne({})
-			.exec(function(err,result){
-				if(err){
-					callback(false);
-				}
-				else if(result){
-					callback(true);
-				}
-				else{
-					callback(false);
-				}
-			})
+		if(result && checkUserList(result,userObject)){
+			callback(true);
 		}
 		else{
 			callback(false);
@@ -270,22 +279,11 @@ function checkUser(userID,projectID,callback){
 	});
 }
 
-function checkDoc(docID,projectID,callback){
+
+function checkDoc(docObject,projectID,callback){
 	getDocList(projectID,function(result){
-		if(result && result.in_array(docID)){
-			projectModel
-			.findOne({})
-			.exec(function(err,result){
-				if(err){
-					callback(false);
-				}
-				else if(result){
-					callback(true);
-				}
-				else{
-					callback(false);
-				}
-			})
+		if(result && checkDocList(result,docObject)){
+			callback(true);
 		}
 		else{
 			callback(false);
@@ -294,25 +292,67 @@ function checkDoc(docID,projectID,callback){
 }
 
 
-//delete the first element by value in the array and return new array
-Array.prototype.del_value=function(v){
-	for(i=0;i<this.length;i++){
-		if(this[i] == v){
-			this.splice(i,1);
-			return this;
+function checkUserList(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].userName == elem.userName && array[i].userID == elem.userID){
+			return true;
 		}
 	}
 	return false;
-};
-//tools to check if an element in the array
-Array.prototype.in_array = function(e){
-	for(i=0;i<this.length;i++){
-		if(this[i] == e)
-		return true;
+}
+
+function checkDocList(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].docName == elem.docName && array[i].docID == elem.docID){
+			return true;
+		}
 	}
 	return false;
-};
+}
 
+function delUserListElem(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].userName == elem.userName && array[i].userID == elem.userID){
+			array.splice(i,1);
+			return array;
+		}
+	}
+	return array;
+}
+
+function delDocListElem(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].docName == elem.docName && array[i].docID == elem.docID){
+			array.splice(i,1);
+			return array;
+		}
+	}
+	return array;
+}
+
+
+// addProject('5506f74d20b5087702e67e6f','project1','a test project',function(result){
+// 	if(result){
+// 		console.log(result);
+// 	}
+// 	else{
+// 		console.log('err');
+// 	}
+// })
+// var userID = '5506f74d20b5087702e67e6f';
+// var userName = 'lizhuoli';
+// var userObj = {
+// 	userID: userID,
+// 	userName: userName
+// };
+// addUserList('550a8757e087347d09ba0d60',userObj,function(result){
+// 	if(result){
+// 		console.log(result);
+// 	}
+// 	else{
+// 		console.log('false');
+// 	}
+// })
 // getProjectByName('pro1',function(result){
 // 	console.log(result);
 // })
@@ -350,7 +390,10 @@ exports.addProject = addProject;
 exports.updateProject = updateProject;
 exports.deleteProject = deleteProject;
 exports.addUserList = addUserList;
+exports.deleteUserList = deleteUserList;
+exports.getUserList = getUserList;
 exports.addDocList = addDocList;
 exports.deleteDocList = deleteDocList;
+exports.getDocList = getDocList;
 exports.checkDoc = checkDoc;
 exports.checkUser = checkUser;

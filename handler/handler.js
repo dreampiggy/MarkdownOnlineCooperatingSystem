@@ -75,10 +75,7 @@ function userInfo(req,res){
 		if(result == 403){
 			res.status(403);
 		}
-		else if(result == 408){
-			res.status(408);
-		}
-		else if(result){
+		else{
 			res.status(200);
 			res.json(result);
 		}
@@ -108,10 +105,8 @@ function userAccept(req,res){
 //403 Not allowed!
 function userReject(req,res){
 	account.rejectUser(req,function(result){
-		if(result){
-			res.status(result);
-			res.end();
-		}
+		res.status(result);
+		res.end();
 	});
 }
 
@@ -183,19 +178,44 @@ function docPreview(req,res){
 }
 
 function projectAdd(req,res){
-	manager.addProject(req,res);
+	manager.addProject(req,function(result){
+		res.status(result);
+		res.end();
+	});
 }
 
 function projectRemove(req,res){
-	manager.deleteProject(req,res);
+	manager.deleteProject(req,function(result){
+		res.status(result);
+		res.end();
+	});
 }
 
 function projectEdit(req,res){
-	manager.editProject(req,res);
+	manager.editProject(req,function(result){
+		res.status(result);
+		res.end();
+	});
 }
 
 function projectInfo(req,res){
-	manager.getProject(req,res);
+	manager.getProject(req,function(result){
+		if(result != 404){
+			res.status(200);
+			res.json({
+				projectName: result.projectName,
+				projectInfo: result.projectInfo,
+				admin: result.admin,
+				userList: result.userList,
+				docList: result.docList
+			});
+			res.end();
+		}
+		else{
+			res.status(404);
+			res.end();
+		}
+	});
 }
 
 function notFound(req,res){

@@ -10,7 +10,7 @@ var docSchema = new Schema({
 	projectID: String,
 	authorID: String,
 	time: {type:Date, default: Date.now},
-	userList: [String]
+	userList: [Schema.Types.Mixed]
 });
 var docModel = mongoose.model('doc', docSchema);
 
@@ -99,7 +99,11 @@ function newDoc(projectID,docName,authorID,callback){
 					callback(false);
 				}
 				else if(result){
-					callback(result._id);
+					var docObject = {
+						docID: result._id,
+						docName: result.docName
+					}
+					callback(docObject);
 				}
 				else{
 					callback(false);
@@ -183,12 +187,15 @@ function editDocInfo(projectID,docID,docName,callback){
 }
 
 
-function addUserList(projectID,docID,userID,callback){
+function addUserList(projectID,docID,userObject,callback){
 	getUserList(projectID,docID,function(result){
-		if(result && (result.length == 0 || !result.in_array(userID))){//check if the userList have the same userID as provide
-			result.push(userID);//push the new userID to the userList
+		if(result && (result.length == 0 || !checkUserList(userObject))){//check if the userList have the same userID as provide
+			result.push(userObject);//push the new userID to the userList
 			docModel
-			.findOneAndUpdate({},{
+			.findOneAndUpdate({
+				projectID: projectID,
+				_id: docID
+			},{
 				userList: result
 			},function(err,result){
 				if(err){
@@ -208,6 +215,33 @@ function addUserList(projectID,docID,userID,callback){
 	})
 }
 
+function deleteUserList(projectID,docID,userObject,callback){
+	getUserList(projectID,docID,function(result){
+		if(result && checkUserList(result,userObject)){//check if the userList have the same userID/userName
+			result = delUserListElem(result,userObject);
+			docModel
+			.findOneAndUpdate({
+				projectID: projectID,
+				_id: projectID
+			},{
+				userList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
+		}
+		else{
+			callback(false);
+		}
+	})
+}
 
 function getUserList(projectID,docID,callback){
 	docModel
@@ -230,7 +264,7 @@ function getUserList(projectID,docID,callback){
 
 function checkUser(projectID,docID,userID,callback){
 	getUserList(projectID,docID,function(result){
-		if(result && result.in_array(userID)){
+		if(result && checkUserList(userID)){
 			callback(true);
 		}
 		else{
@@ -258,31 +292,33 @@ function checkAuthor(projectID,docID,authorID,callback){
 	});
 }
 
-//delete the first element by value in the array and return new array
-Array.prototype.del_value=function(v){
-	for(i=0;i<this.length;i++){
-		if(this[i] == v){
-			this.splice(i,1);
-			return this;
+function checkUserList(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].userName == elem.userName && array[i].userID == elem.userID){
+			return true;
 		}
 	}
 	return false;
-};
-//tools to check if an element in the array
-Array.prototype.in_array = function(e){
-	for(i=0;i<this.length;i++){
-		if(this[i] == e)
-		return true;
-	}
-	return false;
-};
+}
 
-exports.checkUser = checkUser;
+function delUserListElem(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].userName == elem.userName && array[i].userID == elem.userID){
+			array.splice(i,1);
+			return array;
+		}
+	}
+	return array;
+}
+
+
 exports.getDocByID = getDocByID;
 exports.getDocByName = getDocByName;
 exports.addUserList = addUserList;
+exports.deleteUserList = deleteUserList;
 exports.getUserList = getUserList;
 exports.getDocPreview = getDocPreview;
 exports.newDoc = newDoc;
 exports.deleteDoc = deleteDoc;
 exports.editDocInfo = editDocInfo;
+exports.checkUser = checkUser;

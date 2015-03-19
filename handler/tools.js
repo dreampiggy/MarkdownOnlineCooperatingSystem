@@ -70,11 +70,12 @@ function checkCaptcha (req,captcha,callback) {
 	})
 }
 
-function setLoginSession(req,userID,callback){
+function setLoginSession(req,userID,userName,callback){
 	var uuid = req.cookies.uuid;
 	client.hmset(uuid,{
 		state: 'online',
-		userID: userID
+		userID: userID,
+		userName: userName
 	},function(err,reply){
 		if(reply){
 			callback(true);

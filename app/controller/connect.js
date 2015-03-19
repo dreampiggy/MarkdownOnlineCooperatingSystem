@@ -32,29 +32,12 @@ function editDoc(req,callback){
 	})
 }
 
-
-function syncDoc(req,callback){
-	var args = url.parse(req.url, true).query;
-	var userID = args['userID'];
-	var docID = args['docID'];
-	docs.checkUserList(docID,userID,callback,function(result){
-		if(result){
-			//token to use socket.io to sync docs
-			callback.end();
-		}
-		else{
-			callback.statusCode = 403;
-			callback.end();
-		}
-	})
-}
-
 function addDoc(req,callback){
 	var args = url.parse(req.url, true).query;
 	var docName = args['docName'];
 	var projectID = args['projectID'];
 	var userID;
-	var docID;
+	var docObject;
 	if(!(docName&&projectID)){
 		callback(403);
 		return;
@@ -74,7 +57,7 @@ function addDoc(req,callback){
 		newDoc: ['getSession',function(callback){
 			docs.newDoc(projectID,docName,userID,function(result){
 				if(result){
-					docID = result;
+					docObject = result;
 					callback(null,result);
 				}
 				else{
@@ -83,7 +66,7 @@ function addDoc(req,callback){
 			})
 		}],
 		addDocList: ['getSession','newDoc',function(callback){
-			project.addDocList(projectID,docID,function(result){
+			project.addDocList(projectID,docObject,function(result){
 				if(result){
 					callback(null,result);
 				}
@@ -101,22 +84,6 @@ function addDoc(req,callback){
 			callback(200);
 		}
 	})
-	// tools.getSession(req,function(result){
-	// 	if(result){
-	// 		userID = result.userID;
-	// 		docs.newDoc(projectID,docName,userID,function(result){
-	// 			if(result){
-	// 				callback(result);
-	// 			}
-	// 			else{
-	// 				callback(408);
-	// 			}
-	// 		})
-	// 	}
-	// 	else{
-	// 		callback(403);
-	// 	}
-	// })
 }
 
 function deleteDoc(req,callback){
@@ -124,6 +91,7 @@ function deleteDoc(req,callback){
 	var docID = args['docID'];
 	var projectID = args['projectID'];
 	var userID;
+	var docObject;
 	async.auto({
 		getSession: function(callback){
 			tools.getSession(req,function(result){
@@ -136,7 +104,21 @@ function deleteDoc(req,callback){
 				}
 			})
 		},
-		deleteDoc: ['getSession',function(callback){
+		getDocByID: function(callback){
+			docs.getDocByID(projectID,docID,function(result){
+				if(result){
+					docObject = {
+						docID: docID,
+						docName: docName
+					};
+					callback(null,result);
+				}
+				else{
+					callback('No docID',null);
+				}
+			})
+		},
+		deleteDoc: ['getSession',['getDocByID'],function(callback){
 			docs.deleteDoc(projectID,docID,userID,function(result){
 				if(result){
 					callback(null,result);
@@ -146,8 +128,8 @@ function deleteDoc(req,callback){
 				}
 			})
 		}],
-		deleteDocList: ['getSession',['deleteDoc'],function(callback){
-			project.deleteDocList(projectID,docID,function(result){
+		deleteDocList: ['getSession',['getDocByID'],['deleteDoc'],function(callback){
+			project.deleteDocList(projectID,docObject,function(result){
 				if(result){
 					callback(null,result);
 				}
@@ -165,22 +147,6 @@ function deleteDoc(req,callback){
 			callback(200);
 		}
 	})
-	// tools.getSession(req,function(result){
-	// 	if(result){
-	// 		userID = result.userID;
-	// 		docs.deleteDoc(projectID,docName,userID,function(result){
-	// 			if(result){
-	// 				callback(200);
-	// 			}
-	// 			else{
-	// 				callback(408);
-	// 			}
-	// 		})
-	// 	}
-	// 	else{
-	// 		callback(403);
-	// 	}
-	// })
 }
 
 //200 OK!
@@ -254,30 +220,10 @@ function previewDoc(req,callback){
 			callback(results.getDocPreview);
 		}
 	})
-	// docs.checkUserList(docID,userID,callback,function(result){
-	// 	if(result){
-	// 		docs.getPreviewDoc(docID,function(result){
-	// 			if(result){
-	// 				callback.statusCode = 200;
-	// 				callback.json({
-	// 					previewDoc: result
-	// 				});
-	// 			}
-	// 			else{
-	// 				callback.statusCode = 408;
-	// 				callback.end();
-	// 			}
-	// 		})
-	// 	}
-	// 	else{
-	// 		callback.statusCode = 403;
-	// 		callback.end();
-	// 	}
-	// })
 }
+
 exports.addDoc = addDoc;
 exports.editDoc = editDoc;
-exports.syncDoc = syncDoc;
 exports.deleteDoc = deleteDoc;
 exports.getDoc = getDoc;
 exports.previewDoc = previewDoc;

@@ -9,8 +9,8 @@ var userSchema = new Schema({
 	userName: String,
 	userNumber: {type: Number, min: 8, default: 10000000 },
 	password: String,
-	inviteList: [String],
-	projectList: [String],
+	inviteList: [Schema.Types.Mixed],
+	projectList: [Schema.Types.Mixed]
 });
 var userModel = mongoose.model('user', userSchema);
 var inviteSchema = new Schema({
@@ -97,7 +97,7 @@ function getUserByName(userName,callback){
 			callback(false);
 		}
 		else if(result != null){
-			callback(result._id);
+			callback(result);
 		}
 		else{
 			callback(false);
@@ -123,75 +123,15 @@ function getUserByID(userID,callback){
 	})
 }
 
-// function getDocList(userID,callback){
-// 	userModel
-// 	.findOne({
-// 		_id: userID
-// 	})
-// 	.exec(function(err,result){
-// 		if(err){
-// 			callback(false);
-// 		}
-// 		else if(result){
-// 			callback(result.docList);
-// 		}
-// 		else{
-// 			callback(false);
-// 		}
-// 	})
-// }
 
-// function addDocList(userID,docID,callback){
-// 	getDocList(userID,function(result){
-// 		if(result && (result.length == 0 || !result.in_array(docID))){//check if the docList have the same docID as provide
-// 			result.push(docID);//push the new docID to the docList
-// 			console.log(result);
-// 			userModel
-// 			.findOneAndUpdate({},{
-// 				docList: result
-// 			},function(err,result){
-// 				if(err){
-// 					callback(false);
-// 				}
-// 				else if(result){
-// 					callback(true);
-// 				}
-// 				else{
-// 					callback(false);
-// 				}
-// 			})
-// 		}
-// 		else{
-// 			callback(false);
-// 		}
-// 	})
-// }
-
-function getProjectList(userID,callback){
-	userModel
-	.findOne({
-		_id: userID
-	})
-	.exec(function(err,result){
-		if(err){
-			callback(false);
-		}
-		else if(result){
-			callback(result.projectList);
-		}
-		else{
-			callback(false);
-		}
-	})
-}
-
-function addProjectList(userID,projectID,callback){
+function addProjectList(userID,projectObject,callback){
 	getProjectList(userID,function(result){
-		if(result && (result.length == 0 || !result.in_array(projectID))){//check if the projectID have the same projectList as provide
-			result.push(projectID);//push the new projectID to the projectList
-			console.log(result);
+		if(result && (result.length == 0 || !checkProjectList(result,projectObject))){//check if the projectList have the same projectID/projectName
+			result.push(projectObject);//push the new projectID/projectName to the projectList
 			userModel
-			.findOneAndUpdate({},{
+			.findOneAndUpdate({
+				_id: userID
+			},{
 				projectList: result
 			},function(err,result){
 				if(err){
@@ -211,20 +151,143 @@ function addProjectList(userID,projectID,callback){
 	})
 }
 
+function deleteProjectList(userID,projectObject,callback){
+	getProjectList(userID,function(result){
+		if(result && checkProjectList(result,projectObject)){//check if the projectList have the same projectID/projectName
+			result = delProjectListElem(result,projectObject);
+			userModel
+			.findOneAndUpdate({
+				_id: userID
+			},{
+				projectList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
+function getProjectList(userID,callback){
+	userModel
+	.findOne({
+		_id: userID
+	})
+	.exec(function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result){
+			callback(result.projectList);
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
+
+function addInviteList(userID,inviterName,projectID,callback){
+	getInviteList(userID,function(result){
+		if(result && (result.length == 0 || !checkInviteList(result,inviterName,projectID))){//check if the inviteList have the same inviterID/inviterName
+			var inviteObject = {
+				inviterName: inviterName,
+				projectID: projectID
+			}
+			result.push(inviteObject);//push the new inviterID/inviterName to the inviteList
+			userModel
+			.findOneAndUpdate({
+				_id: userID
+			},{
+				inviteList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
+function deleteInviteList(userID,inviterName,projectID,callback){
+	getInviteList(userID,function(result){
+		if(result && checkInviteList(result,inviterName,projectID)){//check if the inviteList have the same inviterID/inviterName
+			result = delInviteListElem(result,inviterName,projectID);
+			userModel
+			.findOneAndUpdate({
+				_id: userID
+			},{
+				inviteList: result
+			},function(err,result){
+				if(err){
+					callback(false);
+				}
+				else if(result){
+					callback(true);
+				}
+				else{
+					callback(false);
+				}
+			})
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
+function getInviteList(userID,callback){
+	userModel
+	.findOne({
+		_id: userID
+	})
+	.exec(function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result){
+			callback(result.inviteList);
+		}
+		else{
+			callback(false);
+		}
+	})
+}
+
 function inviteUser(projectID,inviterUserID,beInvitedUserID,callback){
 	if(inviterUserID == beInvitedUserID){//Not allowed to invite yourself
 		callback(false);
 		return;
 	}
 	var notInvited;
-	getInvite(beInvitedUserID,function(result){
-		if(result && result.state == 0){//when the projectID and inviterID both the same,it's not allowed
+	getInviteWithProject(beInvitedUserID,projectID,function(result){
+		if(!result){
 			notInvited = true;
-			result.forEach(function(elem){
-				if(elem.projectID == projectID && elem.inviterID == inviterUserID){
-					notInvited = false;
-				}
-			});
+		}
+		else if(result.state == 0){//when the projectID and inviterID both the same,it's not allowed
+			notInvited = true;
+			if(result.projectID == projectID && result.inviterID == inviterUserID){
+				notInvited = false;
+			}
 		}
 		if(notInvited){
 			inviteModel.create({
@@ -268,10 +331,11 @@ function inviteUser(projectID,inviterUserID,beInvitedUserID,callback){
 	});
 }
 
-function acceptInvite(userID,projectID,callback){
+function acceptInvite(userID,inviterID,projectID,callback){
 	inviteModel
 	.findOneAndUpdate({
 		userID: userID,
+		inviterID: inviterID,
 		projectID: projectID,
 		state: 0
 	},{
@@ -289,10 +353,11 @@ function acceptInvite(userID,projectID,callback){
 	});
 }
 
-function rejectInvite(userID,projectID,callback){
+function rejectInvite(userID,inviterID,projectID,callback){
 	inviteModel
 	.findOneAndUpdate({
 		userID: userID,
+		inviterID: inviterID,
 		projectID: projectID,
 		state: 0
 	},{
@@ -310,9 +375,31 @@ function rejectInvite(userID,projectID,callback){
 	});
 }
 
-function getInvite(userID,callback){
+
+function getAllInvite(userID,callback){
+	inviteModel
+	.find({
+		userID: userID
+	})
+	.exec(function(err,result){
+		if(err){
+			callback(false);
+		}
+		else if(result){
+			console.log(result);
+			callback(result);
+		}
+		else{
+			callback(false);
+		}
+	});
+}
+
+
+function getInviteWithProject(userID,projectID,callback){
 	inviteModel
 	.findOne({
+		projectID: projectID,
 		userID: userID
 	})
 	.exec(function(err,result){
@@ -327,6 +414,7 @@ function getInvite(userID,callback){
 		}
 	})
 }
+
 
 function checkUserID(userID,callback){
 	userModel
@@ -346,45 +434,12 @@ function checkUserID(userID,callback){
 	})
 }
 
-// function checkDoc(userID,docID,callback){
-// 	getDocList(userID,function(result){
-// 		if(result && result.in_array(docID)){
-// 			userModel
-// 			.findOne({})
-// 			.exec(function(err,result){
-// 				if(err){
-// 					callback(false);
-// 				}
-// 				else if(result){
-// 					callback(true);
-// 				}
-// 				else{
-// 					callback(false);
-// 				}
-// 			})
-// 		}
-// 		else{
-// 			callback(false);
-// 		}
-// 	})
-// }
 
-function checkProject(userID,projectID,callback){
+function checkProject(userObject,projectID,callback){
+	var userID = userObject.userID;
 	getProjectList(userID,function(result){
-		if(result && result.in_array(projectID)){
-			userModel
-			.findOne({})
-			.exec(function(err,result){
-				if(err){
-					callback(false);
-				}
-				else if(result){
-					callback(true);
-				}
-				else{
-					callback(false);
-				}
-			})
+		if(result && checkProjectList(result,projectID)){
+			callback(true);
 		}
 		else{
 			callback(false);
@@ -401,25 +456,44 @@ function sha1(str) {
     return str;
 }
 
-
-//delete the first element by value in the array and return new array
-Array.prototype.del_value=function(v){
-	for(i=0;i<this.length;i++){
-		if(this[i] == v){
-			this.splice(i,1);
-			return this;
+function checkProjectList(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].projectName == elem.projectName && array[i].projectID == elem.projectID){
+			return true;
 		}
 	}
 	return false;
-};
-//tools to check if an element in the array
-Array.prototype.in_array = function(e){
-	for(i=0;i<this.length;i++){
-		if(this[i] == e)
-		return true;
+}
+
+function delProjectListElem(array,elem){
+	for(i=0;i<array.length;i++){
+		if(array[i].projectName == elem.projectName && array[i].projectID == elem.projectID){
+			array.splice(i,1);
+			return array;
+		}
+	}
+	return array;
+}
+
+function checkInviteList(array,inviterName,projectID){
+	for(i=0;i<array.length;i++){
+		if(array[i].inviterName == inviterName && array[i].projectID == projectID){
+			return true;
+		}
 	}
 	return false;
-};
+}
+
+function delInviteListElem(array,inviterName,projectID){
+	for(i=0;i<array.length;i++){
+		if(array[i].inviterName == inviterName && array[i].projectID == projectID){
+			array.splice(i,1);
+			return array;
+		}
+	}
+	return array;
+}
+
 
 // checkUserID(111112,function(result){
 // 	console.log(result);
@@ -474,15 +548,19 @@ Array.prototype.in_array = function(e){
 // })
 exports.register = register;
 exports.login = login;
-exports.checkUserID = checkUserID;
 exports.getUserByName = getUserByName;
 exports.getUserByID = getUserByID;
+exports.getAllInvite = getAllInvite;
 exports.addProjectList = addProjectList;
+exports.deleteProjectList = deleteProjectList;
 exports.getProjectList = getProjectList;
+exports.addInviteList = addInviteList;
+exports.deleteInviteList = deleteInviteList;
+exports.getInviteList = getInviteList;
 exports.inviteUser = inviteUser;
-exports.getInvite = getInvite;
+exports.getInviteWithProject = getInviteWithProject;
 exports.acceptInvite = acceptInvite;
 exports.rejectInvite = rejectInvite;
-exports.getInvite = getInvite;
+exports.checkUserID = checkUserID;
 exports.checkProject = checkProject;
 exports.editUser = editUser;
