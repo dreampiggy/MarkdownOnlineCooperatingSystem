@@ -3,7 +3,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
-        <meta name="author" content="Jason Yang" />
+        <meta name="author" content="Jason Yang"/>
         <title>Features</title>
         <link href="../CSS/Global.css" rel="stylesheet" type="text/css">
         <link href="../CSS/Header.css" rel="stylesheet" type="text/css">
@@ -112,8 +112,7 @@
             {
                 height: 96px;
                 
-                background-color: black;
-                opacity: 0.5;
+                background-color: rgba(0,0,0,0.5);
             }
             
             #header_container .ClickAble:hover,#sideMenu .ClickAble:hover
@@ -136,7 +135,7 @@
                 }
             }
 
-            @media only screen and (max-width: 1023px)
+            @media screen and (max-width: 1023px)
             { 
                 #feature_documenting_textOnImg
                 {
@@ -258,24 +257,4 @@
 <script src="../JS/Global.js">
 </script>
 <script>
-    var cooperating;
-    var documenting;
-    var markdown;
-    
-    //var cooperating_side;
-    //var documenting_side;
-    //var markdown_side;
-    
-    window.onload=initilize;
-    
-    function initilize()
-    {
-        cooperating=$("#cooperating");
-        documenting=$("#documenting");
-        markdown=$("#markdown");
-        
-        cooperating.click(function(){goToCooperating();})
-        documenting.click(function(){goToDocumenting();})
-        markdown.click(function(){goToMarkdown();})
-    }
 </script>

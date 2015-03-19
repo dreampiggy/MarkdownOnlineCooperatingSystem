@@ -1,0 +1,146 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta name="author" content="Jason Yang"/>
+        <title>Editor</title>
+        <link href="../CSS/Global.css" rel="stylesheet" type="text/css">
+        <link href="../CSS/font-awesome.css" rel="stylesheet" type="text/css">
+        <style>
+            body
+            {
+                overflow-x: hidden;
+                overflow-y: hidden;
+            }
+            
+            #menu,#project,#documents,#lable
+            {
+                position: absolute;
+                height: 100%;
+            }
+            
+            table#editor
+            {
+                height: 100%;
+            }
+            
+            table#editor td#edit_pannel,table#editor td#liveview_pannel,table#editor td#centralBar
+            {
+                height: 100%;
+                border-collapse: collapse;
+            }
+            
+            @media screen and (min-width: 768px)
+            {
+                #menu,#project,#documents
+                {
+                    width: 256px;
+                }
+                
+                #project
+                {
+                    left: 0px;
+                }
+
+                #documents
+                {
+                    left: 256px;
+                }
+
+                #lable
+                {
+                    width: 64px;
+                    
+                    left: 512px;
+                }
+                
+                table#editor
+                {
+                    width: 100%;
+                }
+                
+                table#editor td#edit_pannel,table#editor td#liveview_pannel
+                {
+                    width: 50%;
+                }
+                
+                table#editor td#centralBar
+                {
+                    width 0%
+                }
+            }
+            
+            @media screen and (max-width: 767px)
+            {
+                #menu
+                {
+                    width: 40%;
+                }
+                
+                #project,#documents
+                {
+                    width:100%
+                }
+                
+                #project
+                {
+                    left: 0%;
+                }
+
+                #documents
+                {
+                    left: 100%;
+                }
+
+                #lable
+                {
+                    width: 25%;
+                    
+                    left: 200%;
+                }
+                
+                table#editor
+                {
+                    width: 200%;
+                }
+                
+                table#editor td#edit_pannel,table#editor td#liveview_pannel
+                {
+                    width: 45%;
+                }
+                
+                table#editor td#centralBar
+                {
+                    width 10%
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="menu">
+            <div id="project">
+            </div>
+            <div id="documents">
+            </div>
+            <div id="lable">
+            </div>
+        </div>
+        <table id="editor">
+            <tr>
+                <td id="edit_pannel">
+                </td>
+                <td id="centralBar">
+                </td>
+                <td id="liveview_pannel">
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
+<script src="../JS/jquery-1.11.1.js">
+</script>
+<script src="../JS/Global.js">
+</script>
+<script>
+</script>

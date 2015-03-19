@@ -1,0 +1,21 @@
+body
+{
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@media screen and (min-aspect-ratio: 3/2)
+{
+    body
+    {
+        background-size: 100% auto;
+    }
+}
+
+@media screen and (max-aspect-ratio: 3/2)
+{
+    body
+    {
+        background-size: auto 100%;
+    }
+}
