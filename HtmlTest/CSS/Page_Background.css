@@ -2,6 +2,7 @@ body
 {
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: fixed;
 }
 
 @media screen and (min-aspect-ratio: 3/2)
