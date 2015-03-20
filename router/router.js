@@ -49,9 +49,7 @@ function route(app){
 	});
 
 //Public Resource
-	// app.get('/public/*',function(req,res){
-	// 	handler.public(req,res);
-	// });
+	app.use(express.static(__dirname + '/../public'));
 /*
 User
 */

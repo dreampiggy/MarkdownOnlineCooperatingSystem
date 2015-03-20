@@ -13,10 +13,6 @@ function favicon(req,res){
 	tools.returnFile('resource/favicon.ico',req,res)
 }
 
-function public(req,res){
-	tools.returnFile(req.url,req,res);
-}
-
 //200 OK
 //403 Have registed
 function userRegister(req,res){
