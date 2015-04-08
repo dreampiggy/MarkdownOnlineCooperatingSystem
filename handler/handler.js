@@ -220,7 +220,6 @@ function notFound(req,res){
 
 exports.home = home;
 exports.favicon = favicon;
-exports.public = public;
 exports.userRegister = userRegister;
 exports.userLogin = userLogin;
 exports.userLogout = userLogout;
