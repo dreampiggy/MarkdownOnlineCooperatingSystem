@@ -1,6 +1,5 @@
- # MarkdownOnlineCooperatingSystem v0.1
-A document cooperating system of Markdown.
-我的SRTP项目，目标是建立利用Markdown语法的Web在线协作系统。
+# MarkdownOnlineCooperatingSystem v0.1
+SRTP项目，目标是建立利用Markdown语法的Web在线协作系统。
  
 
 # 实现简介
