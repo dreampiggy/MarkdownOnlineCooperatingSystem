@@ -1,3 +1,4 @@
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -344,9 +345,9 @@
         // });
         //lizhuoli:Don't allowed,sharejs must be use in the right order of event.So i remove it.use another edit such as setTimeout to sync textarea to the markdown code area.
         //利用jQuery注册事件
-        var userID = '11111';
-        var docID = '11111';
-        var projectID = '11111';
+        var userID = '5525036f6810d95f04fa4536';
+        var docID = '5525081c6810d95f04fa4539';
+        var projectID = '552503e26810d95f04fa4537';
 
         var ajaxData = {
             userID: userID,
@@ -368,7 +369,7 @@
         
 
         var elem = document.getElementById('editPane');
-        var browserChannel = new BCSocket('http://localhost:8888/api/doc/sync', {reconnect: true});
+        var browserChannel = new BCSocket('/api/doc/sync', {reconnect: true});
         var sharejs = new window.sharejs.Connection(browserChannel);
 
 
@@ -382,9 +383,13 @@
           if (!doc.type) doc.create('text');
           if (doc.type && doc.type.name === 'text')
             doc.attachTextarea(elem);
-            convertToLiveView();
+            onEditDoc();
         });
 
+        doc.on('op', function(op, local) {
+            console.log(op);
+            onEditDoc();
+        });
         // editPane.value="#Edit Here";
         // convertToLiveView();
         //lizhuoli:start to live view when the doc is ready.Use the doc.whenReady event to do it.

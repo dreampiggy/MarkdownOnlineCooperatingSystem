@@ -4,6 +4,6 @@ var app = express();
 
 app.use(express.static(__dirname + '/public'));
 router.route(app);
-app.listen(8888);
+app.listen(80);
 
 console.log('Server Start!');

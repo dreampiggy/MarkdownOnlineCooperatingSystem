@@ -6,7 +6,7 @@ var connect = require('../app/controller/connect');
 
 
 function home(req,res){
-	res.redirect('html/index.html');
+	res.redirect('html/MainEditor.html');
 }
 
 function favicon(req,res){
