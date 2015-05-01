@@ -337,9 +337,9 @@
             onKeyDown(event);
         });
         
-        $(editPane).keyup(function(event){
-            onEditDoc(event);
-        });
+        // $(editPane).keyup(function(event){
+        //     onEditDoc(event);
+        // });
         // $(document).mouseover(function(event){
         //     onEditDoc(event);
         // });
@@ -386,7 +386,7 @@
             onEditDoc();
         });
 
-        doc.on('op', function(op, local) {
+        doc.on('after op', function(op, local) {
             console.log(op);
             onEditDoc();
         });

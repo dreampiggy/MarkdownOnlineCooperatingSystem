@@ -109,7 +109,10 @@ Doc
 	app.get('/api/doc/preview',function(req,res){
 		handler.docPreview(req,res);
 	});
-
+//Doc upload
+	app.post('/api/doc/upload',function(req,res){
+		handler.docUpload(req,res);
+	})
 /*
 Project
 */

@@ -214,6 +214,30 @@ function projectInfo(req,res){
 	});
 }
 
+function docUpload(req,res){
+	tools.upload(req,res,function(result){
+		/*
+		成功:
+		result对象为{
+		    projectID: 项目ID,
+    		docName: 文件名,
+    		docContent: 文件内容
+		}
+		失败:
+		result对象为false
+		*/
+		if(!result){
+			//docAdd()
+			//再次重构吧，所有controller不再会用到req对象（当年怎么想的）
+			//在handler里面把所有有用的参数提取出来并且确保合法（非空），req和res只会在handler里面出现
+		}
+		else{
+			res.status(404);
+			res.end();
+		}
+	});
+}
+
 function notFound(req,res){
 	tools.returnFile('/public/html/Error.html',req,res);
 }
@@ -233,6 +257,7 @@ exports.docRemove = docRemove;
 exports.docEditInfo = docEditInfo;
 exports.docGetInfo = docGetInfo;
 exports.docPreview = docPreview;
+exports.docUpload = docUpload;
 exports.projectAdd = projectAdd;
 exports.projectRemove = projectRemove;
 exports.projectEdit = projectEdit;

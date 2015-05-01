@@ -1,6 +1,8 @@
 var redis = require('redis');
 var ccap = require('ccap');
 var fs = require('fs');
+var formidable = require('formidable');
+var util = require('util');
 
 client = redis.createClient(6379,'127.0.0.1',{
     auth_pass: 941126
@@ -136,48 +138,35 @@ function returnFile(pathname,req,res){
 	});
 }
 
-function upload(req,res){
-	var form = new formidable.IncomingForm();
-	var post = {};
-	var file = {};
-	form.on('error', function(err) {
-		res.writeHead(500, {"Content-Type": "text/plain"});
-		res.write(error + "\n");
-		res.end();
-        console.log(err);
-    });
-    form.on('field', function(field, value) { 
-    	if(field == "text"){
-	        if (form.type == 'multipart') {  //有文件上传时 enctype="multipart/form-data" 
-	            if (field in post) { //同名表单 checkbox 返回array 同get处理
-	                if (util.isArray(post[field]) === false) {
-	                    post[field] = [post[field]];
-	                }
-	                post[field].push(value);
-	                return;
-	            }
-	        }
-	        post[field] = value;
+function upload(req,res,callback){
+    var form = new formidable.IncomingForm();
+
+    form.parse(req, function(err, fields, files) {
+    	if (err){
+    		callback(false);
+    		return;
     	}
-    	else{
-			res.writeHead(500, {"Content-Type": "text/plain"});
-			res.write(error + "\n");
-			res.end();
-    	}
+    	var fileReg = /\.\w+$/;//去除扩展名
+
+    	var projectID = fields.projectID;//上传文件所属projectID
+    	var fileName = files.upload.name.replace(fileReg,'');//上传文件的名称
+    	var fileType = files.upload.type;//上传文件的MIME，推荐text/markdown，要求编码UTF-8
+    	var filePath = files.upload.path;
+    	var fileContent = fs.readFile(filePath,'utf-8',function(err,data){
+    		if(err){
+    			callback(false);
+    			return;
+    		}
+    		var fileContent = data;
+    		fs.unlink(filePath);
+    		callback({
+    			projectID: projectID,
+    			docName: fileName,
+    			docContent: fileContent
+    		});
+    	});
     });
-    // form.on('file', function(field, file) { //上传文件
-    //     file[field] = file;
-    // })
-	console.log("about to parse");
-	form.parse(req, function(error, fields, files) {
-		console.log("parsing done");
-		var html = '';
-		html = markdown.toHTML(post["text"]);
-		fs.writeFileSync("./temp/test.html", fileContent);
-	    res.send(html);  
-	    res.end();
-		res.end();
-	});
+    return;
 }
 
 

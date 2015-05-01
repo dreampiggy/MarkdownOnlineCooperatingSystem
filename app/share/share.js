@@ -60,8 +60,26 @@ function deleteDoc(projectID,docID,callback){
     });
 }
 
+function createDocFromContent(projectID,docID,docContent,callback){
+    backend.submit(projectID, docID, {create:{type:'http://sharejs.org/types/textv1', data:{}}}, function(err) {
+        if(err){
+            callback(false);
+        }
+        else{
+            backend.submit('users', 'fred', {v:1, op:[docContent]}, function(err) {
+                if(err){
+                    callback(false);
+                }
+                else{
+                    callback(true);
+                }
+            });
+        }
+    });
+}
 
 exports.communicate = communicate;
 exports.share = share;
 exports.getSnapshot = getSnapshot;
 exports.deleteDoc = deleteDoc;
+exports.createDocFromContent = createDocFromContent;
